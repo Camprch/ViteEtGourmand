@@ -1,6 +1,9 @@
 <?php
 declare(strict_types=1);
 
+// Activer les sessions
+session_start();
+
 // Afficher les erreurs en dev
 ini_set('display_errors', '1');
 error_reporting(E_ALL);
@@ -16,21 +19,21 @@ $page = $_GET['page'] ?? 'home';
 
 switch ($page) {
     case 'home':
-        $controller = new HomeController($pdo);
-        $controller->index();
-        break;
+    $controller = new HomeController($pdo);
+    $controller->index();
+    break;
 
     case 'menus':
-        require_once __DIR__ . '/../src/controller/MenuController.php';
-        $controller = new MenuController($pdo);
-        $controller->index();
-        break;
+    require_once __DIR__ . '/../src/controller/MenuController.php';
+    $controller = new MenuController($pdo);
+    $controller->index();
+    break;
 
     case 'menu':
-        require_once __DIR__ . '/../src/controller/MenuController.php';
-        $controller = new MenuController($pdo);
-        $controller->show((int)($_GET['id'] ?? 0));
-        break;
+    require_once __DIR__ . '/../src/controller/MenuController.php';
+    $controller = new MenuController($pdo);
+    $controller->show((int)($_GET['id'] ?? 0));
+    break;
 
     case 'commande':
     require_once __DIR__ . '/../src/controller/CommandeController.php';
@@ -50,8 +53,26 @@ switch ($page) {
     $controller->showRegisterForm();
     break;
 
+    case 'register_post':
+    require_once __DIR__ . '/../src/controller/AuthController.php';
+    $controller = new AuthController($pdo);
+    $controller->registerPost();
+    break;
+
+    case 'login':
+    require_once __DIR__ . '/../src/controller/AuthController.php';
+    $controller = new AuthController($pdo);
+    $controller->showLoginForm();
+    break;
+
+    case 'login_post':
+    require_once __DIR__ . '/../src/controller/AuthController.php';
+    $controller = new AuthController($pdo);
+    $controller->loginPost();
+    break;
+
     default:
-        $controller = new HomeController($pdo);
-        $controller->index();
-        break;
+    $controller = new HomeController($pdo);
+    $controller->index();
+    break;
 }
