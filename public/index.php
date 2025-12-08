@@ -20,6 +20,12 @@ switch ($page) {
         $controller->index();
         break;
 
+    case 'menus':
+        require_once __DIR__ . '/../src/controller/MenuController.php';
+        $controller = new MenuController($pdo);
+        $controller->index();
+        break;
+
     case 'menu':
         require_once __DIR__ . '/../src/controller/MenuController.php';
         $controller = new MenuController($pdo);
