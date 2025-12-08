@@ -33,6 +33,9 @@ require __DIR__ . '/../partials/header.php';
     <label>Code postal :</label>
     <input type="text" name="code_postal" required>
 
+    <label>Distance depuis Bordeaux (en km) :</label>
+    <input type="number" name="distance_km" min="0" step="0.1" value="0">
+
     <br><br>
     <button type="submit">Valider la commande</button>
 </form>

@@ -44,6 +44,12 @@ switch ($page) {
     $controller->store();
     break;
 
+    case 'register':
+    require_once __DIR__ . '/../src/controller/AuthController.php';
+    $controller = new AuthController($pdo);
+    $controller->showRegisterForm();
+    break;
+
     default:
         $controller = new HomeController($pdo);
         $controller->index();

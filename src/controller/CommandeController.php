@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../model/MenuModel.php';
+require_once __DIR__ . '/../model/CommandeModel.php';
 
 class CommandeController
 {
@@ -42,6 +43,7 @@ class CommandeController
     $adresse         = trim($_POST['adresse_prestation'] ?? '');
     $ville           = trim($_POST['ville'] ?? '');
     $codePostal      = trim($_POST['code_postal'] ?? '');
+    $distanceKm      = (float)($_POST['distance_km'] ?? 0);
 
     $erreurs = [];
 
@@ -53,6 +55,7 @@ class CommandeController
     if ($adresse === '') $erreurs[] = "Adresse requise.";
     if ($ville === '') $erreurs[] = "Ville requise.";
     if ($codePostal === '') $erreurs[] = "Code postal requis.";
+    if ($distanceKm < 0) $erreurs[] = "La distance ne peut pas être négative.";
 
     // 3. Charger le menu pour vérifier les règles métier
     $menuModel = new MenuModel($this->pdo);
@@ -93,11 +96,39 @@ class CommandeController
     // --- Total provisoire (avant livraison) ---
     $prixApresReduction = $prixMenuTotal - $reduction;
 
-    // --- Frais de livraison (sera fait à l’étape suivante) ---
-    $fraisLivraison = 0.0;
+    // --- Frais de livraison ---
+    // Si la ville est Bordeaux (insensible à la casse) => 0 €
+    // Sinon => 5 € + 0,59 €/km
+    $villeNormalisee = strtolower(trim($ville));
+
+    if ($villeNormalisee === 'bordeaux') {
+        $fraisLivraison = 0.0;
+    } else {
+        $fraisLivraison = 5.0 + (0.59 * max(0, $distanceKm));
+    }
 
     // --- Total final ---
     $prixTotal = $prixApresReduction + $fraisLivraison;
+
+    $commandeModel = new CommandeModel($this->pdo);
+
+    // TODO: remplacer 1 par l'ID de l'utilisateur connecté quand on aura l'auth
+    $idUser = 1;
+
+    $commandeId = $commandeModel->create([
+        'id_user'            => $idUser,
+        'id_menu'            => $idMenu,
+        'date_prestation'    => $datePrestation,
+        'heure_prestation'   => $heurePrestation,
+        'adresse_prestation' => $adresse,
+        'ville'              => $ville,
+        'code_postal'        => $codePostal,
+        'nb_personnes'       => $nbPersonnes,
+        'prix_menu_total'    => $prixMenuTotal,
+        'reduction_appliquee'=> $reduction,
+        'frais_livraison'    => $fraisLivraison,
+        'prix_total'         => $prixTotal,
+    ]);
 
     // 6. Affichage d'un récapitulatif simple
     echo "<h2>Récapitulatif de votre commande</h2>";
@@ -108,7 +139,7 @@ class CommandeController
     echo "<p>Réduction : " . number_format($reduction, 2, ',', ' ') . " €</p>";
     echo "<p>Frais de livraison : " . number_format($fraisLivraison, 2, ',', ' ') . " €</p>";
     echo "<p>Prix total : <strong>" . number_format($prixTotal, 2, ',', ' ') . " €</strong></p>";
-
+    echo "<p>Commande n° " . (int)$commandeId . " enregistrée.</p>";
     echo "<hr>";
     echo "<p>Prestation le " . htmlspecialchars($datePrestation) .
          " à " . htmlspecialchars($heurePrestation) . "</p>";
