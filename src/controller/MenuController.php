@@ -21,9 +21,24 @@ class MenuController
         require __DIR__ . '/../../views/menu/index.php';
     }
 
-    // Détail d’un menu (on fera la vraie version plus tard)
+    // Détail d’un menu
     public function show(int $id): void
     {
-        echo 'Page détail menu à implémenter.';
+        if ($id <= 0) {
+            http_response_code(404);
+            echo 'Menu introuvable.';
+            return;
+        }
+
+        $menuModel = new MenuModel($this->pdo);
+        $menu = $menuModel->findById($id);
+
+        if (!$menu) {
+            http_response_code(404);
+            echo 'Menu introuvable.';
+            return;
+        }
+
+        require __DIR__ . '/../../views/menu/show.php';
     }
 }

@@ -21,4 +21,20 @@ class MenuModel
         $stmt = $this->pdo->query($sql);
         return $stmt->fetchAll();
     }
+
+    public function findById(int $id): ?array
+    {
+        $sql = 'SELECT id, titre, description, theme, personnes_min, prix_par_personne,
+                       conditions_particulieres, regime, stock
+                FROM menu
+                WHERE id = :id';
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $menu = $stmt->fetch();
+
+        return $menu ?: null;
+    }
 }
