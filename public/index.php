@@ -38,6 +38,12 @@ switch ($page) {
     $controller->form((int)($_GET['menu_id'] ?? 0));
     break;
 
+    case 'commande_traitement':
+    require_once __DIR__ . '/../src/controller/CommandeController.php';
+    $controller = new CommandeController($pdo);
+    $controller->store();
+    break;
+
     default:
         $controller = new HomeController($pdo);
         $controller->index();
