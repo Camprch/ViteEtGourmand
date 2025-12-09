@@ -71,6 +71,24 @@ switch ($page) {
     $controller->loginPost();
     break;
 
+    case 'logout':
+    require_once __DIR__ . '/../src/controller/AuthController.php';
+    $controller = new AuthController($pdo);
+    $controller->logout();
+    break;
+
+    case 'mes_commandes':
+    require_once __DIR__ . '/../src/controller/CommandeController.php';
+    $controller = new CommandeController($pdo);
+    $controller->mesCommandes();
+    break;
+
+    case 'commande_detail':
+    require_once __DIR__ . '/../src/controller/CommandeController.php';
+    $controller = new CommandeController($pdo);
+    $controller->detail((int)($_GET['id'] ?? 0));
+    break;
+
     default:
     $controller = new HomeController($pdo);
     $controller->index();

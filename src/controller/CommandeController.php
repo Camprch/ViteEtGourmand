@@ -29,7 +29,7 @@ class CommandeController
     }
 
     public function store(): void
-{
+    {
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         echo "Méthode invalide.";
         return;
@@ -112,8 +112,14 @@ class CommandeController
 
     $commandeModel = new CommandeModel($this->pdo);
 
-    // TODO: remplacer 1 par l'ID de l'utilisateur connecté quand on aura l'auth
-    $idUser = 1;
+    // On doit être connecté pour commander
+    if (!isset($_SESSION['user'])) {
+    echo "<h2>Vous devez être connecté pour passer une commande.</h2>";
+    echo '<p><a href="index.php?page=login">Se connecter</a></p>';
+    return;
+    }
+
+    $idUser = (int)$_SESSION['user']['id'];
 
     $commandeId = $commandeModel->create([
         'id_user'            => $idUser,
@@ -147,5 +153,48 @@ class CommandeController
          htmlspecialchars($codePostal) . " " . htmlspecialchars($ville) . "</p>";
 
     echo '<p><a href="index.php?page=menus">← Retour aux menus</a></p>';
-}
+    }
+
+    public function mesCommandes(): void
+    {
+    if (!isset($_SESSION['user'])) {
+        echo "<h2>Vous devez être connecté pour voir vos commandes.</h2>";
+        echo '<a href="index.php?page=login">Se connecter</a>';
+        return;
+    }
+
+    $userId = (int)$_SESSION['user']['id'];
+
+    $commandeModel = new CommandeModel($this->pdo);
+    $commandes = $commandeModel->findByUserId($userId);
+
+    require __DIR__ . '/../../views/commande/mes_commandes.php';
+    }
+
+    public function detail(int $id): void
+    {
+    if (!isset($_SESSION['user'])) {
+        echo "<h2>Vous devez être connecté pour voir cette commande.</h2>";
+        echo '<a href="index.php?page=login">Se connecter</a>';
+        return;
+    }
+
+    if ($id <= 0) {
+        echo "Commande introuvable.";
+        return;
+    }
+
+    $userId = (int)$_SESSION['user']['id'];
+
+    $commandeModel = new CommandeModel($this->pdo);
+    $commande = $commandeModel->findByIdForUser($id, $userId);
+
+    if (!$commande) {
+        echo "Commande introuvable.";
+        return;
+    }
+
+    require __DIR__ . '/../../views/commande/detail.php';
+    }
+
 }

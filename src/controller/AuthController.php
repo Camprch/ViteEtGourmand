@@ -151,4 +151,13 @@ class AuthController
         echo "<p>Bonjour " . htmlspecialchars($user['prenom']) . " !</p>";
         echo '<p><a href="index.php?page=home">Retour à l\'accueil</a></p>';
     }
-}
+
+    public function logout(): void
+    {
+    // On ne détruit pas toute la session si on veut garder d'autres choses plus tard
+    unset($_SESSION['user']);
+
+    echo "<h2>Vous êtes maintenant déconnecté.</h2>";
+    echo '<p><a href="index.php?page=home">Retour à l\'accueil</a></p>';
+    }
+}   
