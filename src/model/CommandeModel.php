@@ -96,4 +96,14 @@ class CommandeModel
     return $row ?: null;
     }
 
+    public function updateStatus(int $id, string $newStatus): bool
+    {
+    $sql = "UPDATE commande SET statut_courant = :statut WHERE id = :id";
+    $stmt = $this->pdo->prepare($sql);
+    return $stmt->execute([
+        ':statut' => $newStatus,
+        ':id'     => $id,
+    ]);
+    }
+
 }

@@ -89,6 +89,13 @@ switch ($page) {
     $controller->detail((int)($_GET['id'] ?? 0));
     break;
 
+    case 'annuler_commande':
+    require_once __DIR__ . '/../src/controller/CommandeController.php';
+    $controller = new CommandeController($pdo);
+    $controller->annulerCommande();
+    break;
+
+
     default:
     $controller = new HomeController($pdo);
     $controller->index();

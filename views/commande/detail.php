@@ -30,6 +30,13 @@ require __DIR__ . '/../partials/header.php';
 <p><strong>Statut actuel :</strong>
     <?= htmlspecialchars($commande['statut_courant']) ?></p>
 
+<?php if ($commande['statut_courant'] === 'EN_ATTENTE'): ?>
+    <form method="post" action="index.php?page=annuler_commande" onsubmit="return confirm('Voulez-vous vraiment annuler cette commande ?');">
+        <input type="hidden" name="id_commande" value="<?= (int)$commande['id'] ?>">
+        <button type="submit">Annuler la commande</button>
+    </form>
+<?php endif; ?>
+
 <p>
     <a href="index.php?page=mes_commandes">← Retour à mes commandes</a>
 </p>

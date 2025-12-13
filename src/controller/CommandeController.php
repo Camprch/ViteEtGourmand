@@ -197,4 +197,47 @@ class CommandeController
     require __DIR__ . '/../../views/commande/detail.php';
     }
 
+    public function annulerCommande(): void
+    {
+    if (!isset($_SESSION['user'])) {
+        echo "<h2>Vous devez être connecté pour annuler une commande.</h2>";
+        echo '<a href="index.php?page=login">Se connecter</a>';
+        return;
+    }
+
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        echo "Méthode invalide.";
+        return;
+    }
+
+    $commandeId = (int)($_POST['id_commande'] ?? 0);
+    $userId = (int)$_SESSION['user']['id'];
+
+    if ($commandeId <= 0) {
+        echo "Commande invalide.";
+        return;
+    }
+
+    $commandeModel = new CommandeModel($this->pdo);
+    $commande = $commandeModel->findByIdForUser($commandeId, $userId);
+
+    if (!$commande) {
+        echo "Commande introuvable.";
+        return;
+    }
+
+    if ($commande['statut_courant'] !== 'EN_ATTENTE') {
+        echo "<h2>Impossible d'annuler cette commande.</h2>";
+        echo "<p>Elle a déjà été traitée.</p>";
+        echo '<a href="index.php?page=mes_commandes">Retour</a>';
+        return;
+    }
+
+    // Mise à jour du statut
+    $commandeModel->updateStatus($commandeId, 'ANNULEE');
+
+    echo "<h2>Commande annulée 👍</h2>";
+    echo '<a href="index.php?page=mes_commandes">Retour à mes commandes</a>';
+    }
+
 }
