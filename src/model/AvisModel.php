@@ -26,4 +26,36 @@ class AvisModel
 
         return $stmt->fetchAll();
     }
+
+    /**
+     * Vérifie si un avis existe déjà pour une commande
+     */
+    public function existsForCommande(int $commandeId): bool
+    {
+        $stmt = $this->pdo->prepare(
+            "SELECT id FROM avis WHERE id_commande = :id_commande LIMIT 1"
+        );
+        $stmt->execute([
+            ':id_commande' => $commandeId
+        ]);
+
+        return (bool)$stmt->fetch();
+    }
+
+    /**
+     * Crée un avis (non validé par défaut)
+     */
+    public function create(array $data): int
+{
+    $sql = "
+        INSERT INTO avis (id_user, id_commande, id_menu, note, commentaire, date, valide)
+        VALUES (:id_user, :id_commande, :id_menu, :note, :commentaire, NOW(), 0)
+    ";
+
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->execute($data);
+
+    return (int)$this->pdo->lastInsertId();
+}
+
 }

@@ -95,6 +95,12 @@ switch ($page) {
     $controller->annulerCommande();
     break;
 
+    case 'avis_post':
+    require_once __DIR__ . '/../src/controller/AvisController.php';
+    $controller = new AvisController($pdo);
+    $controller->store();
+    break;
+
 
     default:
     $controller = new HomeController($pdo);

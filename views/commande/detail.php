@@ -37,6 +37,38 @@ require __DIR__ . '/../partials/header.php';
     </form>
 <?php endif; ?>
 
+<h3>Historique des statuts</h3>
+
+<?php if (empty($historiqueStatuts)): ?>
+    <p>Aucun historique disponible.</p>
+<?php else: ?>
+    <ul>
+        <?php foreach ($historiqueStatuts as $h): ?>
+            <li>
+                <?= htmlspecialchars($h['statut']) ?>
+                — <?= htmlspecialchars($h['date_heure']) ?>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+<?php endif; ?>
+
+<?php if ($commande['statut_courant'] === 'TERMINEE'): ?>
+    <h3>Laisser un avis</h3>
+
+    <form method="post" action="index.php?page=avis_post">
+        <input type="hidden" name="id_commande" value="<?= (int)$commande['id'] ?>">
+
+        <label>Note (1 à 5) :</label>
+        <input type="number" name="note" min="1" max="5" required>
+
+        <label>Commentaire :</label>
+        <textarea name="commentaire" required></textarea>
+
+        <br><br>
+        <button type="submit">Envoyer mon avis</button>
+    </form>
+<?php endif; ?>
+
 <p>
     <a href="index.php?page=mes_commandes">← Retour à mes commandes</a>
 </p>

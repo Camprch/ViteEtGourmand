@@ -134,7 +134,10 @@ class CommandeController
         'reduction_appliquee'=> $reduction,
         'frais_livraison'    => $fraisLivraison,
         'prix_total'         => $prixTotal,
+
     ]);
+
+    $commandeModel->addStatutHistorique($commandeId, 'EN_ATTENTE');
 
     // 6. Affichage d'un récapitulatif simple
     echo "<h2>Récapitulatif de votre commande</h2>";
@@ -188,6 +191,7 @@ class CommandeController
 
     $commandeModel = new CommandeModel($this->pdo);
     $commande = $commandeModel->findByIdForUser($id, $userId);
+    $historiqueStatuts = $commandeModel->getStatutHistorique($id);
 
     if (!$commande) {
         echo "Commande introuvable.";
@@ -235,6 +239,7 @@ class CommandeController
 
     // Mise à jour du statut
     $commandeModel->updateStatus($commandeId, 'ANNULEE');
+    $commandeModel->addStatutHistorique($commandeId, 'ANNULEE');
 
     echo "<h2>Commande annulée 👍</h2>";
     echo '<a href="index.php?page=mes_commandes">Retour à mes commandes</a>';

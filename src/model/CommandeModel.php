@@ -106,4 +106,46 @@ class CommandeModel
     ]);
     }
 
+    public function getStatutHistorique(int $commandeId): array
+    {
+    $sql = "
+        SELECT statut, date_heure
+        FROM commande_statut
+        WHERE id_commande = :id_commande
+        ORDER BY date_heure ASC
+    ";
+
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->bindValue(':id_commande', $commandeId, PDO::PARAM_INT);
+    $stmt->execute();
+
+    return $stmt->fetchAll();
+    }
+
+    public function addStatutHistorique(int $commandeId, string $statut, ?int $idEmploye = null): void
+    {
+    if ($idEmploye === null) {
+        $sql = "
+            INSERT INTO commande_statut (id_commande, statut, date_heure)
+            VALUES (:id_commande, :statut, NOW())
+        ";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            ':id_commande' => $commandeId,
+            ':statut'      => $statut,
+        ]);
+        return;
+    }
+
+    $sql = "
+        INSERT INTO commande_statut (id_commande, id_employe, statut, date_heure)
+        VALUES (:id_commande, :id_employe, :statut, NOW())
+    ";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->execute([
+        ':id_commande' => $commandeId,
+        ':id_employe'  => $idEmploye,
+        ':statut'      => $statut,
+    ]);
+    }
 }
