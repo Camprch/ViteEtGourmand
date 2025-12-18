@@ -62,6 +62,10 @@ $user = $_SESSION['user'] ?? null;
 
             <a href="index.php?page=mes_commandes">Mes commandes</a>
 
+            <?php if (in_array($user['role'], ['EMPLOYE', 'ADMIN'], true)): ?>
+                <a href="index.php?page=avis_a_valider">Avis à valider</a>
+            <?php endif; ?>
+
             <?php if ($user['role'] === 'EMPLOYE'): ?>
                 <a href="index.php?page=dashboard_employe">Espace employé</a>
             <?php endif; ?>
