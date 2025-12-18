@@ -101,6 +101,17 @@ switch ($page) {
     $controller->store();
     break;
 
+    case 'avis_a_valider':
+    require_once __DIR__ . '/../src/controller/AvisController.php';
+    $controller = new AvisController($pdo);
+    $controller->pending();
+    break;
+
+    case 'avis_valider':
+    require_once __DIR__ . '/../src/controller/AvisController.php';
+    $controller = new AvisController($pdo);
+    $controller->validate();
+    break;
 
     default:
     $controller = new HomeController($pdo);

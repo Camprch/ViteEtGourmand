@@ -74,4 +74,54 @@ class AvisController
         echo "<p>Merci ! Votre avis sera visible après validation.</p>";
         echo '<p><a href="index.php?page=commande_detail&id=' . $commandeId . '">Retour à la commande</a></p>';
     }
-}
+
+        public function pending(): void
+        {
+            if (!isset($_SESSION['user'])) {
+                echo "Accès refusé.";
+                return;
+            }
+
+            $role = strtolower($_SESSION['user']['role'] ?? '');
+            if (!in_array($role, ['employe', 'admin'], true)) {
+                echo "Accès refusé.";
+                return;
+            }
+
+            $avisModel = new AvisModel($this->pdo);
+            $avis = $avisModel->getPendingAvis();
+
+            require __DIR__ . '/../../views/avis/pending.php';
+        }
+
+        public function validate(): void
+        {
+            if (!isset($_SESSION['user'])) {
+                echo "Accès refusé.";
+                return;
+            }
+
+            $role = strtolower($_SESSION['user']['role'] ?? '');
+            if (!in_array($role, ['employe', 'admin'], true)) {
+                echo "Accès refusé.";
+                return;
+            }
+
+            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+                echo "Méthode invalide.";
+                return;
+            }
+
+            $avisId = (int)($_POST['avis_id'] ?? 0);
+            if ($avisId <= 0) {
+                echo "Avis invalide.";
+                return;
+            }
+
+            $avisModel = new AvisModel($this->pdo);
+            $avisModel->setValid($avisId);
+
+            echo "<h2>Avis validé ✅</h2>";
+            echo '<p><a href="index.php?page=avis_a_valider">Retour</a></p>';
+        }
+        }

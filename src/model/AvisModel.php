@@ -6,15 +6,15 @@ class AvisModel
     private PDO $pdo;
 
     public function __construct(PDO $pdo)
-    {
+{
         $this->pdo = $pdo;
-    }
+}
 
     /**
      * Retourne les avis validés (les plus récents d'abord)
      */
     public function getValidAvis(): array
-    {
+{
         $stmt = $this->pdo->query("
             SELECT a.note, a.commentaire, a.date, u.prenom
             FROM avis AS a
@@ -58,4 +58,25 @@ class AvisModel
     return (int)$this->pdo->lastInsertId();
 }
 
+    public function getPendingAvis(): array
+{
+    $sql = "
+        SELECT a.id, a.note, a.commentaire, a.date,
+               u.prenom, u.nom,
+               m.titre AS menu_titre
+        FROM avis a
+        LEFT JOIN user u ON u.id = a.id_user
+        LEFT JOIN menu m ON m.id = a.id_menu
+        WHERE CAST(a.valide AS UNSIGNED) = 0
+        ORDER BY a.date DESC
+    ";
+
+    return $this->pdo->query($sql)->fetchAll();
+}
+
+    public function setValid(int $avisId): void
+    {
+        $stmt = $this->pdo->prepare("UPDATE avis SET valide = 1 WHERE id = :id");
+        $stmt->execute([':id' => $avisId]);
+    }
 }
