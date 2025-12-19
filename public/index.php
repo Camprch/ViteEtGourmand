@@ -143,6 +143,18 @@ switch ($page) {
     $controller->filterAjax();
     break;
 
+    case 'contact':
+    require_once __DIR__ . '/../src/controller/ContactController.php';
+    $controller = new ContactController($pdo);
+    $controller->showForm();
+    break;
+
+    case 'contact_post':
+    require_once __DIR__ . '/../src/controller/ContactController.php';
+    $controller = new ContactController($pdo);
+    $controller->submit();
+    break;
+
 
     default:
     $controller = new HomeController($pdo);
