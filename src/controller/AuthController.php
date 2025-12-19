@@ -152,6 +152,113 @@ class AuthController
         echo '<p><a href="index.php?page=home">Retour à l\'accueil</a></p>';
     }
 
+    public function showForgotPasswordForm(): void
+    {
+        require __DIR__ . '/../../views/auth/forgot_password.php';
+    }
+
+    public function forgotPasswordPost(): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            echo "Méthode invalide.";
+            return;
+        }
+
+        $email = trim($_POST['email'] ?? '');
+        if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            echo "<p>Email invalide.</p>";
+            echo '<p><a href="javascript:history.back()">Retour</a></p>';
+            return;
+        }
+
+        $userModel = new UserModel($this->pdo);
+        $user = $userModel->findByEmail($email);
+
+        // Réponse neutre (anti-enumération) : on ne dit jamais si l'email existe
+        if ($user) {
+            $token = bin2hex(random_bytes(32));
+
+            $userModel->createPasswordResetToken((int)$user['id'], $token);
+
+            // Lien de reset (en vrai il faut l’URL publique en prod)
+            $link = 'index.php?page=reset_password&token=' . urlencode($token);
+
+            // En dev : on affiche le lien (et plus tard on remplacera par un vrai mail)
+            echo "<h2>Demande prise en compte</h2>";
+            echo "<p>Si un compte existe pour cet email, un lien de réinitialisation a été envoyé.</p>";
+            echo "<p><strong>Lien (DEV) :</strong> <a href=\"" . htmlspecialchars($link) . "\">Réinitialiser le mot de passe</a></p>";
+            return;
+        }
+
+        echo "<h2>Demande prise en compte</h2>";
+        echo "<p>Si un compte existe pour cet email, un lien de réinitialisation a été envoyé.</p>";
+    }
+
+    public function showResetPasswordForm(): void
+    {
+        $token = trim($_GET['token'] ?? '');
+        if ($token === '') {
+            http_response_code(400);
+            echo "Token manquant.";
+            return;
+        }
+
+        require __DIR__ . '/../../views/auth/reset_password.php';
+    }
+
+    public function resetPasswordPost(): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            echo "Méthode invalide.";
+            return;
+        }
+
+        $token = trim($_POST['token'] ?? '');
+        $password = $_POST['password'] ?? '';
+        $confirm = $_POST['password_confirm'] ?? '';
+
+        if ($token === '') {
+            echo "<p>Token manquant.</p>";
+            return;
+        }
+
+        $errors = [];
+        if ($password === '' || $confirm === '') {
+            $errors[] = "Le mot de passe et sa confirmation sont obligatoires.";
+        } elseif ($password !== $confirm) {
+            $errors[] = "Les mots de passe ne correspondent pas.";
+        } else {
+            $regex = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W).{10,}$/';
+            if (!preg_match($regex, $password)) {
+                $errors[] = "Le mot de passe doit faire au moins 10 caractères et contenir une majuscule, une minuscule, un chiffre et un caractère spécial.";
+            }
+        }
+
+        if (!empty($errors)) {
+            echo "<h2>Erreur :</h2><ul>";
+            foreach ($errors as $e) echo "<li>" . htmlspecialchars($e) . "</li>";
+            echo "</ul>";
+            echo '<p><a href="javascript:history.back()">Retour</a></p>';
+            return;
+        }
+
+        $userModel = new UserModel($this->pdo);
+
+        $resetRow = $userModel->findValidPasswordResetToken($token);
+        if (!$resetRow) {
+            echo "<p>Lien invalide ou expiré.</p>";
+            return;
+        }
+
+        $hash = password_hash($password, PASSWORD_DEFAULT);
+        $userModel->updatePassword((int)$resetRow['id_user'], $hash);
+        $userModel->markPasswordResetTokenUsed((int)$resetRow['id'], date('Y-m-d H:i:s'));
+
+        echo "<h2>Mot de passe mis à jour ✅</h2>";
+        echo '<p><a href="index.php?page=login">Se connecter</a></p>';
+    }
+
+
     public function logout(): void
     {
     // On ne détruit pas toute la session si on veut garder d'autres choses plus tard

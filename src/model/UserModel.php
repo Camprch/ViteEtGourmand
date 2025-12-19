@@ -32,4 +32,56 @@ class UserModel
 
         return (int)$this->pdo->lastInsertId();
     }
+
+    public function createPasswordResetToken(int $userId, string $token): void
+    {
+        // Optionnel : invalider les anciens tokens non utilisés de cet utilisateur
+        $sql = "UPDATE password_reset_token
+                SET used = 1
+                WHERE id_user = :id_user AND used = 0";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':id_user' => $userId]);
+
+        $sql = "INSERT INTO password_reset_token (id_user, token, expires_at, used)
+                VALUES (:id_user, :token, DATE_ADD(NOW(), INTERVAL 1 HOUR), 0)";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            ':id_user' => $userId,
+            ':token' => $token,
+        ]);
+
+            }
+
+            public function findValidPasswordResetToken(string $token): ?array
+            {
+                $sql = "SELECT id, id_user, token, expires_at, used
+                FROM password_reset_token
+                WHERE token = :token
+                AND used = 0
+                AND expires_at >= NOW()
+                LIMIT 1";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':token' => $token]);
+        $row = $stmt->fetch();
+        return $row ?: null;
+    }
+
+    public function markPasswordResetTokenUsed(int $tokenId, string $usedAt): void
+    {
+        // Si ta table n'a pas de used_at, on ignore $usedAt et on met juste used=1
+        $sql = "UPDATE password_reset_token SET used = 1 WHERE id = :id";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':id' => $tokenId]);
+    }
+
+    public function updatePassword(int $userId, string $passwordHash): void
+    {
+        $sql = "UPDATE user SET password = :password WHERE id = :id";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            ':password' => $passwordHash,
+            ':id' => $userId
+        ]);
+    }
+
 }

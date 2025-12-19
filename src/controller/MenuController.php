@@ -41,4 +41,29 @@ class MenuController
 
         require __DIR__ . '/../../views/menu/show.php';
     }
+
+    // Filtrage AJAX des menus (sans layout)
+    public function filterAjax(): void
+    {
+        // Sécurité minimale : requête GET uniquement
+        if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+            http_response_code(405);
+            exit;
+        }
+
+        // Récupération des filtres (simples pour commencer)
+        $filters = [
+            'theme' => $_GET['theme'] ?? null,
+            'regime' => $_GET['regime'] ?? null,
+            'prix_max' => isset($_GET['prix_max']) ? (float)$_GET['prix_max'] : null,
+            'personnes_min' => isset($_GET['personnes_min']) ? (int)$_GET['personnes_min'] : null,
+        ];
+
+        $menuModel = new MenuModel($this->pdo);
+        $menus = $menuModel->findFiltered($filters);
+
+        // Vue partielle (HTML uniquement, pas de header/footer)
+        require __DIR__ . '/../../views/menu/_list_partial.php';
+    }
+
 }

@@ -6,22 +6,58 @@ require __DIR__ . '/../partials/header.php';
 
 <h2>Nos menus</h2>
 
-<?php if (empty($menus)): ?>
-    <p>Aucun menu disponible pour le moment.</p>
-<?php else: ?>
-    <ul>
-        <?php foreach ($menus as $menu): ?>
-            <li>
-                <h3><?= htmlspecialchars($menu['titre']) ?></h3>
-                <p><?= nl2br(htmlspecialchars($menu['description'])) ?></p>
-                <p>
-                    Minimum <?= (int)$menu['personnes_min'] ?> personnes – 
-                    <?= number_format((float)$menu['prix_par_personne'], 2, ',', ' ') ?> € / personne
-                </p>
-                <a href="index.php?page=menu&id=<?= (int)$menu['id'] ?>">Voir le détail</a>
-            </li>
-        <?php endforeach; ?>
-    </ul>
-<?php endif; ?>
+<form id="menu-filters">
+    <label>
+        Thème :
+        <input type="text" name="theme">
+    </label>
+
+    <label>
+        Régime :
+        <input type="text" name="regime">
+    </label>
+
+    <label>
+        Prix max :
+        <input type="number" name="prix_max" step="0.01">
+    </label>
+
+    <label>
+        Personnes minimum :
+        <input type="number" name="personnes_min">
+    </label>
+
+    <button type="submit">Filtrer</button>
+</form>
+
+<hr>
+
+<div id="menus-container">
+    <?php
+    // Affichage initial (sans filtres)
+    require __DIR__ . '/_list_partial.php';
+    ?>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('menu-filters');
+    const container = document.getElementById('menus-container');
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const params = new URLSearchParams(new FormData(form));
+
+        const response = await fetch('index.php?page=menus_filter&' + params.toString(), {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+
+        container.innerHTML = await response.text();
+    });
+});
+</script>
 
 <?php require __DIR__ . '/../partials/footer.php'; ?>
