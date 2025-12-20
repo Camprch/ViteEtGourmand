@@ -1,4 +1,4 @@
-### 🍲 Vite Gourmand
+# 🍲 Vite Gourmand
 
 Vite Gourmand est une application web de gestion de commandes pour un service traiteur.
 
