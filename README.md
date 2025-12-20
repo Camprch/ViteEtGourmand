@@ -49,7 +49,7 @@ Vite Gourmand est une application web de gestion de commandes pour un service tr
 cd dev/vite-gourmand
 php -S localhost:8000 -t public
 
-- SQL :
+- SQL : http://localhost/vite-gourmand/public/adminer.php
 UPDATE user
 SET role = 'ADMIN' or 'USER' or 'EMPLOYE'
 WHERE email = 'email@exemple.com';
