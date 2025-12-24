@@ -11,6 +11,11 @@ error_reporting(E_ALL);
 // Connexion BDD
 require_once __DIR__ . '/../src/config/db.php';
 
+// Chargement global des horaires (footer)
+require_once __DIR__ . '/../src/model/HoraireModel.php';
+$horaireModel = new HoraireModel($pdo);
+$horaires = $horaireModel->findAllOrdered();
+
 // Controllers
 require_once __DIR__ . '/../src/controller/HomeController.php';
 
@@ -155,6 +160,25 @@ switch ($page) {
     $controller->submit();
     break;
 
+    case 'mentions_legales':
+    require __DIR__ . '/../views/legal/mentions_legales.php';
+    break;
+
+    case 'cgv':
+    require __DIR__ . '/../views/legal/cgv.php';
+    break;
+
+    case 'dashboard_employe':
+    require_once __DIR__ . '/../src/controller/EmployeController.php';
+    $controller = new EmployeController($pdo);
+    $controller->dashboard();
+    break;
+
+    case 'dashboard_admin':
+    require_once __DIR__ . '/../src/controller/AdminController.php';
+    $controller = new AdminController($pdo);
+    $controller->dashboard();
+    break;
 
     default:
     $controller = new HomeController($pdo);

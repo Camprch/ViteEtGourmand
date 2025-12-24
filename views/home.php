@@ -4,8 +4,6 @@ $pageTitle = 'Accueil - Vite & Gourmand';
 require __DIR__ . '/partials/header.php';
 ?>
 
-<p>Environnement OK. PHP tourne, PDO est configuré, on est prêts à développer.</p>
-
 <section>
     <h2>Présentation de l'entreprise</h2>
     <p>
