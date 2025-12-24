@@ -8,8 +8,9 @@ require __DIR__ . '/../partials/header.php';
 <ul>
     <li><a href="index.php?page=employe_commandes">Gérer les commandes (statuts, annulations)</a></li>
     <li><a href="index.php?page=avis_a_valider">Modérer les avis</a></li>
+    <li><a href="index.php?page=employe_menu_create">Ajouter un menu</a></li>
 </ul>
 
-<p><a href="index.php?page=home">Retour accueil</a></p>
+<p><a href="index.php?page=home">Retour dashboard</a></p>
 
 <?php require __DIR__ . '/../partials/footer.php'; ?>

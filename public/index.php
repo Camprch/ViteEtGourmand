@@ -221,6 +221,18 @@ switch ($page) {
     $controller = new AdminStatsController($pdo);
     $controller->index();
 
+    case 'employe_menu_create':
+    require_once __DIR__ . '/../src/controller/EmployeMenuController.php';
+    $controller = new EmployeMenuController($pdo);
+    $controller->createForm();
+    break;
+
+    case 'employe_menu_store':
+    require_once __DIR__ . '/../src/controller/EmployeMenuController.php';
+    $controller = new EmployeMenuController($pdo);
+    $controller->store();
+    break;
+
     default:
     $controller = new HomeController($pdo);
     $controller->index();

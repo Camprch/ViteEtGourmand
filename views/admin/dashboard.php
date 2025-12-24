@@ -10,11 +10,9 @@ require __DIR__ . '/../partials/header.php';
     <li><a href="index.php?page=avis_a_valider">Modérer les avis</a></li>
     <li><a href="index.php?page=admin_employes">Gérer les employés</a></li>
     <li><a href="index.php?page=admin_stats">Statistiques (MongoDB + graphique)</a></li>
+    <li><a href="index.php?page=employe_menu_create">Ajouter un menu</a></li>
 </ul>
 
-<p><a href="index.php?page=home">Retour accueil</a></p>
+<p><a href="index.php?page=home">Retour dashboard</a></p>
 
 <?php require __DIR__ . '/../partials/footer.php'; ?>
-
-<p><em>La gestion des menus est effectuée via l’interface d’administration de la base de données.
-Les menus sont ensuite affichés dynamiquement sur le site.</em></p>

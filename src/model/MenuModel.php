@@ -84,4 +84,31 @@ class MenuModel
 
         return $menu ?: null;
     }
+
+    public function create(array $data): int
+    {
+        $sql = "
+            INSERT INTO menu (
+                titre, description, theme, prix_par_personne, personnes_min,
+                conditions_particulieres, regime, stock, created_at
+            ) VALUES (
+                :titre, :description, :theme, :prix_par_personne, :personnes_min,
+                :conditions_particulieres, :regime, :stock, NOW()
+            )
+        ";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            ':titre' => $data['titre'],
+            ':description' => $data['description'],
+            ':theme' => $data['theme'],
+            ':prix_par_personne' => $data['prix_par_personne'],
+            ':personnes_min' => $data['personnes_min'],
+            ':conditions_particulieres' => $data['conditions_particulieres'],
+            ':regime' => $data['regime'],
+            ':stock' => $data['stock'],
+        ]);
+
+        return (int)$this->pdo->lastInsertId();
+    }
 }

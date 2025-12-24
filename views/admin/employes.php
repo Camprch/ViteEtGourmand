@@ -61,6 +61,6 @@ require __DIR__ . '/../partials/header.php';
     </table>
 <?php endif; ?>
 
-<p><a href="index.php?page=dashboard_admin">Retour dashboard admin</a></p>
+<p><a href="index.php?page=dashboard_admin">Retour dashboard</a></p>
 
 <?php require __DIR__ . '/../partials/footer.php'; ?>

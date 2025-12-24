@@ -27,29 +27,49 @@ Vite Gourmand est une application web de gestion de commandes pour un service tr
 
 ## 💾 Installation
 
-1. Cloner le dépôt
-2. Importer le fichier `sql/schema.sql` dans votre base de données
-3. Configurer l'accès à la base de données dans `src/config/db.php`
-4. Placer le projet dans un serveur web local
-5. Accéder à l'application via `http://localhost/vite-gourmand/public`
+1. Clôner le repo
+
+```bash
+git clone https://github.com/Camprch/vite-gourmand
+```
+2. Configurer l'accès à la base de données dans vite-gourmand/.env  
+(modifie les valeurs de DB_DSN, DB_USER, DB_PASS selon ta config)
+
+3. Importer le schema dans la db.
+
+```bash
+mysql -u vg_user -p vite_gourmand < sql/schema.sql
+```
+
+---
+
+## 🚀 Lancement
+
+```bash
+cd vite-gourmand
+php -S localhost:8000 -t public
+```
+Accéder à l'application via `http://localhost/vite-gourmand/public`
 
 ---
 
 ## ⚙️ Prérequis
 
 - PHP 8.x ou supérieur
-- Serveur web (Apache, Nginx...)
 - MySQL/MariaDB
 
 ---
 
-## ⌨ CMD
+## 🔐 Identifiants de test
 
-- Bash :
-cd dev/vite-gourmand
-php -S localhost:8000 -t public
+- Compte ADMIN :  
+Email : admin@vite-gourmand.local   
+Mot de passe : Admin12345!   
 
-- SQL : http://localhost/vite-gourmand/public/adminer.php
-UPDATE user
-SET role = 'ADMIN' or 'USER' or 'EMPLOYE'
-WHERE email = 'email@exemple.com';
+- Compte EMPLOYÉ :  
+Email : employe@vite-gourmand.local   
+Mot de passe : Employe123!  
+
+- Compte Utilisateur :  
+Email : utilisateur@vite-gourmand.local  
+Mot de passe : Utilisateur123!  
