@@ -180,6 +180,47 @@ switch ($page) {
     $controller->dashboard();
     break;
 
+    case 'employe_commande_update_statut':
+    require_once __DIR__ . '/../src/controller/EmployeCommandeController.php';
+    $controller = new EmployeCommandeController($pdo);
+    $controller->updateStatut();
+    break;
+
+    case 'employe_commande_annuler':
+    require_once __DIR__ . '/../src/controller/EmployeCommandeController.php';
+    $controller = new EmployeCommandeController($pdo);
+    $controller->annuler();
+    break;
+
+    case 'employe_commandes':
+    require_once __DIR__ . '/../src/controller/EmployeCommandeController.php';
+    $controller = new EmployeCommandeController($pdo);
+    $controller->index();
+    break;
+
+    case 'admin_employes':
+    require_once __DIR__ . '/../src/controller/AdminEmployeController.php';
+    $controller = new AdminEmployeController($pdo);
+    $controller->index();
+    break;
+
+    case 'admin_employe_create':
+    require_once __DIR__ . '/../src/controller/AdminEmployeController.php';
+    $controller = new AdminEmployeController($pdo);
+    $controller->create();
+    break;
+
+    case 'admin_employe_toggle':
+    require_once __DIR__ . '/../src/controller/AdminEmployeController.php';
+    $controller = new AdminEmployeController($pdo);
+    $controller->toggleActif();
+    break;
+
+    case 'admin_stats':
+    require_once __DIR__ . '/../src/controller/AdminStatsController.php';
+    $controller = new AdminStatsController($pdo);
+    $controller->index();
+
     default:
     $controller = new HomeController($pdo);
     $controller->index();

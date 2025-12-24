@@ -84,4 +84,24 @@ class UserModel
         ]);
     }
 
+    public function findAllEmployes(): array
+{
+    $sql = "SELECT id, nom, prenom, email, role, actif, created_at
+            FROM user
+            WHERE role = 'EMPLOYE'
+            ORDER BY created_at DESC";
+    $stmt = $this->pdo->query($sql);
+    return $stmt->fetchAll();
+}
+
+public function setActif(int $userId, int $actif): void
+{
+    $sql = "UPDATE user SET actif = :actif WHERE id = :id AND role = 'EMPLOYE'";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->execute([
+        ':actif' => $actif,
+        ':id' => $userId,
+    ]);
+}
+
 }

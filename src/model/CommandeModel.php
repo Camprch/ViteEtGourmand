@@ -124,28 +124,60 @@ class CommandeModel
 
     public function addStatutHistorique(int $commandeId, string $statut, ?int $idEmploye = null): void
     {
-    if ($idEmploye === null) {
         $sql = "
-            INSERT INTO commande_statut (id_commande, statut, date_heure)
-            VALUES (:id_commande, :statut, NOW())
+            INSERT INTO commande_statut (id_commande, id_employe, statut, date_heure)
+            VALUES (:id_commande, :id_employe, :statut, NOW())
         ";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([
             ':id_commande' => $commandeId,
+            ':id_employe'  => $idEmploye,
             ':statut'      => $statut,
         ]);
-        return;
     }
 
-    $sql = "
-        INSERT INTO commande_statut (id_commande, id_employe, statut, date_heure)
-        VALUES (:id_commande, :id_employe, :statut, NOW())
-    ";
-    $stmt = $this->pdo->prepare($sql);
-    $stmt->execute([
-        ':id_commande' => $commandeId,
-        ':id_employe'  => $idEmploye,
-        ':statut'      => $statut,
-    ]);
+    public function findAllForEmploye(?string $statut = null): array
+    {
+        $sql = "
+            SELECT c.id, c.date_commande, c.date_prestation, c.heure_prestation,
+                c.ville, c.nb_personnes, c.prix_total, c.statut_courant,
+                u.nom, u.prenom, u.email,
+                m.titre AS menu_titre
+            FROM commande c
+            INNER JOIN user u ON c.id_user = u.id
+            INNER JOIN menu m ON c.id_menu = m.id
+            WHERE 1=1
+        ";
+
+        $params = [];
+
+        if ($statut) {
+            $sql .= " AND c.statut_courant = :statut";
+            $params[':statut'] = $statut;
+        }
+
+        $sql .= " ORDER BY c.date_commande DESC";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll();
+    }
+
+    public function findByIdForEmploye(int $commandeId): ?array
+    {
+        $sql = "
+            SELECT c.*, 
+                u.nom, u.prenom, u.email, u.telephone,
+                m.titre AS menu_titre
+            FROM commande c
+            INNER JOIN user u ON c.id_user = u.id
+            INNER JOIN menu m ON c.id_menu = m.id
+            WHERE c.id = :id
+        ";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':id' => $commandeId]);
+        $row = $stmt->fetch();
+        return $row ?: null;
     }
 }
