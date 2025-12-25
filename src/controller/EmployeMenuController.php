@@ -38,11 +38,15 @@ class EmployeMenuController
             exit;
         }
 
+        require_once __DIR__ . '/../security/Csrf.php';
+        Csrf::check();
+
         $titre = trim($_POST['titre'] ?? '');
         $description = trim($_POST['description'] ?? '');
         $theme = trim($_POST['theme'] ?? '');
         $regime = trim($_POST['regime'] ?? '');
-        $prix = (float)($_POST['prix_par_personne'] ?? 0);
+        $prixRaw = str_replace(',', '.', (string)($_POST['prix_par_personne'] ?? '0'));
+        $prix = (float)$prixRaw;
         $personnesMin = (int)($_POST['personnes_min'] ?? 0);
         $conditions = trim($_POST['conditions_particulieres'] ?? '');
         $stock = isset($_POST['stock']) && $_POST['stock'] !== '' ? (int)$_POST['stock'] : null;
@@ -52,6 +56,7 @@ class EmployeMenuController
         if ($description === '') $errors[] = "Description obligatoire.";
         if ($prix <= 0) $errors[] = "Prix par personne invalide.";
         if ($personnesMin <= 0) $errors[] = "Nombre minimum de personnes invalide.";
+        if ($stock !== null && $stock < 0) $errors[] = "Stock invalide.";
 
         if (!empty($errors)) {
             echo "<h2>Erreur :</h2><ul>";

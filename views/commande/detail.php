@@ -6,9 +6,9 @@ require __DIR__ . '/../partials/header.php';
 <h2>Commande n°<?= (int)$commande['id'] ?></h2>
 
 <p><strong>Menu :</strong> <?= htmlspecialchars($commande['menu_titre']) ?></p>
-<p><strong>Date commande :</strong> <?= htmlspecialchars($commande['date_commande']) ?></p>
-<p><strong>Date prestation :</strong> <?= htmlspecialchars($commande['date_prestation']) ?>
-    à <?= htmlspecialchars($commande['heure_prestation']) ?></p>
+<p><strong>Date commande :</strong> <?= fr_datetime($commande['date_commande'] ?? null) ?></p>
+<p><strong>Date prestation :</strong> <?= fr_date($commande['date_prestation'] ?? null) ?>
+    à <?= htmlspecialchars((string)($commande['heure_prestation'] ?? '')) ?></p>
 
 <p><strong>Adresse :</strong>
     <?= htmlspecialchars($commande['adresse_prestation']) ?>,
@@ -33,6 +33,7 @@ require __DIR__ . '/../partials/header.php';
 <?php if ($commande['statut_courant'] === 'EN_ATTENTE'): ?>
     <form method="post" action="index.php?page=annuler_commande" onsubmit="return confirm('Voulez-vous vraiment annuler cette commande ?');">
         <input type="hidden" name="id_commande" value="<?= (int)$commande['id'] ?>">
+        <input type="hidden" name="_csrf" value="<?= htmlspecialchars(Csrf::token()) ?>">
         <button type="submit">Annuler la commande</button>
     </form>
 <?php endif; ?>
@@ -46,7 +47,10 @@ require __DIR__ . '/../partials/header.php';
         <?php foreach ($historiqueStatuts as $h): ?>
             <li>
                 <?= htmlspecialchars($h['statut']) ?>
-                — <?= htmlspecialchars($h['date_heure']) ?>
+                — <?= fr_datetime($h['date_heure'] ?? null) ?>
+                <?php if (!empty($h['commentaire'])): ?>
+                — <?= htmlspecialchars($h['commentaire']) ?>
+                <?php endif; ?>
             </li>
         <?php endforeach; ?>
     </ul>
@@ -57,6 +61,8 @@ require __DIR__ . '/../partials/header.php';
 
     <form method="post" action="index.php?page=avis_post">
         <input type="hidden" name="id_commande" value="<?= (int)$commande['id'] ?>">
+        <input type="hidden" name="id_menu" value="<?= (int)$commande['id_menu'] ?>">
+        <input type="hidden" name="_csrf" value="<?= htmlspecialchars(Csrf::token()) ?>">
 
         <label>Note (1 à 5) :</label>
         <input type="number" name="note" min="1" max="5" required>

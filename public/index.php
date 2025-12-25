@@ -1,6 +1,17 @@
 <?php
 declare(strict_types=1);
 
+ini_set('session.use_strict_mode', '1');
+
+session_set_cookie_params([
+    'lifetime' => 0,
+    'path' => '/',
+    'domain' => '',
+    'secure' => (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'),
+    'httponly' => true,
+    'samesite' => 'Lax',
+]);
+
 // Activer les sessions
 session_start();
 
@@ -10,6 +21,10 @@ error_reporting(E_ALL);
 
 // Connexion BDD
 require_once __DIR__ . '/../src/config/db.php';
+
+// Sécurité et Authentification
+require_once __DIR__ . '/../src/security/Csrf.php';
+require_once __DIR__ . '/../src/security/Auth.php';
 
 // Chargement global des horaires (footer)
 require_once __DIR__ . '/../src/model/HoraireModel.php';
@@ -21,6 +36,14 @@ require_once __DIR__ . '/../src/controller/HomeController.php';
 
 // Router ultra simple basé sur ?page=
 $page = $_GET['page'] ?? 'home';
+
+// Guard simple basé sur le nom de page (évite les oublis dans les controllers)
+if ($page === 'dashboard_admin' || str_starts_with($page, 'admin_')) {
+    Auth::requireRole(['ADMIN']);
+}
+if ($page === 'dashboard_employe' || str_starts_with($page, 'employe_')) {
+    Auth::requireRole(['EMPLOYE', 'ADMIN']);
+}
 
 switch ($page) {
     case 'home':
@@ -142,6 +165,12 @@ switch ($page) {
     $controller->validate();
     break;
 
+    case 'avis_refuser':
+    require_once __DIR__ . '/../src/controller/AvisController.php';
+    $controller = new AvisController($pdo);
+    $controller->refuse();
+    break;
+
     case 'menus_filter':
     require_once __DIR__ . '/../src/controller/MenuController.php';
     $controller = new MenuController($pdo);
@@ -196,6 +225,18 @@ switch ($page) {
     require_once __DIR__ . '/../src/controller/EmployeCommandeController.php';
     $controller = new EmployeCommandeController($pdo);
     $controller->index();
+    break;
+
+    case 'employe_horaires':
+    require_once __DIR__ . '/../src/controller/EmployeHoraireController.php';
+    $controller = new EmployeHoraireController($pdo);
+    $controller->index();
+    break;
+
+    case 'employe_horaires_update':
+    require_once __DIR__ . '/../src/controller/EmployeHoraireController.php';
+    $controller = new EmployeHoraireController($pdo);
+    $controller->update();
     break;
 
     case 'admin_employes':

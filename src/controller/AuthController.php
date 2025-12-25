@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../model/UserModel.php';
+require_once __DIR__ . '/../security/Csrf.php';
 
 class AuthController
 {
@@ -23,6 +24,8 @@ class AuthController
             echo "Méthode invalide.";
             return;
         }
+
+        Csrf::check();
 
         $nom      = trim($_POST['nom'] ?? '');
         $prenom   = trim($_POST['prenom'] ?? '');
@@ -101,6 +104,8 @@ class AuthController
             return;
         }
 
+        Csrf::check();
+
         $email    = trim($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
 
@@ -138,7 +143,8 @@ class AuthController
             return;
         }
 
-        // OK : on stocke une version simplifiée en session
+        session_regenerate_id(true);
+
         $_SESSION['user'] = [
             'id'    => (int)$user['id'],
             'nom'   => $user['nom'],
@@ -147,9 +153,10 @@ class AuthController
             'role'  => $user['role'],
         ];
 
-        echo "<h2>Connexion réussie 👍</h2>";
-        echo "<p>Bonjour " . htmlspecialchars($user['prenom']) . " !</p>";
-        echo '<p><a href="index.php?page=home">Retour à l\'accueil</a></p>';
+        $redirect = $_SESSION['redirect_after_login'] ?? 'index.php?page=home';
+        unset($_SESSION['redirect_after_login']);
+        header('Location: ' . $redirect);
+        exit;
     }
 
     public function showForgotPasswordForm(): void
@@ -163,6 +170,8 @@ class AuthController
             echo "Méthode invalide.";
             return;
         }
+
+        Csrf::check();
 
         $email = trim($_POST['email'] ?? '');
         if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -213,6 +222,8 @@ class AuthController
             return;
         }
 
+        Csrf::check();
+
         $token = trim($_POST['token'] ?? '');
         $password = $_POST['password'] ?? '';
         $confirm = $_POST['password_confirm'] ?? '';
@@ -261,8 +272,13 @@ class AuthController
 
     public function logout(): void
     {
-    // On ne détruit pas toute la session si on veut garder d'autres choses plus tard
-    unset($_SESSION['user']);
+    
+    $_SESSION = [];
+    if (ini_get("session.use_cookies")) {
+        $params = session_get_cookie_params();
+        setcookie(session_name(), '', time() - 42000, $params['path'], $params['domain'], $params['secure'], $params['httponly']);
+    }
+    session_destroy();
 
     echo "<h2>Vous êtes maintenant déconnecté.</h2>";
     echo '<p><a href="index.php?page=home">Retour à l\'accueil</a></p>';

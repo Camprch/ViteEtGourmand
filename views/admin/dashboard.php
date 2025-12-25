@@ -11,8 +11,9 @@ require __DIR__ . '/../partials/header.php';
     <li><a href="index.php?page=admin_employes">Gérer les employés</a></li>
     <li><a href="index.php?page=admin_stats">Statistiques (MongoDB + graphique)</a></li>
     <li><a href="index.php?page=employe_menu_create">Ajouter un menu</a></li>
+    <li><a href="index.php?page=employe_horaires">Gérer les horaires</a></li>
 </ul>
 
-<p><a href="index.php?page=home">Retour dashboard</a></p>
+<p><a href="index.php?page=home">Retour accueil</a></p>
 
 <?php require __DIR__ . '/../partials/footer.php'; ?>

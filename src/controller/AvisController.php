@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../model/AvisModel.php';
 require_once __DIR__ . '/../model/CommandeModel.php';
+require_once __DIR__ . '/../security/Auth.php';
+require_once __DIR__ . '/../security/Csrf.php';
 
 class AvisController
 {
@@ -15,18 +17,15 @@ class AvisController
 
     public function store(): void
     {
-        if (!isset($_SESSION['user'])) {
-            echo "<h2>Vous devez être connecté pour laisser un avis.</h2>";
-            echo '<a href="index.php?page=login">Se connecter</a>';
-            return;
-        }
-
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             echo "Méthode invalide.";
             return;
         }
 
-        $userId     = (int)$_SESSION['user']['id'];
+        Csrf::check();
+        Auth::requireLogin();
+
+        $userId = (int)Auth::user()['id'];
         $commandeId = (int)($_POST['id_commande'] ?? 0);
         $note       = (int)($_POST['note'] ?? 0);
         $commentaire = trim($_POST['commentaire'] ?? '');
@@ -75,53 +74,62 @@ class AvisController
         echo '<p><a href="index.php?page=commande_detail&id=' . $commandeId . '">Retour à la commande</a></p>';
     }
 
-        public function pending(): void
-        {
-            if (!isset($_SESSION['user'])) {
-                echo "Accès refusé.";
-                return;
-            }
+    public function pending(): void
+    {
+        Auth::requireRole(['EMPLOYE', 'ADMIN']);
 
-            $role = strtolower($_SESSION['user']['role'] ?? '');
-            if (!in_array($role, ['employe', 'admin'], true)) {
-                echo "Accès refusé.";
-                return;
-            }
+        $avisModel = new AvisModel($this->pdo);
+        $avis = $avisModel->getPendingAvis();
 
-            $avisModel = new AvisModel($this->pdo);
-            $avis = $avisModel->getPendingAvis();
+        require __DIR__ . '/../../views/avis/pending.php';
+    }
 
-            require __DIR__ . '/../../views/avis/pending.php';
+    public function validate(): void
+    {
+        Auth::requireRole(['EMPLOYE', 'ADMIN']);
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            echo "Méthode invalide.";
+            return;
         }
 
-        public function validate(): void
-        {
-            if (!isset($_SESSION['user'])) {
-                echo "Accès refusé.";
-                return;
-            }
+        Csrf::check();
 
-            $role = strtolower($_SESSION['user']['role'] ?? '');
-            if (!in_array($role, ['employe', 'admin'], true)) {
-                echo "Accès refusé.";
-                return;
-            }
-
-            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-                echo "Méthode invalide.";
-                return;
-            }
-
-            $avisId = (int)($_POST['avis_id'] ?? 0);
-            if ($avisId <= 0) {
-                echo "Avis invalide.";
-                return;
-            }
-
-            $avisModel = new AvisModel($this->pdo);
-            $avisModel->setValid($avisId);
-
-            echo "<h2>Avis validé ✅</h2>";
-            echo '<p><a href="index.php?page=avis_a_valider">Retour</a></p>';
+        $avisId = (int)($_POST['avis_id'] ?? 0);
+        if ($avisId <= 0) {
+            echo "Avis invalide.";
+            return;
         }
+
+        $avisModel = new AvisModel($this->pdo);
+        $avisModel->setValid($avisId);
+
+        echo "<h2>Avis validé ✅</h2>";
+        echo '<p><a href="index.php?page=avis_a_valider">Retour</a></p>';
+    }
+
+    public function refuse(): void
+    {
+        Auth::requireRole(['EMPLOYE', 'ADMIN']);
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            echo "Méthode invalide.";
+            return;
         }
+
+        Csrf::check();
+
+        $avisId = (int)($_POST['avis_id'] ?? 0);
+        if ($avisId <= 0) {
+            echo "Avis invalide.";
+            return;
+        }
+
+        $avisModel = new AvisModel($this->pdo);
+        $avisModel->delete($avisId);
+
+        echo "<h2>Avis refusé ✅</h2>";
+        echo '<p><a href="index.php?page=avis_a_valider">Retour</a></p>';
+    }
+
+}        

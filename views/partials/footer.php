@@ -14,9 +14,9 @@ $horaires = $GLOBALS['horaires'] ?? [];
                             <?php if ((int)$h['ferme'] === 1): ?>
                                 Fermé
                             <?php else: ?>
-                                <?= substr((string)$h['heure_ouverture'], 0, 5) ?>
+                                <?= htmlspecialchars(substr((string)$h['heure_ouverture'], 0, 5)) ?>
                                 –
-                                <?= substr((string)$h['heure_fermeture'], 0, 5) ?>
+                                <?= htmlspecialchars(substr((string)$h['heure_fermeture'], 0, 5)) ?>
                             <?php endif; ?>
                         </li>
                     <?php endforeach; ?>

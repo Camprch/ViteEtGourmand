@@ -6,6 +6,10 @@ require __DIR__ . '/../partials/header.php';
 <h2>Ajouter un menu</h2>
 
 <form method="post" action="index.php?page=employe_menu_store">
+
+    <?php require_once __DIR__ . '/../../src/security/Csrf.php'; ?>
+    <input type="hidden" name="_csrf" value="<?= htmlspecialchars(Csrf::token()) ?>">
+    
     <label for="titre">Titre</label>
     <input id="titre" name="titre" type="text" required>
 
@@ -19,16 +23,16 @@ require __DIR__ . '/../partials/header.php';
     <input id="regime" name="regime" type="text">
 
     <label for="prix_par_personne">Prix / personne (€)</label>
-    <input id="prix_par_personne" name="prix_par_personne" type="number" step="0.01" required>
+    <input id="prix_par_personne" name="prix_par_personne" type="number" step="0.01" min="0.1" required>
 
     <label for="personnes_min">Personnes minimum</label>
-    <input id="personnes_min" name="personnes_min" type="number" required>
+    <input id="personnes_min" name="personnes_min" type="number" min="1" required>
 
     <label for="conditions_particulieres">Conditions particulières (optionnel)</label>
     <textarea id="conditions_particulieres" name="conditions_particulieres" rows="3"></textarea>
 
     <label for="stock">Stock (optionnel)</label>
-    <input id="stock" name="stock" type="number">
+    <input id="stock" name="stock" type="number" min="0">
 
     <button type="submit">Créer</button>
 </form>

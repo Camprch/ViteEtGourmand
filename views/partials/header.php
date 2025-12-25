@@ -1,10 +1,4 @@
 <?php
-// views/partials/header.php
-
-// Démarre la session si pas déjà démarrée
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
 
 // Raccourci pratique pour savoir si on est connecté
 $user = $_SESSION['user'] ?? null;
@@ -62,7 +56,7 @@ $user = $_SESSION['user'] ?? null;
 
             <a href="index.php?page=mes_commandes">Mes commandes</a>
 
-            <?php if ($user['role'] === 'EMPLOYE'): ?>
+            <?php if (in_array($user['role'], ['EMPLOYE','ADMIN'], true)): ?>
                 <a href="index.php?page=dashboard_employe">Espace employé</a>
             <?php endif; ?>
 

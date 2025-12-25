@@ -10,6 +10,10 @@ declare(strict_types=1);
     <?php foreach ($menus as $menu): ?>
         <article class="menu-card">
             <h3><?= htmlspecialchars((string)$menu['titre']) ?></h3>
+            
+            <?php if (array_key_exists('stock', $menu) && $menu['stock'] !== null && (int)$menu['stock'] <= 0): ?>
+                <p><strong>Indisponible (rupture)</strong></p>
+            <?php endif; ?>
 
             <p><?= nl2br(htmlspecialchars((string)$menu['description'])) ?></p>
 

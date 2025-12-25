@@ -66,7 +66,10 @@ require __DIR__ . '/../partials/header.php';
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        const data = <?= json_encode($stats, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
+        const data = <?= json_encode(
+            $stats,
+            JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
+        ) ?>;
 
         const labels = data.map(x => x.menu_titre);
         const nb = data.map(x => x.nb_commandes);

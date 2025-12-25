@@ -2,6 +2,8 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../model/CommandeModel.php';
+require_once __DIR__ . '/../security/Auth.php';
+require_once __DIR__ . '/../security/Csrf.php';
 
 class EmployeCommandeController
 {
@@ -12,21 +14,15 @@ class EmployeCommandeController
         $this->pdo = $pdo;
     }
 
-    private function requireEmployeOrAdmin(): array
+    private function currentUser(): array
     {
-        $user = $_SESSION['user'] ?? null;
-
-        if (!$user || !in_array($user['role'], ['EMPLOYE', 'ADMIN'], true)) {
-            http_response_code(403);
-            echo "<h2>Accès refusé</h2>";
-            exit;
-        }
-        return $user;
+        Auth::requireRole(['EMPLOYE', 'ADMIN']);
+        return Auth::user();
     }
 
     public function index(): void
     {
-        $this->requireEmployeOrAdmin();
+        $this->currentUser();
 
         $statut = isset($_GET['statut']) && $_GET['statut'] !== '' ? (string)$_GET['statut'] : null;
 
@@ -38,12 +34,14 @@ class EmployeCommandeController
 
     public function updateStatut(): void
 {
-    $user = $this->requireEmployeOrAdmin();
+    $user = $this->currentUser();
 
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         http_response_code(405);
         exit;
     }
+
+    Csrf::check();
 
     $commandeId = (int)($_POST['id'] ?? 0);
     $newStatut = (string)($_POST['statut'] ?? '');
@@ -56,6 +54,7 @@ class EmployeCommandeController
         'LIVREE',
         'ATTENTE_RETOUR_MATERIEL',
         'TERMINEE',
+        'ANNULEE',
     ];
 
     if ($commandeId <= 0 || !in_array($newStatut, $allowed, true)) {
@@ -76,12 +75,14 @@ class EmployeCommandeController
 
     public function annuler(): void
     {
-    $user = $this->requireEmployeOrAdmin();
+    $user = $this->currentUser();
 
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         http_response_code(405);
         exit;
     }
+
+    Csrf::check();
 
     $commandeId = (int)($_POST['id'] ?? 0);
     $modeContact = trim($_POST['mode_contact'] ?? '');
@@ -92,9 +93,7 @@ class EmployeCommandeController
         return;
     }
 
-    // On utilise un statut existant (pas de statut ANNULÉ dans ton ENUM)
-    // => on trace dans commentaire du statut historique
-    $newStatut = 'TERMINEE';
+    $newStatut = 'ANNULEE';
 
     $commandeModel = new CommandeModel($this->pdo);
 

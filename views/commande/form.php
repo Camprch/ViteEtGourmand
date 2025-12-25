@@ -11,9 +11,12 @@ require __DIR__ . '/../partials/header.php';
     <?= number_format((float)$menu['prix_par_personne'], 2, ',', ' ') ?> €
 </p>
 
+<?php require_once __DIR__ . '/../../src/security/Csrf.php'; ?>
+
 <form method="post" action="index.php?page=commande_traitement">
 
     <input type="hidden" name="id_menu" value="<?= (int)$menu['id'] ?>">
+    <input type="hidden" name="_csrf" value="<?= htmlspecialchars(Csrf::token()) ?>">
 
     <label>Nombre de personnes :</label>
     <input type="number" name="nb_personnes" min="<?= (int)$menu['personnes_min'] ?>" required>

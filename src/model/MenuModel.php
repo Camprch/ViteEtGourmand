@@ -15,8 +15,9 @@ class MenuModel
      */
     public function findAll(): array
     {
-        $sql = 'SELECT id, titre, description, personnes_min, prix_par_personne 
+        $sql = 'SELECT id, titre, description, personnes_min, prix_par_personne, stock
                 FROM menu
+                WHERE stock IS NULL OR stock > 0
                 ORDER BY titre ASC';
         $stmt = $this->pdo->query($sql);
         return $stmt->fetchAll();
@@ -27,9 +28,9 @@ class MenuModel
      */
     public function findFiltered(array $filters): array
     {
-        $sql = 'SELECT id, titre, description, personnes_min, prix_par_personne
+        $sql = 'SELECT id, titre, description, personnes_min, prix_par_personne, stock
                 FROM menu
-                WHERE 1=1';
+                WHERE 1=1 AND (stock IS NULL OR stock > 0)';
 
         $params = [];
 
@@ -43,14 +44,14 @@ class MenuModel
             $params[':regime'] = $filters['regime'];
         }
 
-        if (!empty($filters['prix_max'])) {
+        if (isset($filters['prix_max']) && $filters['prix_max'] !== null && $filters['prix_max'] !== '') {
             $sql .= ' AND prix_par_personne <= :prix_max';
-            $params[':prix_max'] = $filters['prix_max'];
+            $params[':prix_max'] = (float)$filters['prix_max'];
         }
 
-        if (!empty($filters['personnes_min'])) {
+        if (isset($filters['personnes_min']) && $filters['personnes_min'] !== null && $filters['personnes_min'] !== '') {
             $sql .= ' AND personnes_min <= :personnes_min';
-            $params[':personnes_min'] = $filters['personnes_min'];
+            $params[':personnes_min'] = (int)$filters['personnes_min'];
         }
 
         $sql .= ' ORDER BY titre ASC';
@@ -58,7 +59,13 @@ class MenuModel
         $stmt = $this->pdo->prepare($sql);
 
         foreach ($params as $key => $value) {
-            $stmt->bindValue($key, $value);
+            if (in_array($key, [':prix_max'], true)) {
+                $stmt->bindValue($key, (float)$value, PDO::PARAM_STR); // PDO n'a pas float
+            } elseif (in_array($key, [':personnes_min'], true)) {
+                $stmt->bindValue($key, (int)$value, PDO::PARAM_INT);
+            } else {
+                $stmt->bindValue($key, (string)$value, PDO::PARAM_STR);
+            }
         }
 
         $stmt->execute();

@@ -11,6 +11,7 @@ $statuts = [
     'LIVREE' => 'Livrée',
     'ATTENTE_RETOUR_MATERIEL' => 'Attente retour matériel',
     'TERMINEE' => 'Terminée',
+    'ANNULEE' => 'Annulée',
 ];
 $current = $_GET['statut'] ?? '';
 ?>
@@ -58,6 +59,7 @@ $current = $_GET['statut'] ?? '';
                 <td><?= number_format((float)$c['prix_total'], 2, ',', ' ') ?> €</td>
                 <td>
                     <form method="post" action="index.php?page=employe_commande_update_statut" style="margin-bottom:5px;">
+                        <input type="hidden" name="_csrf" value="<?= htmlspecialchars(Csrf::token()) ?>">
                         <input type="hidden" name="id" value="<?= (int)$c['id'] ?>">
                         <select name="statut">
                             <?php foreach ($statuts as $value => $label): ?>
@@ -73,6 +75,7 @@ $current = $_GET['statut'] ?? '';
                     </form>
 
                     <form method="post" action="index.php?page=employe_commande_annuler">
+                        <input type="hidden" name="_csrf" value="<?= htmlspecialchars(Csrf::token()) ?>">
                         <input type="hidden" name="id" value="<?= (int)$c['id'] ?>">
                         <input type="text" name="mode_contact" placeholder="Téléphone / Email" required>
                         <input type="text" name="motif" placeholder="Motif annulation" required>

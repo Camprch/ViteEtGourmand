@@ -67,7 +67,7 @@ class AvisModel
         FROM avis a
         LEFT JOIN user u ON u.id = a.id_user
         LEFT JOIN menu m ON m.id = a.id_menu
-        WHERE CAST(a.valide AS UNSIGNED) = 0
+        WHERE a.valide = 0
         ORDER BY a.date DESC
     ";
 
@@ -77,6 +77,12 @@ class AvisModel
     public function setValid(int $avisId): void
     {
         $stmt = $this->pdo->prepare("UPDATE avis SET valide = 1 WHERE id = :id");
+        $stmt->execute([':id' => $avisId]);
+    }
+
+    public function delete(int $avisId): void
+    {
+        $stmt = $this->pdo->prepare("DELETE FROM avis WHERE id = :id");
         $stmt->execute([':id' => $avisId]);
     }
 }

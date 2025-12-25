@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/../security/Auth.php';
+
 class AdminController
 {
     private PDO $pdo;
@@ -10,21 +12,9 @@ class AdminController
         $this->pdo = $pdo;
     }
 
-    private function requireAdmin(): void
-    {
-        $user = $_SESSION['user'] ?? null;
-
-        if (!$user || $user['role'] !== 'ADMIN') {
-            http_response_code(403);
-            echo "<h2>Accès refusé</h2>";
-            echo '<p><a href="index.php?page=login">Se connecter</a></p>';
-            exit;
-        }
-    }
-
     public function dashboard(): void
     {
-        $this->requireAdmin();
+        Auth::requireRole(['ADMIN']);
         require __DIR__ . '/../../views/admin/dashboard.php';
     }
 }

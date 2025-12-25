@@ -8,6 +8,7 @@ $token = htmlspecialchars(trim($_GET['token'] ?? ''), ENT_QUOTES);
 <h2>Réinitialiser le mot de passe</h2>
 
 <form method="post" action="index.php?page=reset_password_post">
+    <input type="hidden" name="_csrf" value="<?= htmlspecialchars(Csrf::token()) ?>">
     <input type="hidden" name="token" value="<?= $token ?>">
 
     <label for="password">Nouveau mot de passe</label>

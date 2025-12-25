@@ -9,6 +9,7 @@ require __DIR__ . '/../partials/header.php';
     <li><a href="index.php?page=employe_commandes">Gérer les commandes (statuts, annulations)</a></li>
     <li><a href="index.php?page=avis_a_valider">Modérer les avis</a></li>
     <li><a href="index.php?page=employe_menu_create">Ajouter un menu</a></li>
+    <li><a href="index.php?page=employe_horaires">Gérer les horaires</a></li>
 </ul>
 
 <p><a href="index.php?page=home">Retour dashboard</a></p>

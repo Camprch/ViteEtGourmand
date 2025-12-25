@@ -17,8 +17,15 @@ require __DIR__ . '/../partials/header.php';
             <small><?= htmlspecialchars($a['date']) ?></small>
 
             <form method="post" action="index.php?page=avis_valider">
+                <input type="hidden" name="_csrf" value="<?= htmlspecialchars(Csrf::token()) ?>">
                 <input type="hidden" name="avis_id" value="<?= (int)$a['id'] ?>">
                 <button type="submit">Valider</button>
+            </form>
+            
+            <form method="post" action="index.php?page=avis_refuser">
+                <input type="hidden" name="_csrf" value="<?= htmlspecialchars(Csrf::token()) ?>">
+                <input type="hidden" name="avis_id" value="<?= (int)$a['id'] ?>">
+                <button type="submit">Refuser</button>
             </form>
         </div>
     <?php endforeach; ?>

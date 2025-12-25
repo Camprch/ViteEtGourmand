@@ -20,6 +20,14 @@ require __DIR__ . '/partials/header.php';
     </p>
 </section>
 
+<?php
+function fr_datetime(?string $s): string {
+    if (!$s) return '';
+    $ts = strtotime($s);
+    return $ts ? date('d/m/Y H:i', $ts) : htmlspecialchars($s);
+}
+?>
+
 <section>
     <h2>Avis de nos clients</h2>
 
@@ -29,10 +37,10 @@ require __DIR__ . '/partials/header.php';
         <ul>
             <?php foreach ($avis as $a): ?>
                 <li>
-                    <strong><?= htmlspecialchars($a['prenom']) ?></strong> —
+                    <strong><?= htmlspecialchars((string)($a['prenom'] ?? '')) ?></strong> —
                     Note : <?= (int)$a['note'] ?>/5<br>
                     <?= nl2br(htmlspecialchars($a['commentaire'])) ?><br>
-                    <small><?= htmlspecialchars($a['date']) ?></small>
+                    <small><?= fr_datetime($a['date'] ?? null) ?></small>
                 </li>
             <?php endforeach; ?>
         </ul>
@@ -47,8 +55,8 @@ require __DIR__ . '/partials/header.php';
     <ul>
         <?php foreach ($menus as $menu): ?>
             <li>
-                <strong><?= htmlspecialchars($menu['titre']) ?></strong><br>
-                <?= nl2br(htmlspecialchars($menu['description'])) ?><br>
+                <strong><?= htmlspecialchars((string)($menu['titre'] ?? '')) ?></strong>
+                <?= nl2br(htmlspecialchars((string)($menu['description'] ?? ''))) ?>
                 Min. <?= (int)$menu['personnes_min'] ?> personnes –
                 <?= number_format((float)$menu['prix_par_personne'], 2, ',', ' ') ?> € / personne
             </li>

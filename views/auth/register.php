@@ -6,6 +6,8 @@ require __DIR__ . '/../partials/header.php';
 <h2>Créer un compte</h2>
 
 <form method="post" action="index.php?page=register_post">
+    <input type="hidden" name="_csrf" value="<?= htmlspecialchars(Csrf::token()) ?>">
+
     <label>Nom :</label>
     <input type="text" name="nom" required>
 

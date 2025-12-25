@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/../security/Auth.php';
+require_once __DIR__ . '/../security/Csrf.php';
 require_once __DIR__ . '/../model/UserModel.php';
 
 class AdminEmployeController
@@ -12,20 +14,9 @@ class AdminEmployeController
         $this->pdo = $pdo;
     }
 
-    private function requireAdmin(): void
-    {
-        $user = $_SESSION['user'] ?? null;
-
-        if (!$user || $user['role'] !== 'ADMIN') {
-            http_response_code(403);
-            echo "<h2>Accès refusé</h2>";
-            exit;
-        }
-    }
-
     public function index(): void
     {
-        $this->requireAdmin();
+        Auth::requireRole(['ADMIN']);
 
         $userModel = new UserModel($this->pdo);
         $employes = $userModel->findAllEmployes();
@@ -35,12 +26,14 @@ class AdminEmployeController
 
     public function create(): void
     {
-        $this->requireAdmin();
+        Auth::requireRole(['ADMIN']);
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             http_response_code(405);
             exit;
         }
+
+        Csrf::check();
 
         $email = trim($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
@@ -54,6 +47,11 @@ class AdminEmployeController
         }
         if ($password === '') {
             $errors[] = "Mot de passe obligatoire.";
+        }
+
+        $regex = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W).{10,}$/';
+        if ($password !== '' && !preg_match($regex, $password)) {
+            $errors[] = "Mot de passe trop faible (10+ caractères, maj, min, chiffre, spécial).";
         }
 
         $userModel = new UserModel($this->pdo);
@@ -91,12 +89,14 @@ class AdminEmployeController
 
     public function toggleActif(): void
     {
-        $this->requireAdmin();
+        Auth::requireRole(['ADMIN']);
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             http_response_code(405);
             exit;
         }
+
+        Csrf::check();
 
         $id = (int)($_POST['id'] ?? 0);
         $actif = (int)($_POST['actif'] ?? 0);

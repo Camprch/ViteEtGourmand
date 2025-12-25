@@ -19,12 +19,12 @@ require __DIR__ . '/../partials/header.php';
 
     <label>
         Prix max :
-        <input type="number" name="prix_max" step="0.01">
+        <input type="number" name="prix_max" step="0.01" min="0">
     </label>
 
     <label>
         Personnes minimum :
-        <input type="number" name="personnes_min">
+        <input type="number" name="personnes_min" min="1">
     </label>
 
     <button type="submit">Filtrer</button>
@@ -54,6 +54,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 'X-Requested-With': 'XMLHttpRequest'
             }
         });
+
+        if (!response.ok) {
+            container.innerHTML = "<p>Erreur lors du chargement des menus.</p>";
+            return;
+        }
 
         container.innerHTML = await response.text();
     });

@@ -109,7 +109,7 @@ class CommandeModel
     public function getStatutHistorique(int $commandeId): array
     {
     $sql = "
-        SELECT statut, date_heure
+        SELECT statut, date_heure, commentaire, id_employe
         FROM commande_statut
         WHERE id_commande = :id_commande
         ORDER BY date_heure ASC
@@ -128,6 +128,11 @@ class CommandeModel
         ?int $idEmploye = null,
         ?string $commentaire = null
     ): void {
+        
+        if ($idEmploye !== null && $idEmploye <= 0) {
+            $idEmploye = null;
+        }
+
         $sql = "
             INSERT INTO commande_statut (id_commande, id_employe, statut, commentaire, date_heure)
             VALUES (:id_commande, :id_employe, :statut, :commentaire, NOW())

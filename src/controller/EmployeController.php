@@ -14,10 +14,14 @@ class EmployeController
     {
         $user = $_SESSION['user'] ?? null;
 
-        if (!$user || !in_array($user['role'], ['EMPLOYE', 'ADMIN'], true)) {
+        if (!$user) {
+            header('Location: index.php?page=login');
+            exit;
+        }
+
+        if (!in_array($user['role'], ['EMPLOYE', 'ADMIN'], true)) {
             http_response_code(403);
             echo "<h2>Accès refusé</h2>";
-            echo '<p><a href="index.php?page=login">Se connecter</a></p>';
             exit;
         }
     }

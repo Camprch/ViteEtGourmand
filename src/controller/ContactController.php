@@ -24,6 +24,9 @@ class ContactController
             return;
         }
 
+        require_once __DIR__ . '/../security/Csrf.php';
+        Csrf::check();
+
         $nom = trim($_POST['nom'] ?? '');
         $email = trim($_POST['email'] ?? '');
         $titre = trim($_POST['titre'] ?? '');
@@ -34,7 +37,13 @@ class ContactController
         if ($nom === '') $errors[] = "Le nom est obligatoire.";
         if ($titre === '') $errors[] = "Le titre est obligatoire.";
         if ($message === '') $errors[] = "Le message est obligatoire.";
-        if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = "Email invalide.";
+        if (
+            $email === ''
+            || !filter_var($email, FILTER_VALIDATE_EMAIL)
+            || preg_match("/[\r\n]/", $email)
+        ) {
+            $errors[] = "Email invalide.";
+        }
 
         if (!empty($errors)) {
             echo "<h2>Erreur :</h2><ul>";
@@ -65,7 +74,8 @@ class ContactController
               . "Titre: {$titre}\n\n"
               . "Message:\n{$message}\n";
 
-        $headers = "From: {$email}\r\nReply-To: {$email}\r\n";
+        $from = 'no-reply@vite-gourmand.local';
+        $headers = "From: {$from}\r\nReply-To: {$email}\r\n";
 
         $sent = false;
         if (function_exists('mail')) {

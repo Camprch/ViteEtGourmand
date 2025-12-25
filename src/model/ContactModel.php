@@ -17,12 +17,12 @@ class ContactModel
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([
-            ':nom' => $data['nom'],
-            ':email' => $data['email'],
-            ':titre' => $data['titre'],
-            ':message' => $data['message'],
-            ':date' => $data['date'],
-            ':traite' => $data['traite'],
+            ':nom' => (string)$data['nom'],
+            ':email' => (string)$data['email'],
+            ':titre' => (string)$data['titre'],
+            ':message' => (string)$data['message'],
+            ':date' => (string)$data['date'],
+            ':traite' => (int)$data['traite'],
         ]);
 
         return (int)$this->pdo->lastInsertId();

@@ -53,9 +53,11 @@ class MenuController
 
         // Récupération des filtres (simples pour commencer)
         $filters = [
-            'theme' => $_GET['theme'] ?? null,
-            'regime' => $_GET['regime'] ?? null,
-            'prix_max' => isset($_GET['prix_max']) ? (float)$_GET['prix_max'] : null,
+            'theme' => isset($_GET['theme']) ? trim((string)$_GET['theme']) : null,
+            'regime' => isset($_GET['regime']) ? trim((string)$_GET['regime']) : null,
+            'prix_max' => isset($_GET['prix_max']) && $_GET['prix_max'] !== ''
+                ? (float)str_replace(',', '.', (string)$_GET['prix_max'])
+                : null,
             'personnes_min' => isset($_GET['personnes_min']) ? (int)$_GET['personnes_min'] : null,
         ];
 

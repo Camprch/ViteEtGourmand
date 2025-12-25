@@ -23,5 +23,7 @@ final class Csrf
             echo "<h2>Action refusée (CSRF)</h2>";
             exit;
         }
+
+        unset($_SESSION['_csrf']);
     }
 }

@@ -28,7 +28,17 @@ class UserModel
         ";
 
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute($data);
+        $stmt->execute([
+            ':nom'        => (string)$data['nom'],
+            ':prenom'     => (string)$data['prenom'],
+            ':email'      => (string)$data['email'],
+            ':password'   => (string)$data['password'],
+            ':telephone'  => (string)($data['telephone'] ?? ''),
+            ':adresse'    => (string)($data['adresse'] ?? ''),
+            ':role'       => (string)$data['role'],
+            ':actif'      => (int)$data['actif'],
+            ':created_at' => (string)$data['created_at'],
+        ]);
 
         return (int)$this->pdo->lastInsertId();
     }

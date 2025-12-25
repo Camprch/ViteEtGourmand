@@ -6,6 +6,7 @@ require __DIR__ . '/../partials/header.php';
 <h2>Connexion</h2>
 
 <form method="post" action="index.php?page=login_post">
+    <input type="hidden" name="_csrf" value="<?= htmlspecialchars(Csrf::token()) ?>">
     <label for="email">Email :</label>
     <input id="email" type="email" name="email" required>
 

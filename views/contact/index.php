@@ -6,6 +6,9 @@ require __DIR__ . '/../partials/header.php';
 <h2>Contact</h2>
 
 <form method="post" action="index.php?page=contact_post">
+    <?php require_once __DIR__ . '/../../src/security/Csrf.php'; ?>
+    <input type="hidden" name="_csrf" value="<?= htmlspecialchars(Csrf::token()) ?>">
+    
     <label for="nom">Nom</label>
     <input id="nom" name="nom" type="text" required>
 

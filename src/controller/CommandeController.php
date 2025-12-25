@@ -16,6 +16,8 @@ class CommandeController
     // Affichage du formulaire de commande
     public function form(int $menuId): void
     {
+        Auth::requireLogin();
+
         $menuModel = new MenuModel($this->pdo);
         $menu = $menuModel->findById($menuId);
 
@@ -35,6 +37,9 @@ class CommandeController
         return;
     }
 
+    Csrf::check();
+    Auth::requireLogin();
+
     // 1. Récupération des données
     $idMenu          = (int)($_POST['id_menu'] ?? 0);
     $nbPersonnes     = (int)($_POST['nb_personnes'] ?? 0);
@@ -43,7 +48,8 @@ class CommandeController
     $adresse         = trim($_POST['adresse_prestation'] ?? '');
     $ville           = trim($_POST['ville'] ?? '');
     $codePostal      = trim($_POST['code_postal'] ?? '');
-    $distanceKm      = (float)($_POST['distance_km'] ?? 0);
+    $distanceRaw = str_replace(',', '.', (string)($_POST['distance_km'] ?? '0'));
+    $distanceKm = (float)$distanceRaw;
 
     $erreurs = [];
 
@@ -63,6 +69,10 @@ class CommandeController
 
     if (!$menu) {
         $erreurs[] = "Menu introuvable.";
+    }
+
+    if ($menu && $menu['stock'] !== null && (int)$menu['stock'] <= 0) {
+        $erreurs[] = "Ce menu est indisponible (rupture de stock).";
     }
 
     // 4. Vérifier le minimum de personnes (règle métier)
@@ -112,14 +122,8 @@ class CommandeController
 
     $commandeModel = new CommandeModel($this->pdo);
 
-    // On doit être connecté pour commander
-    if (!isset($_SESSION['user'])) {
-    echo "<h2>Vous devez être connecté pour passer une commande.</h2>";
-    echo '<p><a href="index.php?page=login">Se connecter</a></p>';
-    return;
-    }
-
-    $idUser = (int)$_SESSION['user']['id'];
+    $user = Auth::user();
+    $idUser = (int)$user['id'];
 
     $commandeId = $commandeModel->create([
         'id_user'            => $idUser,
@@ -139,34 +143,13 @@ class CommandeController
 
     $commandeModel->addStatutHistorique($commandeId, 'EN_ATTENTE');
 
-    // 6. Affichage d'un récapitulatif simple
-    echo "<h2>Récapitulatif de votre commande</h2>";
-    echo "<p>Menu : <strong>" . htmlspecialchars($menu['titre']) . "</strong></p>";
-    echo "<p>Nombre de personnes : " . (int)$nbPersonnes . "</p>";
-    echo "<p>Prix par personne : " . number_format($prixParPersonne, 2, ',', ' ') . " €</p>";
-    echo "<p>Total menus : <strong>" . number_format($prixMenuTotal, 2, ',', ' ') . " €</strong></p>";
-    echo "<p>Réduction : " . number_format($reduction, 2, ',', ' ') . " €</p>";
-    echo "<p>Frais de livraison : " . number_format($fraisLivraison, 2, ',', ' ') . " €</p>";
-    echo "<p>Prix total : <strong>" . number_format($prixTotal, 2, ',', ' ') . " €</strong></p>";
-    echo "<p>Commande n° " . (int)$commandeId . " enregistrée.</p>";
-    echo "<hr>";
-    echo "<p>Prestation le " . htmlspecialchars($datePrestation) .
-         " à " . htmlspecialchars($heurePrestation) . "</p>";
-    echo "<p>Adresse : " . htmlspecialchars($adresse) . ", " .
-         htmlspecialchars($codePostal) . " " . htmlspecialchars($ville) . "</p>";
-
-    echo '<p><a href="index.php?page=menus">← Retour aux menus</a></p>';
+    require __DIR__ . '/../../views/commande/recap.php';
     }
 
     public function mesCommandes(): void
     {
-    if (!isset($_SESSION['user'])) {
-        echo "<h2>Vous devez être connecté pour voir vos commandes.</h2>";
-        echo '<a href="index.php?page=login">Se connecter</a>';
-        return;
-    }
-
-    $userId = (int)$_SESSION['user']['id'];
+    Auth::requireLogin();
+    $userId = (int)Auth::user()['id'];
 
     $commandeModel = new CommandeModel($this->pdo);
     $commandes = $commandeModel->findByUserId($userId);
@@ -176,18 +159,14 @@ class CommandeController
 
     public function detail(int $id): void
     {
-    if (!isset($_SESSION['user'])) {
-        echo "<h2>Vous devez être connecté pour voir cette commande.</h2>";
-        echo '<a href="index.php?page=login">Se connecter</a>';
-        return;
-    }
+    Auth::requireLogin();
 
     if ($id <= 0) {
         echo "Commande introuvable.";
         return;
     }
 
-    $userId = (int)$_SESSION['user']['id'];
+    $userId = (int)Auth::user()['id'];
 
     $commandeModel = new CommandeModel($this->pdo);
     $commande = $commandeModel->findByIdForUser($id, $userId);
@@ -203,19 +182,17 @@ class CommandeController
 
     public function annulerCommande(): void
     {
-    if (!isset($_SESSION['user'])) {
-        echo "<h2>Vous devez être connecté pour annuler une commande.</h2>";
-        echo '<a href="index.php?page=login">Se connecter</a>';
-        return;
-    }
 
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         echo "Méthode invalide.";
         return;
     }
 
+    Csrf::check();
+    Auth::requireLogin();
+
     $commandeId = (int)($_POST['id_commande'] ?? 0);
-    $userId = (int)$_SESSION['user']['id'];
+    $userId = (int)Auth::user()['id'];
 
     if ($commandeId <= 0) {
         echo "Commande invalide.";
@@ -239,7 +216,7 @@ class CommandeController
 
     // Mise à jour du statut
     $commandeModel->updateStatus($commandeId, 'ANNULEE');
-    $commandeModel->addStatutHistorique($commandeId, 'ANNULEE');
+    $commandeModel->addStatutHistorique($commandeId, 'ANNULEE', null, 'Annulation par le client');
 
     echo "<h2>Commande annulée 👍</h2>";
     echo '<a href="index.php?page=mes_commandes">Retour à mes commandes</a>';

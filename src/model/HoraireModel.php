@@ -24,4 +24,22 @@ class HoraireModel
         $stmt = $this->pdo->query($sql);
         return $stmt->fetchAll();
     }
+
+    public function updateJour(string $jour, ?string $ouverture, ?string $fermeture, int $ferme): void
+    {
+        $sql = "
+            UPDATE horaire
+            SET heure_ouverture = :ouverture,
+                heure_fermeture = :fermeture,
+                ferme = :ferme
+            WHERE jour = :jour
+        ";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            ':ouverture' => $ouverture,
+            ':fermeture' => $fermeture,
+            ':ferme' => $ferme,
+            ':jour' => $jour,
+        ]);
+    }
 }

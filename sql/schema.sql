@@ -118,7 +118,8 @@ CREATE TABLE IF NOT EXISTS commande (
         'EN_LIVRAISON',
         'LIVREE',
         'ATTENTE_RETOUR_MATERIEL',
-        'TERMINEE'
+        'TERMINEE',
+        'ANNULEE'
     ) NOT NULL DEFAULT 'EN_ATTENTE',
     CONSTRAINT fk_commande_user
         FOREIGN KEY (id_user) REFERENCES `user`(id)
@@ -199,7 +200,7 @@ CREATE TABLE IF NOT EXISTS plat_allergene (
 CREATE TABLE IF NOT EXISTS commande_statut (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     id_commande INT UNSIGNED NOT NULL,
-    id_employe INT UNSIGNED NOT NULL,
+    id_employe INT UNSIGNED NULL,
     statut ENUM(
         'EN_ATTENTE',
         'ACCEPTEE',
@@ -207,7 +208,8 @@ CREATE TABLE IF NOT EXISTS commande_statut (
         'EN_LIVRAISON',
         'LIVREE',
         'ATTENTE_RETOUR_MATERIEL',
-        'TERMINEE'
+        'TERMINEE',
+        'ANNULEE'
     ) NOT NULL,
     date_heure DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     commentaire TEXT DEFAULT NULL,

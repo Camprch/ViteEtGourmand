@@ -92,8 +92,15 @@ class AdminStatsController
             $stmt->execute($params);
             $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+            // MongoDB sert de base NoSQL pour stocker et relire les statistiques affichées dans le back-office.
+            // Les agrégations sont calculées côté SQL (source de vérité),
+            // puis persistées en NoSQL pour consultation (cache/statistiques).
+            // Cela permet de démontrer l'utilisation d'une base non relationnelle conformément aux exigences.
+
             // 2) Upsert dans MongoDB (NoSQL)
             $bulk = new \MongoDB\Driver\BulkWrite();
+
+            $periodKey = ($dateFrom ?: 'null') . '_' . ($dateTo ?: 'null');
 
             foreach ($rows as $r) {
                 $doc = [
@@ -104,11 +111,13 @@ class AdminStatsController
                     'from' => $dateFrom ?: null,
                     'to' => $dateTo ?: null,
                     'updated_at' => (new DateTimeImmutable())->format(DateTimeInterface::ATOM),
+                    'period_key' => $periodKey,
                 ];
 
                 // clé unique par menu + période
                 $filter = [
                     'menu_id' => $doc['menu_id'],
+                    'period_key' => $periodKey,
                     'from' => $doc['from'],
                     'to' => $doc['to'],
                 ];
@@ -120,8 +129,8 @@ class AdminStatsController
 
             // 3) Lecture depuis MongoDB (preuve NoSQL)
             $query = new \MongoDB\Driver\Query(
-                ['from' => $dateFrom ?: null, 'to' => $dateTo ?: null],
-                ['sort' => ['nb_commandes' => -1, 'menu_titre' => 1]]
+            ['period_key' => $periodKey],
+            ['sort' => ['nb_commandes' => -1, 'menu_titre' => 1]]
             );
             $cursor = $manager->executeQuery($mongoDb . '.' . $collection, $query);
 
