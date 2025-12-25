@@ -1,6 +1,4 @@
-#############################
 # OS / files parasites
-#############################
 .DS_Store
 Thumbs.db
 Desktop.ini
@@ -10,30 +8,26 @@ Desktop.ini
 # Windows Mark-of-the-Web (Zone.Identifier)
 *:Zone.Identifier
 *Zone.Identifier*
+*/Zone.Identifier
+*.Zone.Identifier
+*/.Zone.Identifier
+*.Zone.Identifier
 
-#############################
 # Environnement / secrets
-#############################
 .env
 .env.*
 !.env.example
 
-#############################
 # Dépendances
-#############################
 /vendor/
 /node_modules/
 
-#############################
 # IDE / éditeurs
-#############################
 .vscode/
 .idea/
 *.code-workspace
 
-#############################
 # Logs / cache / temp
-#############################
 *.log
 /tmp/
 /cache/
@@ -41,28 +35,20 @@ Desktop.ini
 /var/log/
 /storage/logs/
 
-#############################
 # Uploads / fichiers utilisateurs
 # (si tu veux versionner un dossier vide, ajoute un .gitkeep dedans)
-#############################
 /public/uploads/
 
-#############################
 # Tests / coverage
-#############################
 /coverage/
 .phpunit.result.cache
 
-#############################
 # Build / bundlers (si tu as Vite/webpack plus tard)
-#############################
 /dist/
 /build/
 .vite/
 
-#############################
 # Adminer / outils locaux
 # (je te conseille de ne PAS versionner adminer.php)
-#############################
 /public/adminer.php
 adminer.php
