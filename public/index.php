@@ -220,6 +220,7 @@ switch ($page) {
     require_once __DIR__ . '/../src/controller/AdminStatsController.php';
     $controller = new AdminStatsController($pdo);
     $controller->index();
+    break;
 
     case 'employe_menu_create':
     require_once __DIR__ . '/../src/controller/EmployeMenuController.php';

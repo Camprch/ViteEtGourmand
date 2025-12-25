@@ -122,17 +122,23 @@ class CommandeModel
     return $stmt->fetchAll();
     }
 
-    public function addStatutHistorique(int $commandeId, string $statut, ?int $idEmploye = null): void
-    {
+    public function addStatutHistorique(
+        int $commandeId,
+        string $statut,
+        ?int $idEmploye = null,
+        ?string $commentaire = null
+    ): void {
         $sql = "
-            INSERT INTO commande_statut (id_commande, id_employe, statut, date_heure)
-            VALUES (:id_commande, :id_employe, :statut, NOW())
+            INSERT INTO commande_statut (id_commande, id_employe, statut, commentaire, date_heure)
+            VALUES (:id_commande, :id_employe, :statut, :commentaire, NOW())
         ";
+
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([
             ':id_commande' => $commandeId,
             ':id_employe'  => $idEmploye,
             ':statut'      => $statut,
+            ':commentaire' => $commentaire,
         ]);
     }
 
