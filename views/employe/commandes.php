@@ -90,9 +90,9 @@ $current = $_GET['statut'] ?? '';
 
 <?php
 $user = $_SESSION['user'] ?? null;
-$dashboard = ($user && $user['role'] === 'ADMIN')
-    ? 'dashboard_admin'
-    : 'dashboard_employe';
+$dashboard = $_SESSION['dashboard_context'] ?? (
+    ($user && $user['role'] === 'ADMIN') ? 'dashboard_admin' : 'dashboard_employe'
+);
 ?>
 
 <p><a href="index.php?page=<?= $dashboard ?>">Retour dashboard</a></p>

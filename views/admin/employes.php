@@ -6,7 +6,7 @@ require __DIR__ . '/../partials/header.php';
 <h2>Gestion des employés</h2>
 
 <h3>Créer un employé</h3>
-<form method="post" action="index.php?page=admin_employes_create">
+<form method="post" action="index.php?page=admin_employe_create">
     <input type="hidden" name="_csrf" value="<?= htmlspecialchars(Csrf::token()) ?>">
     <label>Email</label>
     <input type="email" name="email" required>
@@ -48,7 +48,7 @@ require __DIR__ . '/../partials/header.php';
                 <td><?= htmlspecialchars($e['email']) ?></td>
                 <td><?= (int)$e['actif'] === 1 ? 'Oui' : 'Non' ?></td>
                 <td>
-                    <form method="post" action="index.php?page=admin_employes_toggle">
+                    <form method="post" action="index.php?page=admin_employe_toggle">
                         <input type="hidden" name="_csrf" value="<?= htmlspecialchars(Csrf::token()) ?>">
                         <input type="hidden" name="id" value="<?= (int)$e['id'] ?>">
                         <input type="hidden" name="actif" value="<?= (int)$e['actif'] === 1 ? 0 : 1 ?>">

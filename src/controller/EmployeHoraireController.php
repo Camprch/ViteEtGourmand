@@ -51,7 +51,11 @@ class EmployeHoraireController
             $fermeture = trim((string)($_POST['heure_fermeture'][$jour] ?? ''));
 
             // validation simple HH:MM
-            $isTime = fn(string $t) => preg_match('/^\d{2}:\d{2}$/', $t) === 1;
+            $isTime = fn(string $t) => preg_match('/^\d{2}:\d{2}(:\d{2})?$/', $t) === 1;
+
+            // et juste après validation, normalise :
+            $ouverture = $ouverture !== '' ? substr($ouverture, 0, 5) : $ouverture;
+            $fermeture = $fermeture !== '' ? substr($fermeture, 0, 5) : $fermeture;
 
             if ($ferme === 1) {
                 $ouverture = null;

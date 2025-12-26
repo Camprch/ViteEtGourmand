@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../model/MenuModel.php';
+require_once __DIR__ . '/../model/PlatModel.php';
 
 class EmployeMenuController
 {
@@ -82,5 +83,169 @@ class EmployeMenuController
         echo "<p>ID : " . (int)$id . "</p>";
         echo "<p><a href='index.php?page=employe_menu_create'>Créer un autre menu</a></p>";
         echo "<p><a href='index.php?page=dashboard_employe'>Retour dashboard</a></p>";
+    }
+
+    public function index(): void
+    {
+        $this->requireEmployeOrAdmin();
+
+        $menuModel = new MenuModel($this->pdo);
+        $menus = $menuModel->findAllForBackoffice();
+
+        require __DIR__ . '/../../views/employe/menu_index.php';
+    }
+
+    public function editForm(): void
+    {
+        $this->requireEmployeOrAdmin();
+
+        $id = (int)($_GET['id'] ?? 0);
+        if ($id <= 0) {
+            http_response_code(400);
+            echo "<h2>ID invalide</h2>";
+            exit;
+        }
+
+        $menuModel = new MenuModel($this->pdo);
+        $menu = $menuModel->findById($id);
+
+        $platModel = new PlatModel($this->pdo);
+        $plats = $platModel->findAll(); // tous les plats pour la liste
+
+        $menuPlats = $menuModel->getPlatsForMenu($id); // plats déjà liés
+
+        // Map pour pré-cocher / pré-remplir ordre : [id_plat => ordre]
+        $menuPlatMap = [];
+        foreach ($menuPlats as $mp) {
+            $menuPlatMap[(int)$mp['id_plat']] = $mp['ordre'] !== null ? (int)$mp['ordre'] : null;
+        }
+
+        if (!$menu) {
+            http_response_code(404);
+            echo "<h2>Menu introuvable</h2>";
+            exit;
+        }
+
+        require __DIR__ . '/../../views/employe/menu_edit.php';
+    }
+
+    public function update(): void
+    {
+        $this->requireEmployeOrAdmin();
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            exit;
+        }
+
+        require_once __DIR__ . '/../security/Csrf.php';
+        Csrf::check();
+
+        $id = (int)($_POST['id'] ?? 0);
+        if ($id <= 0) {
+            http_response_code(400);
+            echo "<h2>ID invalide</h2>";
+            exit;
+        }
+
+        $titre = trim($_POST['titre'] ?? '');
+        $description = trim($_POST['description'] ?? '');
+        $theme = trim($_POST['theme'] ?? '');
+        $regime = trim($_POST['regime'] ?? '');
+        $prixRaw = str_replace(',', '.', (string)($_POST['prix_par_personne'] ?? '0'));
+        $prix = (float)$prixRaw;
+        $personnesMin = (int)($_POST['personnes_min'] ?? 0);
+        $conditions = trim($_POST['conditions_particulieres'] ?? '');
+        $stock = isset($_POST['stock']) && $_POST['stock'] !== '' ? (int)$_POST['stock'] : null;
+
+        $errors = [];
+        if ($titre === '') $errors[] = "Titre obligatoire.";
+        if ($description === '') $errors[] = "Description obligatoire.";
+        if ($prix <= 0) $errors[] = "Prix par personne invalide.";
+        if ($personnesMin <= 0) $errors[] = "Nombre minimum de personnes invalide.";
+        if ($stock !== null && $stock < 0) $errors[] = "Stock invalide.";
+
+        if (!empty($errors)) {
+            echo "<h2>Erreur :</h2><ul>";
+            foreach ($errors as $e) echo "<li>" . htmlspecialchars($e) . "</li>";
+            echo "</ul>";
+            echo "<p><a href='javascript:history.back()'>Retour</a></p>";
+            return;
+        }
+
+        $menuModel = new MenuModel($this->pdo);
+        $ok = $menuModel->update($id, [
+            'titre' => $titre,
+            'description' => $description,
+            'theme' => $theme !== '' ? $theme : null,
+            'prix_par_personne' => $prix,
+            'personnes_min' => $personnesMin,
+            'conditions_particulieres' => $conditions !== '' ? $conditions : null,
+            'regime' => $regime !== '' ? $regime : null,
+            'stock' => $stock,
+        ]);
+
+        // --- Liaison plats ---
+        $selected = $_POST['plats'] ?? [];          
+        $orders = $_POST['plats_ordre'] ?? [];      
+
+        $items = [];
+        foreach ($selected as $platIdRaw) {
+            $platId = (int)$platIdRaw;
+            if ($platId <= 0) continue;
+
+            $ordreRaw = $orders[$platId] ?? '';
+            $ordreRaw = trim((string)$ordreRaw);
+
+            $ordre = null;
+            if ($ordreRaw !== '') {
+                $o = (int)$ordreRaw;
+                if ($o < 0) {
+                    $o = 0;
+                }
+                $ordre = $o;
+            }
+
+            $items[] = ['id_plat' => $platId, 'ordre' => $ordre];
+        }
+
+        $menuModel->replacePlats($id, $items);
+
+        header("Location: index.php?page=employe_menus&updated=" . ($ok ? "1" : "0"));
+        exit;
+    }
+
+    public function toggleStock(): void
+    {
+        $this->requireEmployeOrAdmin();
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            exit;
+        }
+
+        require_once __DIR__ . '/../security/Csrf.php';
+        Csrf::check();
+
+        $id = (int)($_POST['id'] ?? 0);
+        $current = $_POST['current_stock'] ?? null;
+
+        if ($id <= 0) {
+            http_response_code(400);
+            echo "<h2>ID invalide</h2>";
+            exit;
+        }
+
+        // Règle simple :
+        // - si stock est NULL ou >0 => désactiver => stock=0
+        // - si stock=0 => réactiver => stock=NULL (illimité)
+        $currentInt = ($current === '' || $current === null) ? null : (int)$current;
+        $newStock = ($currentInt === 0) ? null : 0;
+
+        $menuModel = new MenuModel($this->pdo);
+        $menuModel->setStock($id, $newStock);
+
+        header("Location: index.php?page=employe_menus");
+        exit;
     }
 }

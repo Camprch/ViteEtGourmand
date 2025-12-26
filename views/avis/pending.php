@@ -31,10 +31,14 @@ require __DIR__ . '/../partials/header.php';
     <?php endforeach; ?>
 <?php endif; ?>
 
-<?php if (!empty($_SESSION['user']) && $_SESSION['user']['role'] === 'ADMIN'): ?>
-    <p><a href="index.php?page=dashboard_admin">Retour administration</a></p>
-<?php else: ?>
-    <p><a href="index.php?page=dashboard_employe">Retour espace employé</a></p>
-<?php endif; ?>
+<?php
+$user = $_SESSION['user'] ?? null;
+
+$dashboard = $_SESSION['dashboard_context'] ?? (
+    ($user && $user['role'] === 'ADMIN') ? 'dashboard_admin' : 'dashboard_employe'
+);
+?>
+
+<p><a href="index.php?page=<?= $dashboard ?>">Retour dashboard</a></p>
 
 <?php require __DIR__ . '/../partials/footer.php'; ?>

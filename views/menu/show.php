@@ -45,4 +45,22 @@ $isOutOfStock = ($menu['stock'] !== null && (int)$menu['stock'] <= 0);
     <?php endif; ?>
 </p>
 
+<h2>Plats inclus</h2>
+
+<?php if (empty($plats)): ?>
+    <p>Aucun plat associé pour le moment.</p>
+<?php else: ?>
+    <ul>
+        <?php foreach ($plats as $p): ?>
+            <li>
+                <strong><?= htmlspecialchars($p['type']) ?> :</strong>
+                <?= htmlspecialchars($p['nom']) ?>
+                <?php if (!empty($p['description'])): ?>
+                    — <?= htmlspecialchars($p['description']) ?>
+                <?php endif; ?>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+<?php endif; ?>
+
 <?php require __DIR__ . '/../partials/footer.php'; ?>

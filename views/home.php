@@ -20,14 +20,6 @@ require __DIR__ . '/partials/header.php';
     </p>
 </section>
 
-<?php
-function fr_datetime(?string $s): string {
-    if (!$s) return '';
-    $ts = strtotime($s);
-    return $ts ? date('d/m/Y H:i', $ts) : htmlspecialchars($s);
-}
-?>
-
 <section>
     <h2>Avis de nos clients</h2>
 

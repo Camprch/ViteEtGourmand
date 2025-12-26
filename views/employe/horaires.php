@@ -34,13 +34,13 @@ foreach ($horaires as $h) {
                 <td><?= htmlspecialchars($jour) ?></td>
                 <td>
                     <input type="time"
-                           name="heure_ouverture[<?= htmlspecialchars($jour) ?>]"
-                           value="<?= htmlspecialchars((string)($h['heure_ouverture'] ?? '')) ?>">
+                        name="heure_ouverture[<?= htmlspecialchars($jour) ?>]"
+                        value="<?= htmlspecialchars(!empty($h['heure_ouverture']) ? substr((string)$h['heure_ouverture'], 0, 5) : '') ?>">
                 </td>
                 <td>
                     <input type="time"
-                           name="heure_fermeture[<?= htmlspecialchars($jour) ?>]"
-                           value="<?= htmlspecialchars((string)($h['heure_fermeture'] ?? '')) ?>">
+                        name="heure_fermeture[<?= htmlspecialchars($jour) ?>]"
+                        value="<?= htmlspecialchars(!empty($h['heure_fermeture']) ? substr((string)$h['heure_fermeture'], 0, 5) : '') ?>">
                 </td>
                 <td style="text-align:center;">
                     <input type="checkbox"
@@ -55,7 +55,7 @@ foreach ($horaires as $h) {
 
     <p>
         <button type="submit">Enregistrer</button>
-        <a href="index.php?page=dashboard_employe">Retour</a>
+        <a href="index.php?page=dashboard_employe">Retour dashboard</a>
     </p>
 </form>
 

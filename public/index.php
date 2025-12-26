@@ -31,11 +31,22 @@ require_once __DIR__ . '/../src/model/HoraireModel.php';
 $horaireModel = new HoraireModel($pdo);
 $horaires = $horaireModel->findAllOrdered();
 
+// Helpers
+require_once __DIR__ . '/../src/helper/format.php';
+
 // Controllers
 require_once __DIR__ . '/../src/controller/HomeController.php';
 
 // Router ultra simple basé sur ?page=
 $page = $_GET['page'] ?? 'home';
+
+// Mémoriser le dashboard courant selon la section visitée
+if ($page === 'dashboard_admin' || str_starts_with($page, 'admin_')) {
+    $_SESSION['dashboard_context'] = 'dashboard_admin';
+}
+if ($page === 'dashboard_employe' || str_starts_with($page, 'employe_')) {
+    $_SESSION['dashboard_context'] = 'dashboard_employe';
+}
 
 // Guard simple basé sur le nom de page (évite les oublis dans les controllers)
 if ($page === 'dashboard_admin' || str_starts_with($page, 'admin_')) {
@@ -233,10 +244,72 @@ switch ($page) {
     $controller->index();
     break;
 
+    case 'employe_plats':
+    require_once __DIR__ . '/../src/controller/EmployePlatController.php';
+    (new EmployePlatController($pdo))->index();
+    break;
+
+    case 'employe_plat_create':
+    require_once __DIR__ . '/../src/controller/EmployePlatController.php';
+    (new EmployePlatController($pdo))->createForm();
+    break;
+
+    case 'employe_plat_store':
+    require_once __DIR__ . '/../src/controller/EmployePlatController.php';
+    (new EmployePlatController($pdo))->store();
+    break;
+
+    case 'employe_plat_edit':
+    require_once __DIR__ . '/../src/controller/EmployePlatController.php';
+    (new EmployePlatController($pdo))->editForm();
+    break;
+
+    case 'employe_plat_update':
+    require_once __DIR__ . '/../src/controller/EmployePlatController.php';
+    (new EmployePlatController($pdo))->update();
+    break;
+
+    case 'employe_plat_delete':
+    require_once __DIR__ . '/../src/controller/EmployePlatController.php';
+    (new EmployePlatController($pdo))->delete();
+    break;
+
     case 'employe_horaires_update':
     require_once __DIR__ . '/../src/controller/EmployeHoraireController.php';
     $controller = new EmployeHoraireController($pdo);
     $controller->update();
+    break;
+
+    case 'employe_menus':
+    require_once __DIR__ . '/../src/controller/EmployeMenuController.php';
+    (new EmployeMenuController($pdo))->index();
+    break;
+
+    case 'employe_menu_edit':
+    require_once __DIR__ . '/../src/controller/EmployeMenuController.php';
+    (new EmployeMenuController($pdo))->editForm();
+    break;
+
+    case 'employe_menu_update':
+    require_once __DIR__ . '/../src/controller/EmployeMenuController.php';
+    (new EmployeMenuController($pdo))->update();
+    break;
+
+    case 'employe_menu_toggle_stock':
+    require_once __DIR__ . '/../src/controller/EmployeMenuController.php';
+    (new EmployeMenuController($pdo))->toggleStock();
+    break;
+
+    case 'employe_menu_create':
+    require_once __DIR__ . '/../src/controller/EmployeMenuController.php';
+    $controller = new EmployeMenuController($pdo);
+    $controller->createForm();
+    break;
+
+    case 'employe_menu_store':
+    require_once __DIR__ . '/../src/controller/EmployeMenuController.php';
+    $controller = new EmployeMenuController($pdo);
+    $controller->store();
     break;
 
     case 'admin_employes':
@@ -261,18 +334,6 @@ switch ($page) {
     require_once __DIR__ . '/../src/controller/AdminStatsController.php';
     $controller = new AdminStatsController($pdo);
     $controller->index();
-    break;
-
-    case 'employe_menu_create':
-    require_once __DIR__ . '/../src/controller/EmployeMenuController.php';
-    $controller = new EmployeMenuController($pdo);
-    $controller->createForm();
-    break;
-
-    case 'employe_menu_store':
-    require_once __DIR__ . '/../src/controller/EmployeMenuController.php';
-    $controller = new EmployeMenuController($pdo);
-    $controller->store();
     break;
 
     default:

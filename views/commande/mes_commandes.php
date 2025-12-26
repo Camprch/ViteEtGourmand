@@ -3,19 +3,6 @@ $pageTitle = 'Mes commandes';
 require __DIR__ . '/../partials/header.php';
 ?>
 
-<?php
-function fr_datetime(?string $s): string {
-    if (!$s) return '';
-    $ts = strtotime($s);
-    return $ts ? date('d/m/Y H:i', $ts) : htmlspecialchars($s);
-}
-function fr_date(?string $s): string {
-    if (!$s) return '';
-    $ts = strtotime($s);
-    return $ts ? date('d/m/Y', $ts) : htmlspecialchars($s);
-}
-?>
-
 <?php require_once __DIR__ . '/../../src/security/Csrf.php'; ?>
 
 <h2>Mes commandes</h2>

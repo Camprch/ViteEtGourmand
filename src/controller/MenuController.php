@@ -39,6 +39,8 @@ class MenuController
             return;
         }
 
+        $plats = $menuModel->getPlatsForFront($id);
+
         require __DIR__ . '/../../views/menu/show.php';
     }
 

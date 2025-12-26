@@ -40,6 +40,49 @@ class CommandeController
     Csrf::check();
     Auth::requireLogin();
 
+    require_once __DIR__ . '/../model/HoraireModel.php';
+
+    $datePrest = $_POST['date_prestation'] ?? '';
+    $heurePrest = $_POST['heure_prestation'] ?? '';
+
+    $jour = fr_jour_depuis_date((string)$datePrest);
+    if ($jour === null) {
+        echo "<h2>Date de prestation invalide</h2>";
+        exit;
+    }
+
+    $minutesPrest = hhmm_to_minutes((string)$heurePrest);
+    if ($minutesPrest === null) {
+        echo "<h2>Heure de prestation invalide</h2>";
+        exit;
+    }
+
+    $horaireModel = new HoraireModel($this->pdo);
+    $h = $horaireModel->findByJour($jour);
+
+    if (!$h || !empty($h['ferme'])) {
+        echo "<h2>Le restaurant est fermé le $jour</h2>";
+        exit;
+    }
+
+    $openMin = !empty($h['heure_ouverture'])
+        ? hhmm_to_minutes($h['heure_ouverture'])
+        : null;
+
+    $closeMin = !empty($h['heure_fermeture'])
+        ? hhmm_to_minutes($h['heure_fermeture'])
+        : null;
+
+    if ($openMin === null || $closeMin === null || $openMin >= $closeMin) {
+        echo "<h2>Horaires non configurés correctement pour $jour</h2>";
+        exit;
+    }
+
+    if ($minutesPrest < $openMin || $minutesPrest > $closeMin) {
+        echo "<h2>Heure de prestation hors horaires ($h[heure_ouverture] – $h[heure_fermeture])</h2>";
+        exit;
+    }
+
     // 1. Récupération des données
     $idMenu          = (int)($_POST['id_menu'] ?? 0);
     $nbPersonnes     = (int)($_POST['nb_personnes'] ?? 0);
@@ -221,5 +264,7 @@ class CommandeController
     echo "<h2>Commande annulée 👍</h2>";
     echo '<a href="index.php?page=mes_commandes">Retour à mes commandes</a>';
     }
+
+
 
 }

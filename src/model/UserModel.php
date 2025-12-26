@@ -12,7 +12,7 @@ class UserModel
 
     public function findByEmail(string $email): ?array
     {
-        $sql = "SELECT * FROM user WHERE email = :email";
+        $sql = "SELECT * FROM `user` WHERE email = :email";
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindValue(':email', $email, PDO::PARAM_STR);
         $stmt->execute();
@@ -23,7 +23,7 @@ class UserModel
     public function create(array $data): int
     {
         $sql = "
-            INSERT INTO user (nom, prenom, email, password, telephone, adresse, role, actif, created_at)
+            INSERT INTO `user` (nom, prenom, email, password, telephone, adresse, role, actif, created_at)
             VALUES (:nom, :prenom, :email, :password, :telephone, :adresse, :role, :actif, :created_at)
         ";
 
@@ -86,7 +86,7 @@ class UserModel
 
     public function updatePassword(int $userId, string $passwordHash): void
     {
-        $sql = "UPDATE user SET password = :password WHERE id = :id";
+        $sql = "UPDATE `user` SET password = :password WHERE id = :id";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([
             ':password' => $passwordHash,
@@ -97,7 +97,7 @@ class UserModel
     public function findAllEmployes(): array
 {
     $sql = "SELECT id, nom, prenom, email, role, actif, created_at
-            FROM user
+            FROM `user`
             WHERE role = 'EMPLOYE'
             ORDER BY created_at DESC";
     $stmt = $this->pdo->query($sql);
@@ -106,7 +106,7 @@ class UserModel
 
 public function setActif(int $userId, int $actif): void
 {
-    $sql = "UPDATE user SET actif = :actif WHERE id = :id AND role = 'EMPLOYE'";
+    $sql = "UPDATE `user` SET actif = :actif WHERE id = :id AND role = 'EMPLOYE'";
     $stmt = $this->pdo->prepare($sql);
     $stmt->execute([
         ':actif' => $actif,

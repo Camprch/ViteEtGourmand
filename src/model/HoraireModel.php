@@ -42,4 +42,12 @@ class HoraireModel
             ':jour' => $jour,
         ]);
     }
+
+    public function findByJour(string $jour): ?array
+    {
+        $stmt = $this->pdo->prepare("SELECT jour, heure_ouverture, heure_fermeture, ferme FROM horaire WHERE jour = :jour");
+        $stmt->execute([':jour' => $jour]);
+        $row = $stmt->fetch();
+        return $row ?: null;
+    }
 }

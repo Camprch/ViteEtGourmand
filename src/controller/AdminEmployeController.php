@@ -26,6 +26,7 @@ class AdminEmployeController
 
     public function create(): void
     {
+
         Auth::requireRole(['ADMIN']);
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -109,7 +110,7 @@ class AdminEmployeController
         $userModel = new UserModel($this->pdo);
         $userModel->setActif($id, $actif);
 
-        header('Location: index.php?page=admin_employes');
+        header('Location: index.php?page=admin_employes&created=1');
         exit;
     }
 }
