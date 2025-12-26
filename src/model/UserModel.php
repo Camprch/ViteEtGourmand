@@ -16,7 +16,7 @@ class UserModel
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindValue(':email', $email, PDO::PARAM_STR);
         $stmt->execute();
-        $user = $stmt->fetch();
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
         return $user ?: null;
     }
 
@@ -33,8 +33,8 @@ class UserModel
             ':prenom'     => (string)$data['prenom'],
             ':email'      => (string)$data['email'],
             ':password'   => (string)$data['password'],
-            ':telephone'  => (string)($data['telephone'] ?? ''),
-            ':adresse'    => (string)($data['adresse'] ?? ''),
+            ':telephone'  => $data['telephone'] ?? null,
+            ':adresse'    => $data['adresse'] ?? null,
             ':role'       => (string)$data['role'],
             ':actif'      => (int)$data['actif'],
             ':created_at' => (string)$data['created_at'],
@@ -60,11 +60,11 @@ class UserModel
             ':token' => $token,
         ]);
 
-            }
+    }
 
-            public function findValidPasswordResetToken(string $token): ?array
-            {
-                $sql = "SELECT id, id_user, token, expires_at, used
+    public function findValidPasswordResetToken(string $token): ?array
+    {
+        $sql = "SELECT id, id_user, token, expires_at, used
                 FROM password_reset_token
                 WHERE token = :token
                 AND used = 0
@@ -72,7 +72,7 @@ class UserModel
                 LIMIT 1";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':token' => $token]);
-        $row = $stmt->fetch();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
         return $row ?: null;
     }
 
@@ -95,23 +95,82 @@ class UserModel
     }
 
     public function findAllEmployes(): array
-{
-    $sql = "SELECT id, nom, prenom, email, role, actif, created_at
-            FROM `user`
-            WHERE role = 'EMPLOYE'
-            ORDER BY created_at DESC";
-    $stmt = $this->pdo->query($sql);
-    return $stmt->fetchAll();
-}
+    {
+        $sql = "SELECT id, nom, prenom, email, role, actif, created_at
+                FROM `user`
+                WHERE role = 'EMPLOYE'
+                ORDER BY created_at DESC";
+        $stmt = $this->pdo->query($sql);
+        return $stmt->fetchAll();
+    }
 
-public function setActif(int $userId, int $actif): void
-{
-    $sql = "UPDATE `user` SET actif = :actif WHERE id = :id AND role = 'EMPLOYE'";
-    $stmt = $this->pdo->prepare($sql);
-    $stmt->execute([
-        ':actif' => $actif,
-        ':id' => $userId,
-    ]);
-}
+    public function setActif(int $userId, int $actif): void
+    {
+        $sql = "UPDATE `user` SET actif = :actif WHERE id = :id AND role = 'EMPLOYE'";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            ':actif' => $actif,
+            ':id' => $userId,
+        ]);
+    }
 
+    public function findById(int $id): ?array
+    {
+        $sql = "SELECT id, nom, prenom, email, telephone, adresse, role, actif, created_at
+                FROM `user`
+                WHERE id = :id
+                LIMIT 1";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':id' => $id]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row ?: null;
+    }
+
+    public function emailExists(string $email, int $excludeId): bool
+    {
+        $sql = "SELECT COUNT(*) FROM `user` WHERE email = :email AND id != :id";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':email' => $email, ':id' => $excludeId]);
+        return (int)$stmt->fetchColumn() > 0;
+    }
+
+    public function updateProfile(int $id, array $data): bool
+    {
+        $sql = "UPDATE `user` SET
+                    nom = :nom,
+                    prenom = :prenom,
+                    email = :email,
+                    telephone = :telephone,
+                    adresse = :adresse
+                WHERE id = :id";
+
+        $stmt = $this->pdo->prepare($sql);
+
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->bindValue(':nom', $data['nom'], PDO::PARAM_STR);
+        $stmt->bindValue(':prenom', $data['prenom'], PDO::PARAM_STR);
+        $stmt->bindValue(':email', $data['email'], PDO::PARAM_STR);
+
+        if ($data['telephone'] === null) {
+            $stmt->bindValue(':telephone', null, PDO::PARAM_NULL);
+        } else {
+            $stmt->bindValue(':telephone', $data['telephone'], PDO::PARAM_STR);
+        }
+
+        if ($data['adresse'] === null) {
+            $stmt->bindValue(':adresse', null, PDO::PARAM_NULL);
+        } else {
+            $stmt->bindValue(':adresse', $data['adresse'], PDO::PARAM_STR);
+        }
+
+        return $stmt->execute();
+    }
+
+    public function getPasswordHash(int $userId): string
+    {
+        $sql = "SELECT password FROM `user` WHERE id = :id";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':id' => $userId]);
+        return (string)$stmt->fetchColumn();
+    }
 }

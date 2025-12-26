@@ -64,6 +64,8 @@ $user = $_SESSION['user'] ?? null;
                 <a href="index.php?page=dashboard_admin">Administration</a>
             <?php endif; ?>
 
+            <a href="index.php?page=profil">Mon profil</a>
+
             <a href="index.php?page=logout">Déconnexion</a>
 
         <?php else: ?>

@@ -376,6 +376,21 @@ switch ($page) {
     $controller->index();
     break;
 
+    case 'profil':
+    require_once __DIR__ . '/../src/controller/ProfilController.php';
+    (new ProfilController($pdo))->show();
+    break;
+
+    case 'profil_update':
+    require_once __DIR__ . '/../src/controller/ProfilController.php';
+    (new ProfilController($pdo))->update();
+    break;
+
+    case 'profil_password':
+    require_once __DIR__ . '/../src/controller/ProfilController.php';
+    (new ProfilController($pdo))->updatePassword();
+    break;
+
     default:
     $controller = new HomeController($pdo);
     $controller->index();

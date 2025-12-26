@@ -21,4 +21,8 @@ require __DIR__ . '/../partials/header.php';
     <a href="index.php?page=forgot_password">Mot de passe oublié ?</a>
 </p>
 
+<?php if (isset($_GET['password_changed'])): ?>
+    <p>✅ Mot de passe modifié. Merci de vous reconnecter.</p>
+<?php endif; ?>
+
 <?php require __DIR__ . '/../partials/footer.php'; ?>
