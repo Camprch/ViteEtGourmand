@@ -342,6 +342,16 @@ switch ($page) {
     (new EmployeAllergeneController($pdo))->delete();
     break;
 
+    case 'employe_menu_image_upload':
+    require_once __DIR__ . '/../src/controller/EmployeMenuController.php';
+    (new EmployeMenuController($pdo))->uploadImage();
+    break;
+
+    case 'employe_menu_image_delete':
+    require_once __DIR__ . '/../src/controller/EmployeMenuController.php';
+    (new EmployeMenuController($pdo))->deleteImage();
+    break;
+
     case 'admin_employes':
     require_once __DIR__ . '/../src/controller/AdminEmployeController.php';
     $controller = new AdminEmployeController($pdo);

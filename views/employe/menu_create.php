@@ -37,6 +37,8 @@ require __DIR__ . '/../partials/header.php';
     <button type="submit">Créer</button>
 </form>
 
+<p><em>Les images pourront être ajoutées une fois le menu créé.</em></p>
+
 <p><a href="index.php?page=dashboard_employe">Retour dashboard</a></p>
 
 <?php require __DIR__ . '/../partials/footer.php'; ?>

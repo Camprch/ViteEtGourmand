@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../model/MenuModel.php';
 require_once __DIR__ . '/../model/PlatModel.php';
+require_once __DIR__ . '/../model/MenuImageModel.php';
+
 
 class EmployeMenuController
 {
@@ -113,6 +115,9 @@ class EmployeMenuController
         $plats = $platModel->findAll(); // tous les plats pour la liste
 
         $menuPlats = $menuModel->getPlatsForMenu($id); // plats déjà liés
+
+        $imageModel = new MenuImageModel($this->pdo);
+        $images = $imageModel->findByMenu($id);
 
         // Map pour pré-cocher / pré-remplir ordre : [id_plat => ordre]
         $menuPlatMap = [];
@@ -248,4 +253,97 @@ class EmployeMenuController
         header("Location: index.php?page=employe_menus");
         exit;
     }
+
+    public function uploadImage(): void
+    {
+        $this->requireEmployeOrAdmin();
+        Csrf::check();
+
+        $menuId = (int)($_POST['menu_id'] ?? 0);
+        if ($menuId <= 0 || empty($_FILES['image'])) {
+            http_response_code(400);
+            echo "<h2>Données invalides</h2>";
+            exit;
+        }
+
+        $file = $_FILES['image'];
+
+        if ($file['error'] !== UPLOAD_ERR_OK) {
+            echo "<h2>Erreur upload</h2>";
+            exit;
+        }
+
+        if ($file['size'] > 2 * 1024 * 1024) {
+            echo "<h2>Image trop lourde (max 2 Mo)</h2>";
+            exit;
+        }
+
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        $mime = $finfo->file($file['tmp_name']);
+        $allowed = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp'];
+
+        if (!isset($allowed[$mime])) {
+            echo "<h2>Format non autorisé</h2>";
+            exit;
+        }
+
+        $chemin = bin2hex(random_bytes(16)) . '.' . $allowed[$mime];
+
+        $uploadDir = realpath(__DIR__ . '/../../public') . '/uploads/menus';
+        if ($uploadDir === false) {
+            echo "<h2>Dossier public introuvable</h2>";
+            exit;
+        }
+
+        if (!is_dir($uploadDir)) {
+            if (!mkdir($uploadDir, 0755, true)) {
+                echo "<h2>Impossible de créer le dossier d'upload</h2>";
+                exit;
+            }
+        }
+
+        $dest = $uploadDir . '/' . $chemin;
+
+        if (!move_uploaded_file($file['tmp_name'], $dest)) {
+            echo "<h2>Erreur sauvegarde fichier</h2>";
+            exit;
+        }
+
+        $alt = trim($_POST['alt'] ?? '');
+        $isMain = isset($_POST['is_main']);
+
+        $imageModel = new MenuImageModel($this->pdo);
+        $imageModel->create($menuId, $chemin, $alt !== '' ? $alt : null, $isMain);
+
+        header("Location: index.php?page=employe_menu_edit&id=$menuId");
+        exit;
+    }
+
+    public function deleteImage(): void
+    {
+        $this->requireEmployeOrAdmin();
+        Csrf::check();
+
+        $id = (int)($_POST['id'] ?? 0);
+        $menuId = (int)($_POST['menu_id'] ?? 0);
+
+        if ($id <= 0 || $menuId <= 0) {
+            http_response_code(400);
+            exit;
+        }
+
+        $model = new MenuImageModel($this->pdo);
+        $chemin = $model->delete($id);
+
+        if ($chemin) {
+            $path = __DIR__ . '/../../public/uploads/menus/' . $chemin;
+            if (is_file($path)) {
+                unlink($path);
+            }
+        }
+
+        header("Location: index.php?page=employe_menu_edit&id=$menuId");
+        exit;
+    }
+
 }

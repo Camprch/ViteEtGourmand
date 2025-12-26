@@ -6,6 +6,12 @@ require __DIR__ . '/../partials/header.php';
 
 <h2><?= htmlspecialchars($menu['titre']) ?></h2>
 
+<?php if ($image): ?>
+    <img src="uploads/menus/<?= htmlspecialchars($image['chemin']) ?>"
+         alt="<?= htmlspecialchars($image['alt_text'] ?? $menu['titre']) ?>"
+         style="max-width:400px;">
+<?php endif; ?>
+
 <p><?= nl2br(htmlspecialchars($menu['description'])) ?></p>
 
 <ul>

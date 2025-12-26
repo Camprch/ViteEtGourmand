@@ -276,4 +276,17 @@ class MenuModel
 
         return array_values($plats);
     }
+
+    public function getMainImage(int $menuId): ?array
+    {
+        $stmt = $this->pdo->prepare(
+            "SELECT chemin, alt_text
+            FROM menu_image
+            WHERE id_menu = :id_menu AND is_principale = 1
+            LIMIT 1"
+        );
+        $stmt->execute([':id_menu' => $menuId]);
+        $row = $stmt->fetch();
+        return $row ?: null;
+    }
 }

@@ -85,9 +85,57 @@
         </tbody>
     </table>
 
-
     <button type="submit">Enregistrer</button>
 </form>
+
+<hr>
+    <h2>Images du menu</h2>
+
+    <form method="post"
+        action="index.php?page=employe_menu_image_upload"
+        enctype="multipart/form-data">
+
+        <input type="hidden" name="_csrf" value="<?= htmlspecialchars(Csrf::token()) ?>">
+        <input type="hidden" name="menu_id" value="<?= (int)$menu['id'] ?>">
+
+        <div>
+            <input type="file" name="image" accept="image/*" required>
+        </div>
+
+        <div>
+            <label>Texte alternatif</label><br>
+            <input name="alt">
+        </div>
+
+        <label>
+            <input type="checkbox" name="is_main">
+            Image principale
+        </label>
+
+        <button type="submit">Uploader</button>
+    </form>
+
+    <?php if (!empty($images)): ?>
+        <h3>Images existantes</h3>
+        <?php foreach ($images as $img): ?>
+            <div style="margin:10px 0;">
+                <img src="uploads/menus/<?= htmlspecialchars($img['chemin']) ?>"
+                    alt="<?= htmlspecialchars($img['alt_text'] ?? '') ?>"
+                    style="max-width:200px; display:block;">
+
+                <?php if ($img['is_principale']): ?>
+                    <strong>Image principale</strong>
+                <?php endif; ?>
+
+                <form method="post" action="index.php?page=employe_menu_image_delete">
+                    <input type="hidden" name="_csrf" value="<?= htmlspecialchars(Csrf::token()) ?>">
+                    <input type="hidden" name="id" value="<?= (int)$img['id'] ?>">
+                    <input type="hidden" name="menu_id" value="<?= (int)$menu['id'] ?>">
+                    <button type="submit">Supprimer</button>
+                </form>
+            </div>
+        <?php endforeach; ?>
+    <?php endif; ?>
 
 <p><a href="index.php?page=employe_menus">← Retour liste</a></p>
 

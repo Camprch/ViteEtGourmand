@@ -41,6 +41,8 @@ class MenuController
 
         $plats = $menuModel->getPlatsWithAllergenesForFront($id);
 
+        $image = $menuModel->getMainImage($id);
+
         require __DIR__ . '/../../views/menu/show.php';
     }
 
