@@ -312,6 +312,36 @@ switch ($page) {
     $controller->store();
     break;
 
+    case 'employe_allergenes':
+    require_once __DIR__ . '/../src/controller/EmployeAllergeneController.php';
+    (new EmployeAllergeneController($pdo))->index();
+    break;
+
+    case 'employe_allergene_create':
+    require_once __DIR__ . '/../src/controller/EmployeAllergeneController.php';
+    (new EmployeAllergeneController($pdo))->createForm();
+    break;
+
+    case 'employe_allergene_store':
+    require_once __DIR__ . '/../src/controller/EmployeAllergeneController.php';
+    (new EmployeAllergeneController($pdo))->store();
+    break;
+
+    case 'employe_allergene_edit':
+    require_once __DIR__ . '/../src/controller/EmployeAllergeneController.php';
+    (new EmployeAllergeneController($pdo))->editForm();
+    break;
+
+    case 'employe_allergene_update':
+    require_once __DIR__ . '/../src/controller/EmployeAllergeneController.php';
+    (new EmployeAllergeneController($pdo))->update();
+    break;
+
+    case 'employe_allergene_delete':
+    require_once __DIR__ . '/../src/controller/EmployeAllergeneController.php';
+    (new EmployeAllergeneController($pdo))->delete();
+    break;
+
     case 'admin_employes':
     require_once __DIR__ . '/../src/controller/AdminEmployeController.php';
     $controller = new AdminEmployeController($pdo);

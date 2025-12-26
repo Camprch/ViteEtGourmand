@@ -25,6 +25,25 @@
         </select>
     </div>
 
+    <hr>
+    <h2>Allergènes</h2>
+
+    <?php if (empty($allergenes)): ?>
+        <p>Aucun allergène créé pour le moment.</p>
+    <?php else: ?>
+        <?php foreach ($allergenes as $a): ?>
+            <?php $aid = (int)$a['id']; ?>
+            <label style="display:block; margin:4px 0;">
+                <input type="checkbox"
+                    name="allergenes[]"
+                    value="<?= $aid ?>"
+                    <?= isset($platAllergeneIds[$aid]) ? 'checked' : '' ?>>
+                <?= htmlspecialchars($a['nom']) ?>
+            </label>
+        <?php endforeach; ?>
+    <?php endif; ?>
+
+
     <button type="submit">Enregistrer</button>
 </form>
 

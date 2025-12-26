@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../model/PlatModel.php';
 require_once __DIR__ . '/../security/Csrf.php';
+require_once __DIR__ . '/../model/AllergeneModel.php';
 
 class EmployePlatController
 {
@@ -40,6 +41,11 @@ class EmployePlatController
     public function createForm(): void
     {
         $this->requireEmployeOrAdmin();
+
+        require_once __DIR__ . '/../model/AllergeneModel.php';
+        $allergeneModel = new AllergeneModel($this->pdo);
+        $allergenes = $allergeneModel->findAll();
+
         require __DIR__ . '/../../views/employe/plat_create.php';
     }
 
@@ -68,9 +74,14 @@ class EmployePlatController
             echo "</ul><p><a href='javascript:history.back()'>Retour</a></p>";
             return;
         }
-
+       
         $platModel = new PlatModel($this->pdo);
         $platModel->create($nom, $description !== '' ? $description : null, $type);
+
+        $platId = $platModel->create($nom, $description !== '' ? $description : null, $type);
+
+        $selectedAllergenes = $_POST['allergenes'] ?? [];
+        $platModel->replaceAllergenes($platId, $selectedAllergenes);
 
         header("Location: index.php?page=employe_plats&created=1");
         exit;
@@ -89,6 +100,15 @@ class EmployePlatController
 
         $platModel = new PlatModel($this->pdo);
         $plat = $platModel->findById($id);
+
+        $allergeneModel = new AllergeneModel($this->pdo);
+        $allergenes = $allergeneModel->findAll();
+
+        $platAllergenes = $platModel->getAllergenesForPlat($id);
+        $platAllergeneIds = [];
+        foreach ($platAllergenes as $a) {
+            $platAllergeneIds[(int)$a['id']] = true;
+        }
 
         if (!$plat) {
             http_response_code(404);
@@ -129,6 +149,10 @@ class EmployePlatController
 
         $platModel = new PlatModel($this->pdo);
         $platModel->update($id, $nom, $description !== '' ? $description : null, $type);
+
+        $selectedAllergenes = $_POST['allergenes'] ?? [];
+        $platModel->replaceAllergenes($id, $selectedAllergenes);
+
 
         header("Location: index.php?page=employe_plats&updated=1");
         exit;

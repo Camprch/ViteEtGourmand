@@ -55,8 +55,24 @@ $isOutOfStock = ($menu['stock'] !== null && (int)$menu['stock'] <= 0);
             <li>
                 <strong><?= htmlspecialchars($p['type']) ?> :</strong>
                 <?= htmlspecialchars($p['nom']) ?>
+
                 <?php if (!empty($p['description'])): ?>
                     — <?= htmlspecialchars($p['description']) ?>
+                <?php endif; ?>
+
+                <?php if (!empty($p['allergenes'])): ?>
+                    <div>
+                        <small>
+                            Allergènes :
+                            <?php
+                            $names = [];
+                            foreach ($p['allergenes'] as $a) {
+                                $names[] = $a['nom'];
+                            }
+                            echo htmlspecialchars(implode(', ', $names));
+                            ?>
+                        </small>
+                    </div>
                 <?php endif; ?>
             </li>
         <?php endforeach; ?>

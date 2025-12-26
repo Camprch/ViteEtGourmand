@@ -39,7 +39,7 @@ class MenuController
             return;
         }
 
-        $plats = $menuModel->getPlatsForFront($id);
+        $plats = $menuModel->getPlatsWithAllergenesForFront($id);
 
         require __DIR__ . '/../../views/menu/show.php';
     }

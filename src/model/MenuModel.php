@@ -225,20 +225,55 @@ class MenuModel
         }
     }
     
-    public function getPlatsForFront(int $menuId): array
+    public function getPlatsWithAllergenesForFront(int $menuId): array
     {
-        $sql = "SELECT p.id, p.nom, p.description, p.type, mp.ordre
+        $sql = "SELECT
+                    p.id AS plat_id,
+                    p.nom AS plat_nom,
+                    p.description AS plat_description,
+                    p.type AS plat_type,
+                    mp.ordre AS plat_ordre,
+                    a.id AS allergene_id,
+                    a.nom AS allergene_nom
                 FROM menu_plat mp
                 JOIN plat p ON p.id = mp.id_plat
+                LEFT JOIN plat_allergene pa ON pa.id_plat = p.id
+                LEFT JOIN allergene a ON a.id = pa.id_allergene
                 WHERE mp.id_menu = :id_menu
                 ORDER BY
                     (mp.ordre IS NULL) ASC,
                     mp.ordre ASC,
                     FIELD(p.type,'ENTREE','PLAT','DESSERT'),
-                    p.nom ASC";
+                    p.nom ASC,
+                    a.nom ASC";
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':id_menu' => $menuId]);
-        return $stmt->fetchAll();
+        $rows = $stmt->fetchAll();
+
+        // regroupe : plat -> [allergenes...]
+        $plats = [];
+        foreach ($rows as $r) {
+            $pid = (int)$r['plat_id'];
+            if (!isset($plats[$pid])) {
+                $plats[$pid] = [
+                    'id' => $pid,
+                    'nom' => $r['plat_nom'],
+                    'description' => $r['plat_description'],
+                    'type' => $r['plat_type'],
+                    'ordre' => $r['plat_ordre'] !== null ? (int)$r['plat_ordre'] : null,
+                    'allergenes' => [],
+                ];
+            }
+
+            if ($r['allergene_id'] !== null) {
+                $plats[$pid]['allergenes'][] = [
+                    'id' => (int)$r['allergene_id'],
+                    'nom' => $r['allergene_nom'],
+                ];
+            }
+        }
+
+        return array_values($plats);
     }
 }

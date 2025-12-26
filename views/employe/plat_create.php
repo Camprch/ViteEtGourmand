@@ -24,6 +24,20 @@
         </select>
     </div>
 
+    <hr>
+    <h2>Allergènes</h2>
+
+    <?php if (empty($allergenes)): ?>
+        <p>Aucun allergène créé pour le moment.</p>
+    <?php else: ?>
+        <?php foreach ($allergenes as $a): ?>
+            <label style="display:block; margin:4px 0;">
+                <input type="checkbox" name="allergenes[]" value="<?= (int)$a['id'] ?>">
+                <?= htmlspecialchars($a['nom']) ?>
+            </label>
+        <?php endforeach; ?>
+    <?php endif; ?>
+
     <button type="submit">Créer</button>
 </form>
 
