@@ -1,12 +1,11 @@
 <?php
+declare(strict_types=1);
 
 // Contrôleur pour la gestion du profil utilisateur
 
 // - show()           : Affiche la page de profil de l'utilisateur
 // - update()         : Met à jour les informations du profil
 // - updatePassword() : Met à jour le mot de passe de l'utilisateur
-
-declare(strict_types=1);
 
 require_once __DIR__ . '/../model/UserModel.php';
 require_once __DIR__ . '/../security/Csrf.php';

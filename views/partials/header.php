@@ -1,4 +1,3 @@
-
 <?php
 
 // Vue : affichage de l'en-tête du site

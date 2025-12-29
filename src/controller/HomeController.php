@@ -1,10 +1,9 @@
 <?php
+declare(strict_types=1);
 
 // Contrôleur pour la page d'accueil
 
 // - index() : Affiche la page d'accueil avec les menus et les avis validés
-
-declare(strict_types=1);
 
 require_once __DIR__ . '/../model/MenuModel.php';
 require_once __DIR__ . '/../model/AvisModel.php';

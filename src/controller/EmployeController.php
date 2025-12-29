@@ -1,10 +1,9 @@
 <?php
+declare(strict_types=1);
 
 // Contrôleur pour la gestion des employés.
 
 // - dashboard() : Affiche le tableau de bord employé
-
-declare(strict_types=1);
 
 class EmployeController
 {

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 // Modèle pour la table avis
 
@@ -8,8 +9,6 @@
 // - getPendingAvis()       : Retourne les avis en attente de validation
 // - setValid()             : Valide un avis
 // - delete()               : Supprime un avis
-
-declare(strict_types=1);
 
 class AvisModel
 {

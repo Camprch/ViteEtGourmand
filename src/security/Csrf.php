@@ -1,11 +1,10 @@
 <?php
+declare(strict_types=1);
 
 // Classe utilitaire pour la gestion de la protection CSRF (Cross-Site Request Forgery).
 
 // - token : génère ou retourne le token CSRF de la session
 // - check : vérifie la validité du token CSRF lors d'une requête POST
-
-declare(strict_types=1);
 
 final class Csrf
 {

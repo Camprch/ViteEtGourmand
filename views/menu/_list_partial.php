@@ -1,14 +1,12 @@
-
 <?php
+declare(strict_types=1);
 
 // Vue : liste partielle des menus
 
 // Utilisé par : views/menu/index.php (affichage initial et AJAX)
-declare(strict_types=1);
 
 /** @var array $menus */
 ?>
-
 
 <!-- Affichage si aucun menu ne correspond aux filtres -->
 <?php if (empty($menus)): ?>

@@ -1,11 +1,10 @@
 <?php
+declare(strict_types=1);
 
 // Contrôleur de gestion du formulaire de contact.
 
 // - showForm()  : Affiche le formulaire de contact
 // - submit()    : Traite l'envoi du formulaire, enregistre le message et tente un envoi email
-
-declare(strict_types=1);
 
 require_once __DIR__ . '/../model/ContactModel.php';
 

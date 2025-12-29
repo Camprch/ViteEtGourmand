@@ -1,4 +1,3 @@
-
 <?php
 
 // Vue : Conditions Générales de Vente (CGV)

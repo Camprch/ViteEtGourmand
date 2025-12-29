@@ -211,17 +211,30 @@ class AuthController
         // Réponse neutre (anti-enumération) : on ne dit jamais si l'email existe
         if ($user) {
             $token = bin2hex(random_bytes(32));
-
             $userModel->createPasswordResetToken((int)$user['id'], $token);
 
-            // Lien de reset (en vrai il faut l’URL publique en prod)
-            $link = 'index.php?page=reset_password&token=' . urlencode($token);
+            // Envoi mail réel
+            require_once __DIR__ . '/../service/MailerService.php';
 
-            // En dev : on affiche le lien (et plus tard on remplacera par un vrai mail)
-            echo "<h2>Demande prise en compte</h2>";
-            echo "<p>Si un compte existe pour cet email, un lien de réinitialisation a été envoyé.</p>";
-            echo "<p><strong>Lien (DEV) :</strong> <a href=\"" . htmlspecialchars($link) . "\">Réinitialiser le mot de passe</a></p>";
-            return;
+            $appUrl = getenv('APP_URL') ?: 'http://localhost';
+            // si ton projet est dans un sous-dossier, ajuste APP_URL (ex: http://localhost/vite-gourmand)
+            $link = $appUrl . "/public/index.php?page=reset_password&token=" . urlencode($token);
+
+            $mailer = new MailerService();
+            $ok = $mailer->send(
+                $user['email'],
+                $user['prenom'] . ' ' . $user['nom'],
+                "Réinitialisation de votre mot de passe",
+                "<p>Bonjour,</p>
+                <p>Pour réinitialiser votre mot de passe, cliquez ici :</p>
+                <p><a href=\"$link\">$link</a></p>
+                <p>Ce lien expire dans 1 heure.</p>",
+                "Lien de réinitialisation : $link"
+            );
+
+            if (!$ok) {
+                error_log("Email reset non envoyé à " . $user['email']);
+            }
         }
 
         // Toujours la même réponse pour éviter de révéler si l'email existe

@@ -1,4 +1,3 @@
-
 <?php
 
 // Vue : détail d'un menu

@@ -1,12 +1,11 @@
 <?php
+declare(strict_types=1);
 
 // Modèle pour la gestion des horaires d'ouverture/fermeture du restaurant.
 
 // - findAllOrdered : récupère tous les horaires triés par jour de la semaine
 // - updateJour : met à jour les horaires d'un jour donné
 // - findByJour : récupère les horaires d'un jour spécifique
-
-declare(strict_types=1);
 
 class HoraireModel
 {

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 // Modèle pour la gestion des plats (entrées, plats, desserts).
 
@@ -9,8 +10,6 @@
 // - delete : supprime un plat
 // - getAllergenesForPlat : liste les allergènes d'un plat
 // - replaceAllergenes : remplace les allergènes d'un plat
-
-declare(strict_types=1);
 
 class PlatModel
 {

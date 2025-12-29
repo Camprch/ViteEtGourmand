@@ -1,4 +1,3 @@
-
 <?php
 
 // Vue : édition d'un plat

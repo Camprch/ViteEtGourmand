@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 // Contrôleur pour la gestion des allergènes.
 
@@ -8,8 +9,6 @@
 // - editForm()    : Affiche le formulaire d'édition d'un allergène
 // - update()      : Traite la modification d'un allergène
 // - delete()      : Supprime un allergène
-
-declare(strict_types=1);
 
 require_once __DIR__ . '/../model/AllergeneModel.php';
 require_once __DIR__ . '/../security/Csrf.php';

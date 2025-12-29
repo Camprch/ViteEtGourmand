@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 // Fonctions de formatage diverses
 
@@ -6,8 +7,6 @@
 // - fr_date(?string $s)             : Formate une date au format français (d/m/Y)
 // - fr_jour_depuis_date(string $d)  : Retourne le jour de la semaine (fr) à partir d'une date YYYY-MM-DD
 // - hhmm_to_minutes(string $hhmm)   : Convertit HH:MM en minutes depuis minuit
-
-declare(strict_types=1);
 
 // Formate une date/heure au format français (d/m/Y H:i)
 function fr_datetime(?string $s): string {

@@ -1,4 +1,3 @@
-
 <?php
 
 // Vue : pied de page

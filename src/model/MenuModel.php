@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 // Modèle pour la gestion des menus.
 
@@ -13,8 +14,6 @@
 // - replacePlats : remplace les plats d'un menu
 // - getPlatsWithAllergenesForFront : plats + allergènes pour affichage client
 // - getMainImage : récupère l'image principale d'un menu
-
-declare(strict_types=1);
 
 class MenuModel
 {

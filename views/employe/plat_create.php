@@ -1,4 +1,3 @@
-
 <?php
 
 // Vue : Création d'un plat pour les employés

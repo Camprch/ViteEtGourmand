@@ -1,5 +1,6 @@
 {
     "require": {
-        "symfony/mailer": "^7.4"
+        "symfony/mailer": "^7.4",
+        "symfony/dotenv": "^7.4"
     }
 }

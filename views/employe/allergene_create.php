@@ -1,4 +1,3 @@
-
 <?php
 
 // Vue : formulaire de création d'un allergène

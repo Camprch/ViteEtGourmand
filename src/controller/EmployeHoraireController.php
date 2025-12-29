@@ -1,11 +1,10 @@
 <?php
+declare(strict_types=1);
 
 // Contrôleur pour la gestion des horaires par les employés.
 
 // - index()  : Affiche la liste des horaires
 // - update() : Met à jour les horaires pour chaque jour
-
-declare(strict_types=1);
 
 require_once __DIR__ . '/../model/HoraireModel.php';
 require_once __DIR__ . '/../security/Auth.php';

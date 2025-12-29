@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 // Modèle pour la gestion des utilisateurs (clients et employés).
 
@@ -14,8 +15,6 @@
 // - emailExists : vérifie l'existence d'un email (hors id donné)
 // - updateProfile : met à jour le profil d'un utilisateur
 // - getPasswordHash : récupère le hash du mot de passe
-
-declare(strict_types=1);
 
 class UserModel
 {

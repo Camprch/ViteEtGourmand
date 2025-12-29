@@ -1,12 +1,11 @@
 <?php
+declare(strict_types=1);
 
 // Classe utilitaire pour la gestion de l'authentification et des droits d'accès.
 
 // - user : retourne l'utilisateur connecté (ou null)
 // - requireLogin : force la connexion pour accéder à une page
 // - requireRole : force un rôle spécifique pour accéder à une page
-
-declare(strict_types=1);
 
 final class Auth
 {

@@ -1,12 +1,11 @@
 <?php
+declare(strict_types=1);
 
 // Contrôleur pour la gestion des commandes.
 
 // - index()         : Affiche la liste des commandes à traiter
 // - updateStatut()  : Met à jour le statut d'une commande
 // - annuler()       : Annule une commande avec motif
-
-declare(strict_types=1);
 
 require_once __DIR__ . '/../model/CommandeModel.php';
 require_once __DIR__ . '/../security/Auth.php';
@@ -75,10 +74,43 @@ class EmployeCommandeController
     $commandeModel = new CommandeModel($this->pdo);
 
     // Mise à jour statut courant + historique
-    $commandeModel->updateStatus($commandeId, $newStatut);
-    $commandeModel->addStatutHistorique($commandeId, $newStatut, (int)$user['id']);
+    try {
+        $commandeModel->changeStatutWithHistorique($commandeId, $newStatut, (int)$user['id'], null);
+    } catch (Throwable $e) {
+        error_log("Erreur changement statut: " . $e->getMessage());
+        header('Location: index.php?page=employe_commandes&err=1');
+        exit;
+    }
 
-    // TODO email client si ATTENTE_RETOUR_MATERIEL (on le fait après)
+    // Email client si ATTENTE_RETOUR_MATERIEL (on le fait après)
+if (in_array($newStatut, ['ATTENTE_RETOUR_MATERIEL', 'TERMINEE'], true)) {
+    require_once __DIR__ . '/../service/MailerService.php';
+
+    $commande = $commandeModel->findByIdForEmploye($commandeId); // contient email client
+    if ($commande && !empty($commande['email'])) {
+        $mailer = new MailerService();
+        $toEmail = $commande['email'];
+        $toName  = trim(($commande['prenom'] ?? '') . ' ' . ($commande['nom'] ?? ''));
+        if ($toName === '') $toName = $toEmail;
+
+        if ($newStatut === 'ATTENTE_RETOUR_MATERIEL') {
+            $subject = "Retour matériel – commande #$commandeId";
+            $html = "<p>Bonjour,</p>
+                     <p>Votre commande <strong>#$commandeId</strong> nécessite un retour de matériel.</p>
+                     <p>Merci de procéder au retour sous <strong>10 jours ouvrés</strong>. Passé ce délai, une pénalité de <strong>600€</strong> pourra être appliquée.</p>";
+            $mailer->send($toEmail, $toName, $subject, $html);
+        }
+
+        if ($newStatut === 'TERMINEE') {
+            $subject = "Commande #$commandeId terminée – donnez votre avis";
+            $html = "<p>Bonjour,</p>
+                     <p>Votre commande <strong>#$commandeId</strong> est terminée.</p>
+                     <p>Vous pouvez maintenant laisser un avis depuis votre espace client.</p>";
+            $mailer->send($toEmail, $toName, $subject, $html);
+        }
+    }
+}
+
     header('Location: index.php?page=employe_commandes');
     exit;
     }
@@ -108,17 +140,23 @@ class EmployeCommandeController
 
     $commandeModel = new CommandeModel($this->pdo);
 
-    $commentaire = "ANNULATION - Mode contact: {$modeContact} - Motif: {$motif}";
-    $commandeModel->updateStatus($commandeId, $newStatut);
-    $commandeModel->addStatutHistorique(
-    $commandeId,
-    $newStatut,
-    (int)$user['id'],
-    $commentaire
-);
+    // Mise à jour statut courant + historique
 
-    // On stocke le commentaire via une entrée d'historique (mais ton modèle ne le prend pas encore)
-    // => Étape suivante : on ajoute le champ commentaire dans addStatutHistorique()
+    $commentaire = "ANNULATION - Mode contact: {$modeContact} - Motif: {$motif}";
+    try {
+        $commandeModel->changeStatutWithHistorique(
+            $commandeId,
+            $newStatut,
+            (int)$user['id'],
+            $commentaire
+        );
+    } catch (Throwable $e) {
+        error_log("Erreur annulation: " . $e->getMessage());
+        header('Location: index.php?page=employe_commandes&err=1');
+        exit;
+    }
+
+    // On stocke le commentaire via une entrée d'historique
 
     header('Location: index.php?page=employe_commandes');
     exit;

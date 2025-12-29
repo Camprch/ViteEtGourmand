@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 // Contrôleur de gestion des commandes utilisateur.
 
@@ -7,8 +8,6 @@
 // - mesCommandes()            : Affiche la liste des commandes de l'utilisateur connecté
 // - detail(int $id)           : Affiche le détail d'une commande
 // - annulerCommande()         : Permet à l'utilisateur d'annuler une commande en attente
-
-declare(strict_types=1);
 
 require_once __DIR__ . '/../model/MenuModel.php';
 require_once __DIR__ . '/../model/CommandeModel.php';
@@ -198,6 +197,33 @@ class CommandeController
         'prix_total'         => $prixTotal,
 
     ]);
+
+    // Envoi de l'email de confirmation
+
+    require_once __DIR__ . '/../service/MailerService.php';
+
+    $sessionUser = $_SESSION['user'] ?? null;
+    if ($sessionUser) {
+        $mailer = new MailerService();
+
+        $toEmail = $sessionUser['email'];
+        $toName = trim(($sessionUser['prenom'] ?? '') . ' ' . ($sessionUser['nom'] ?? ''));
+        if ($toName === '') $toName = $toEmail;
+
+        $ok = $mailer->send(
+            $toEmail,
+            $toName,
+            "Confirmation de votre commande #$commandeId",
+            "<p>Merci pour votre commande !</p>
+            <p>Votre commande <strong>#$commandeId</strong> a bien été enregistrée.</p>",
+            "Commande #$commandeId confirmée."
+        );
+
+        if (!$ok) {
+            error_log("Email commande non envoyé (commandeId=$commandeId)");
+        }
+    }
+
 
     $commandeModel->addStatutHistorique($commandeId, 'EN_ATTENTE');
 

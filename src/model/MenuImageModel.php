@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 // Modèle pour la gestion des images associées à un menu.
 
@@ -6,8 +7,6 @@
 // - create : ajoute une image (et gère l'image principale)
 // - delete : supprime une image et retourne son chemin
 // - getMainImage : récupère l'image principale d'un menu
-
-declare(strict_types=1);
 
 class MenuImageModel
 {

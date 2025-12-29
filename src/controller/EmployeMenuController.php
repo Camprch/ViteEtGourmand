@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 // Contrôleur pour la gestion des menus
 
@@ -10,8 +11,6 @@
 // - toggleStock()   : Active/désactive le stock d'un menu
 // - uploadImage()   : Gère l'upload d'une image pour un menu
 // - deleteImage()   : Supprime une image d'un menu
-
-declare(strict_types=1);
 
 require_once __DIR__ . '/../model/MenuModel.php';
 require_once __DIR__ . '/../model/PlatModel.php';

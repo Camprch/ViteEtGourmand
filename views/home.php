@@ -1,4 +1,3 @@
-
 <?php
 
 // Vue : affichage de la page d'accueil

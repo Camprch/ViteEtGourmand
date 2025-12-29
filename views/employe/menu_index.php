@@ -1,4 +1,3 @@
-
 <?php
 
 // Vue : Menu index pour les employés

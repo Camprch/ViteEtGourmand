@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 // Modèle pour la table allergene
 
@@ -7,8 +8,6 @@
 // - create(string $n) : Crée un nouvel allergène
 // - update(int, str)  : Met à jour un allergène
 // - delete(int)       : Supprime un allergène
-
-declare(strict_types=1);
 
 class AllergeneModel
 {

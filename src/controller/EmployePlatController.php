@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 // Contrôleur pour la gestion des plats
 
@@ -8,8 +9,6 @@
 // - editForm()     : Affiche le formulaire d'édition d'un plat
 // - update()       : Traite la modification d'un plat
 // - delete()       : Supprime un plat
-
-declare(strict_types=1);
 
 require_once __DIR__ . '/../model/PlatModel.php';
 require_once __DIR__ . '/../security/Csrf.php';

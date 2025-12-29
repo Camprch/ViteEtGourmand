@@ -1,4 +1,3 @@
-
 <?php
 
 // Vue : Menu d'édition pour les employés

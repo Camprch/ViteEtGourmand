@@ -1,12 +1,11 @@
 <?php
+declare(strict_types=1);
 
 // Contrôleur pour la visualisation des menus
 
 // - index()      : Affiche la liste de tous les menus
 // - show(int $id): Affiche le détail d'un menu
 // - filterAjax() : Filtrage AJAX des menus (HTML partiel)
-
-declare(strict_types=1);
 
 require_once __DIR__ . '/../model/MenuModel.php';
 

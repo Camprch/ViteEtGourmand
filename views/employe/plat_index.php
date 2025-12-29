@@ -1,4 +1,3 @@
-
 <?php
 
 // Vue : index des plats

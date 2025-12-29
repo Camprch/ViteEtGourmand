@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 // Modèle pour la table commande
 
@@ -10,8 +11,6 @@
 // - addStatutHistorique(...)           : Ajoute une entrée à l'historique des statuts
 // - findAllForEmploye(?string)         : Liste des commandes pour l'employé
 // - findByIdForEmploye(int)            : Détail d'une commande pour l'employé
-
-declare(strict_types=1);
 
 class CommandeModel
 {
@@ -207,5 +206,29 @@ class CommandeModel
         $stmt->execute([':id' => $commandeId]);
         $row = $stmt->fetch();
         return $row ?: null;
+    }
+
+    // Change le statut d'une commande avec ajout à l'historique dans une transaction
+    public function changeStatutWithHistorique(
+        int $commandeId,
+        string $newStatut,
+        ?int $employeId = null,
+        ?string $commentaire = null
+    ): void {
+        $this->pdo->beginTransaction();
+
+        try {
+            $ok = $this->updateStatus($commandeId, $newStatut);
+            if (!$ok) {
+                throw new RuntimeException("Échec updateStatus");
+            }
+
+            $this->addStatutHistorique($commandeId, $newStatut, $employeId, $commentaire);
+
+            $this->pdo->commit();
+        } catch (Throwable $e) {
+            $this->pdo->rollBack();
+            throw $e;
+        }
     }
 }
