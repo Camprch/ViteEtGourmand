@@ -1,6 +1,7 @@
 <?php
 
-// Fonctions principales :
+// Contrôleur pour la visualisation des menus
+
 // - index()      : Affiche la liste de tous les menus
 // - show(int $id): Affiche le détail d'un menu
 // - filterAjax() : Filtrage AJAX des menus (HTML partiel)

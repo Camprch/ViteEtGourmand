@@ -1,7 +1,7 @@
 <?php
 
 // Modèle pour la gestion des images associées à un menu.
-// Fonctions :
+
 // - findByMenu : récupère les images d'un menu
 // - create : ajoute une image (et gère l'image principale)
 // - delete : supprime une image et retourne son chemin

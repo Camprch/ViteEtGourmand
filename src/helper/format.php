@@ -1,6 +1,7 @@
 <?php
 
-// Fonctions principales :
+// Fonctions de formatage diverses
+
 // - fr_datetime(?string $s)         : Formate une date/heure au format français (d/m/Y H:i)
 // - fr_date(?string $s)             : Formate une date au format français (d/m/Y)
 // - fr_jour_depuis_date(string $d)  : Retourne le jour de la semaine (fr) à partir d'une date YYYY-MM-DD

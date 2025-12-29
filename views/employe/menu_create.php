@@ -1,6 +1,7 @@
 <?php
-// Fichier : menu_create.php
-// Rôle : Affiche le formulaire de création d'un menu
+
+// Vue : formulaire de création d'un menu
+
 // Utilisé par : EmployeMenuController::create()
 $pageTitle = "Ajouter un menu";
 require __DIR__ . '/../partials/header.php';

@@ -1,7 +1,8 @@
 
 <?php
-// Fichier : plat_index.php
-// Rôle : Affiche la liste des plats pour la gestion employé (édition, suppression)
+
+// Vue : index des plats
+
 // Utilisé par : EmployePlatController::index()
 require __DIR__ . '/../partials/header.php';
 ?>

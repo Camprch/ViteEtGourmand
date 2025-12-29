@@ -1,7 +1,8 @@
 
 <?php
-// Fichier : legal/cgv.php
-// Rôle : Affiche les conditions générales de vente (CGV) du site
+
+// Vue : Conditions Générales de Vente (CGV)
+
 // Utilisé par : route page=cgv
 $pageTitle = 'Conditions Générales de Vente - Vite & Gourmand';
 require __DIR__ . '/../partials/header.php';

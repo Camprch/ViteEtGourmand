@@ -1,6 +1,7 @@
 <?php
 
-// Fonctions principales :
+// Contrôleur pour la gestion des plats
+
 // - index()        : Affiche la liste des plats
 // - createForm()   : Affiche le formulaire de création de plat
 // - store()        : Traite la création d'un plat

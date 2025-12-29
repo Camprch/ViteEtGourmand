@@ -1,6 +1,7 @@
 <?php
 
-// Fonctions principales :
+// Contrôleur pour la gestion des horaires par les employés.
+
 // - index()  : Affiche la liste des horaires
 // - update() : Met à jour les horaires pour chaque jour
 

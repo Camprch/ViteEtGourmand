@@ -1,6 +1,7 @@
 <?php
 
-// Fonctions principales du contrôleur :
+// Contrôleur de gestion des commandes utilisateur.
+
 // - form(int $menuId)         : Affiche le formulaire de commande pour un menu
 // - store()                   : Traite la soumission et la validation d'une commande
 // - mesCommandes()            : Affiche la liste des commandes de l'utilisateur connecté
@@ -282,6 +283,5 @@ class CommandeController
     echo '<a href="index.php?page=mes_commandes">Retour à mes commandes</a>';
     }
 
-
-
+    
 }

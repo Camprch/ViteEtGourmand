@@ -1,7 +1,8 @@
 
 <?php
-// Fichier : menu_edit.php
-// Rôle : Affiche le formulaire d'édition d'un menu, la gestion des plats associés et des images
+
+// Vue : Menu d'édition pour les employés
+
 // Utilisé par : EmployeMenuController::edit()
 require __DIR__ . '/../partials/header.php';
 ?>

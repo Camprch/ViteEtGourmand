@@ -1,7 +1,8 @@
 
 <?php
-// Fichier : partials/header.php
-// Rôle : En-tête HTML commun à toutes les pages (navigation, titre, ouverture <body>)
+
+// Vue : affichage de l'en-tête du site
+
 // Utilisé par : toutes les vues du site
 
 // Raccourci pratique pour savoir si on est connecté

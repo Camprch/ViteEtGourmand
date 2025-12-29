@@ -1,9 +1,10 @@
 <?php
 declare(strict_types=1);
 
-// Ce contrôleur admin permet d'afficher des statistiques sur les menus commandés.
+// Contrôleur pour la gestion des statistiques par un administrateur.
+
 // Il démontre l'utilisation combinée d'une base SQL (source de vérité) et d'une base NoSQL (MongoDB) pour le stockage et la consultation des stats.
-// Les étapes principales sont :
+
 // 1. Calcul des stats via SQL (requête sur les commandes)
 // 2. Sauvegarde/"upsert" des stats dans MongoDB (NoSQL)
 // 3. Lecture des stats depuis MongoDB pour affichage (preuve d'utilisation NoSQL)
@@ -19,7 +20,7 @@ class AdminStatsController
         $this->pdo = $pdo;
     }
 
-    // Vérifie que l'utilisateur courant est admin (sécurité)
+    // Vérifie que l'utilisateur courant est admin
     private function requireAdmin(): void
     {
         $user = $_SESSION['user'] ?? null;

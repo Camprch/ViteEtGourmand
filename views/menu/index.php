@@ -1,7 +1,8 @@
 
 <?php
-// Fichier : menu/index.php
-// Rôle : Affiche la page de recherche et de filtrage des menus côté public
+
+// Vue : index des menus
+
 // Utilisé par : route page=menus
 $pageTitle = 'Nos menus - Vite & Gourmand';
 require __DIR__ . '/../partials/header.php';

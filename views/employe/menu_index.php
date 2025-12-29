@@ -1,7 +1,8 @@
 
 <?php
-// Fichier : menu_index.php
-// Rôle : Affiche la liste des menus pour la gestion employé (édition, activation, désactivation)
+
+// Vue : Menu index pour les employés
+
 // Utilisé par : EmployeMenuController::index()
 require __DIR__ . '/../partials/header.php';
 ?>

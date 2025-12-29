@@ -1,7 +1,7 @@
 <?php
 
 // Modèle pour la gestion des utilisateurs (clients et employés).
-// Fonctions :
+
 // - findByEmail : récupère un utilisateur par email
 // - create : ajoute un utilisateur
 // - createPasswordResetToken : crée un token de réinitialisation de mot de passe

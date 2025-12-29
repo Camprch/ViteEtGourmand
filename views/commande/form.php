@@ -1,5 +1,7 @@
 <?php
+
 // $menu est fourni par le controller
+
 $pageTitle = "Commander : " . htmlspecialchars($menu['titre']);
 require __DIR__ . '/../partials/header.php';
 ?>

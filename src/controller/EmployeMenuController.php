@@ -1,6 +1,7 @@
 <?php
 
-// Fonctions principales :
+// Contrôleur pour la gestion des menus
+
 // - createForm()    : Affiche le formulaire de création de menu
 // - store()         : Traite la création d'un menu
 // - index()         : Affiche la liste des menus pour le backoffice

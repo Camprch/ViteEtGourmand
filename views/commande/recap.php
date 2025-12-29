@@ -1,6 +1,7 @@
 <?php
 
-// views/commande/recap.php
+// Vue : récapitulatif d'une commande validée (affichage des infos et confirmation)
+
 // Variables attendues : $menu, $nbPersonnes, $prixParPersonne, $prixMenuTotal, $reduction, $fraisLivraison, $prixTotal, $commandeId,
 // $datePrestation, $heurePrestation, $adresse, $ville, $codePostal
 // Vue : récapitulatif d'une commande validée (affichage des infos et confirmation) -->

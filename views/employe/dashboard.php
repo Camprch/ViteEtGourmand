@@ -1,6 +1,7 @@
 <?php
-// Fichier : dashboard.php
-// Rôle : Tableau de bord principal de l'espace employé
+
+// Vue : Tableau de bord employé
+
 // Propose les liens vers les différentes fonctionnalités employé
 $pageTitle = "Espace employé - Vite & Gourmand";
 require __DIR__ . '/../partials/header.php';

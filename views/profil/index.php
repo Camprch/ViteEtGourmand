@@ -1,7 +1,8 @@
 
 <?php
-// Fichier : profil/index.php
-// Rôle : Affiche et permet la modification des informations du profil utilisateur
+
+// Vue : affichage de la page profil
+
 // Utilisé par : route page=profil
 require __DIR__ . '/../partials/header.php';
 ?>

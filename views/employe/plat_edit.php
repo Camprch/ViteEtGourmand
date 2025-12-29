@@ -1,7 +1,8 @@
 
 <?php
-// Fichier : plat_edit.php
-// Rôle : Affiche le formulaire d'édition d'un plat
+
+// Vue : édition d'un plat
+
 // Utilisé par : EmployePlatController::edit()
 require __DIR__ . '/../partials/header.php';
 ?>

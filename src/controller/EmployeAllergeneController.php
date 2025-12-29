@@ -1,6 +1,7 @@
 <?php
 
-// Fonctions principales :
+// Contrôleur pour la gestion des allergènes.
+
 // - index()       : Affiche la liste des allergènes
 // - createForm()  : Affiche le formulaire de création d'allergène
 // - store()       : Traite la création d'un allergène

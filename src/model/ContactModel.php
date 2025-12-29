@@ -1,7 +1,6 @@
 <?php
 
-// Fonctions principales :
-// - create(array $data) : Crée un message de contact
+// Modèle pour gérer les messages de contact
 
 declare(strict_types=1);
 

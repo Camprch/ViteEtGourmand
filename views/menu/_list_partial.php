@@ -1,7 +1,8 @@
 
 <?php
-// Fichier : _list_partial.php
-// Rôle : Affiche la liste des menus filtrés ou non, côté public
+
+// Vue : liste partielle des menus
+
 // Utilisé par : views/menu/index.php (affichage initial et AJAX)
 declare(strict_types=1);
 

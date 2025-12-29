@@ -1,6 +1,7 @@
 <?php
 
-// Fonctions principales :
+// Modèle pour la table allergene
+
 // - findAll()         : Retourne tous les allergènes
 // - findById(int $id) : Retourne un allergène par son ID
 // - create(string $n) : Crée un nouvel allergène

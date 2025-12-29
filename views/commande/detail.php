@@ -1,9 +1,10 @@
 <?php
+
+// Vue : affiche le détail d'une commande (infos, historique, actions)
+
 $pageTitle = 'Détail commande n°' . (int)$commande['id'];
 require __DIR__ . '/../partials/header.php';
 ?>
-
-<!-- Vue : affiche le détail d'une commande (infos, historique, actions) -->
 
 <h2>Commande n°<?= (int)$commande['id'] ?></h2>
 

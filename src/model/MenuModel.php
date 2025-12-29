@@ -1,7 +1,7 @@
 <?php
 
-// Modèle pour la gestion des menus (cartes de plats).
-// Fonctions :
+// Modèle pour la gestion des menus.
+
 // - findAll : récupère tous les menus disponibles
 // - findFiltered : récupère les menus selon des filtres dynamiques
 // - findById : récupère un menu par son id

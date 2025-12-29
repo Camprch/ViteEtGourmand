@@ -1,7 +1,8 @@
 <?php
 declare(strict_types=1);
 
-// Ce contrôleur gère la gestion des avis clients :
+// Contrôleur pour la gestion des avis clients.
+
 // - Soumission d'un avis par un utilisateur
 // - Validation ou refus d'un avis par un employé/admin
 // - Affichage des avis en attente de validation

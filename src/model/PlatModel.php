@@ -1,7 +1,7 @@
 <?php
 
 // Modèle pour la gestion des plats (entrées, plats, desserts).
-// Fonctions :
+
 // - findAll : liste tous les plats
 // - findById : récupère un plat par son id
 // - create : ajoute un plat

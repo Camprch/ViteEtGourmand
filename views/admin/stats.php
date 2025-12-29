@@ -1,6 +1,7 @@
 <?php
 
 // Vue : statistiques des commandes (NoSQL/MongoDB + graphique)
+
 // Permet de filtrer par date et d'afficher un graphique des ventes par menu.
 
 $pageTitle = "Statistiques - Admin";

@@ -1,7 +1,7 @@
 <?php
 
 // Classe utilitaire pour la gestion de la protection CSRF (Cross-Site Request Forgery).
-// Fonctions :
+
 // - token : génère ou retourne le token CSRF de la session
 // - check : vérifie la validité du token CSRF lors d'une requête POST
 

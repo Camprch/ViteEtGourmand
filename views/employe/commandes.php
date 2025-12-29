@@ -1,7 +1,7 @@
 <?php
 
-// Fichier : commandes.php
-// Rôle : Gestion des commandes par l'employé (filtrage, modification de statut, annulation)
+// Vue : Commandes pour les employés
+
 // Utilisé par : EmployeCommandeController::index()
 
 $pageTitle = "Commandes - Employé";
@@ -101,6 +101,7 @@ $current = $_GET['statut'] ?? '';
 <?php endif; ?>
 
 <?php
+
 // Détermination du dashboard de retour selon le rôle utilisateur
 $user = $_SESSION['user'] ?? null;
 $dashboard = $_SESSION['dashboard_context'] ?? (

@@ -1,8 +1,10 @@
 
 <?php
-// Fichier : home.php
-// Rôle : Page d'accueil du site, présentation, avis clients, menus en avant
+
+// Vue : affichage de la page d'accueil
+
 // Utilisé par : route page=home
+
 // $menus, $avis sont fournis par HomeController
 $pageTitle = 'Accueil - Vite & Gourmand';
 require __DIR__ . '/partials/header.php';

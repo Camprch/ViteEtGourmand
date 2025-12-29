@@ -1,6 +1,7 @@
 <?php
 
-// Fonctions principales :
+// Contrôleur pour la page d'accueil
+
 // - index() : Affiche la page d'accueil avec les menus et les avis validés
 
 declare(strict_types=1);

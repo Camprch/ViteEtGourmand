@@ -1,7 +1,7 @@
 <?php
 
 // Classe utilitaire pour la gestion de l'authentification et des droits d'accès.
-// Fonctions :
+
 // - user : retourne l'utilisateur connecté (ou null)
 // - requireLogin : force la connexion pour accéder à une page
 // - requireRole : force un rôle spécifique pour accéder à une page

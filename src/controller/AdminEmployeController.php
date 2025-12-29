@@ -1,7 +1,8 @@
 <?php
 declare(strict_types=1);
 
-// Ce contrôleur gère la gestion des employés côté administrateur :
+// Contrôleur pour la gestion des employés par un administrateur.
+
 // - Affichage de la liste des employés
 // - Création d'un nouvel employé
 // - Activation/désactivation d'un employé

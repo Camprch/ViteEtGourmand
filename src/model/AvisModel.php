@@ -1,6 +1,7 @@
 <?php
 
-// Fonctions principales :
+// Modèle pour la table avis
+
 // - getValidAvis()         : Retourne les avis validés (5 plus récents)
 // - existsForCommande()    : Vérifie si un avis existe déjà pour une commande
 // - create()               : Crée un avis (non validé par défaut)

@@ -1,6 +1,7 @@
 <?php
 
-// Fonctions principales :
+// Contrôleur pour la gestion des commandes.
+
 // - index()         : Affiche la liste des commandes à traiter
 // - updateStatut()  : Met à jour le statut d'une commande
 // - annuler()       : Annule une commande avec motif

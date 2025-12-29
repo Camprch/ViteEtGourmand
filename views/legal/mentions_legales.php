@@ -1,7 +1,8 @@
 
 <?php
-// Fichier : legal/mentions_legales.php
-// Rôle : Affiche les mentions légales du site
+
+// Vue : Mentions légales
+
 // Utilisé par : route page=mentions_legales
 $pageTitle = 'Mentions légales - Vite & Gourmand';
 require __DIR__ . '/../partials/header.php';

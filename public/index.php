@@ -72,8 +72,8 @@ if ($page === 'dashboard_employe' || str_starts_with($page, 'employe_')) {
     Auth::requireRole(['EMPLOYE', 'ADMIN']);
 }
 
-// Le switch ci-dessous permet de router la requête vers le bon contrôleur ou la bonne vue
-// en fonction de la valeur du paramètre ?page= dans l'URL.
+// Le switch ci-dessous permet de router la requête vers le bon contrôleur 
+// ou la bonne vue en fonction de la valeur du paramètre ?page= dans l'URL.
 // Chaque case correspond à une page ou une action de l'application.
 // Si la page n'est pas reconnue, on affiche la page d'accueil par défaut.
 

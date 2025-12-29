@@ -1,8 +1,10 @@
 
 <?php
-// Fichier : menu/show.php
-// Rôle : Affiche le détail d'un menu public, ses plats et ses informations
+
+// Vue : détail d'un menu
+
 // Utilisé par : route page=menu&id=...
+
 // $menu, $plats, $image sont fournis par le contrôleur
 $pageTitle = 'Menu - ' . htmlspecialchars($menu['titre']);
 require __DIR__ . '/../partials/header.php';

@@ -1,7 +1,8 @@
 <?php
 declare(strict_types=1);
 
-// Ce contrôleur gère les pages d'administration accessibles uniquement aux utilisateurs ayant le rôle ADMIN.
+// Contrôleur pour le tableau de bord admin
+
 // Il vérifie l'accès et affiche la vue du dashboard admin.
 
 require_once __DIR__ . '/../security/Auth.php';

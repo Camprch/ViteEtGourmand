@@ -1,7 +1,8 @@
 
 <?php
-// Fichier : plat_create.php
-// Rôle : Affiche le formulaire de création d'un plat
+
+// Vue : Création d'un plat pour les employés
+
 // Utilisé par : EmployePlatController::create()
 require __DIR__ . '/../partials/header.php';
 ?>

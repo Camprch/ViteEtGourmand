@@ -1,7 +1,8 @@
 <?php
 declare(strict_types=1);
 
-// Ce contrôleur gère toute l'authentification utilisateur :
+// Contrôleur pour la gestion de l'authentification des utilisateurs.
+
 // - Inscription
 // - Connexion
 // - Déconnexion

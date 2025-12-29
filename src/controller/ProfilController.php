@@ -1,6 +1,7 @@
 <?php
 
-// Fonctions principales :
+// Contrôleur pour la gestion du profil utilisateur
+
 // - show()           : Affiche la page de profil de l'utilisateur
 // - update()         : Met à jour les informations du profil
 // - updatePassword() : Met à jour le mot de passe de l'utilisateur

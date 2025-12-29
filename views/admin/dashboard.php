@@ -1,6 +1,7 @@
 <?php
 
 // Vue : page d'accueil de l'administration (dashboard admin)
+
 // Permet d'accéder à la gestion des employés et aux statistiques.
 
 $pageTitle = "Administration - Vite & Gourmand";

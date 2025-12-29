@@ -1,5 +1,7 @@
 <?php
-// Fonctions principales :
+
+// Contrôleur de gestion du formulaire de contact.
+
 // - showForm()  : Affiche le formulaire de contact
 // - submit()    : Traite l'envoi du formulaire, enregistre le message et tente un envoi email
 
@@ -71,7 +73,6 @@ class ContactController
         ]);
 
         // 2) Envoi email (mode simple)
-        // IMPORTANT : en local, mail() ne marche souvent pas => fallback DEV
         $to = 'contact@vite-gourmand.local'; // à remplacer par l’email réel en prod
         $subject = "[Vite & Gourmand] " . $titre;
         $body = "Nouveau message de contact\n\n"
@@ -92,7 +93,7 @@ class ContactController
         echo "<p>Votre message a bien été enregistré.</p>";
 
         if (!$sent) {
-            // Preuve “DEV” pour le jury si le mail n’est pas configuré
+            // "Preuve DEV” si le mail n’est pas configuré
             echo "<p><strong>⚠️ Environnement DEV :</strong> l’envoi email n’est pas configuré.</p>";
             echo "<pre>" . htmlspecialchars("TO: $to\nSUBJECT: $subject\n\n$body") . "</pre>";
         }

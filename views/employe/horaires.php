@@ -1,6 +1,7 @@
 <?php
-// Fichier : horaires.php
-// Rôle : Affiche et permet la modification des horaires d'ouverture par jour
+
+// Vue : horaires
+
 // Utilisé par : EmployeHoraireController::index()
 $pageTitle = "Gestion des horaires";
 require __DIR__ . '/../partials/header.php';

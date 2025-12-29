@@ -1,26 +1,23 @@
-
 <?php
-// Fichier : allergene_index.php
-// Rôle : Affiche la liste des allergènes avec actions de création, édition et suppression
+
+// Vue : Allergenes - Liste de tous les allergènes
+
 // Utilisé par : EmployeAllergeneController::index()
+
 require __DIR__ . '/../partials/header.php';
 ?>
-
 
 <!-- Titre de la page -->
 <h1>Allergènes</h1>
 
-
 <!-- Lien vers la création d'un nouvel allergène -->
 <p><a href="index.php?page=employe_allergene_create">+ Créer un allergène</a></p>
-
 
 <!-- Affichage des messages de succès ou d'erreur -->
 <?php if (isset($_GET['created'])): ?><p>✅ Créé</p><?php endif; ?>
 <?php if (isset($_GET['updated'])): ?><p>✅ Modifié</p><?php endif; ?>
 <?php if (isset($_GET['deleted'])): ?><p>✅ Supprimé</p><?php endif; ?>
 <?php if (isset($_GET['delete_error'])): ?><p>❌ Impossible : allergène utilisé par un plat.</p><?php endif; ?>
-
 
 <!-- Tableau listant tous les allergènes -->
 <table border="1" cellpadding="6">

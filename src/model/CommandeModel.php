@@ -1,10 +1,11 @@
 <?php
 
-// Fonctions principales :
+// Modèle pour la table commande
+
 // - create(array $data)                : Crée une commande
 // - findByUserId(int $userId)          : Liste les commandes d'un utilisateur
 // - findByIdForUser(int $cid, int $u)  : Détail d'une commande pour un utilisateur
-// - updateStatus(int, string)           : Met à jour le statut courant
+// - updateStatus(int, string)          : Met à jour le statut courant
 // - getStatutHistorique(int)           : Historique des statuts d'une commande
 // - addStatutHistorique(...)           : Ajoute une entrée à l'historique des statuts
 // - findAllForEmploye(?string)         : Liste des commandes pour l'employé
