@@ -1,4 +1,7 @@
 <?php
+
+// Vue : formulaire de demande de réinitialisation de mot de passe
+
 $pageTitle = "Mot de passe oublié";
 require __DIR__ . '/../partials/header.php';
 ?>

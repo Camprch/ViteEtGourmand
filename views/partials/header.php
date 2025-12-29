@@ -1,8 +1,13 @@
+
 <?php
+// Fichier : partials/header.php
+// Rôle : En-tête HTML commun à toutes les pages (navigation, titre, ouverture <body>)
+// Utilisé par : toutes les vues du site
 
 // Raccourci pratique pour savoir si on est connecté
 $user = $_SESSION['user'] ?? null;
 ?>
+
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -12,9 +17,9 @@ $user = $_SESSION['user'] ?? null;
     <title>
         <?= isset($pageTitle) ? htmlspecialchars($pageTitle) : 'Vite & Gourmand'; ?>
     </title>
-        <!-- Favicon emoji 🍲 -->
-        <link rel="icon" type="image/svg+xml"
-              href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dominant-baseline='central' font-size='52'%3E🍲%3C/text%3E%3C/svg%3E">
+    <!-- Favicon emoji 🍲 -->
+    <link rel="icon" type="image/svg+xml"
+          href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dominant-baseline='central' font-size='52'%3E🍲%3C/text%3E%3C/svg%3E">
 
     <style>
         /* Mini style pour que ce soit lisible (tu pourras remplacer par ton CSS ensuite) */
@@ -39,6 +44,7 @@ $user = $_SESSION['user'] ?? null;
 
 <body>
 
+<!-- En-tête du site avec navigation principale -->
 <header>
     <h1>Vite & Gourmand</h1>
 
@@ -76,4 +82,5 @@ $user = $_SESSION['user'] ?? null;
     </nav>
 </header>
 
+<!-- Début du contenu principal de la page -->
 <main>

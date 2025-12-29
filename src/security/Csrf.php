@@ -1,8 +1,15 @@
 <?php
+
+// Classe utilitaire pour la gestion de la protection CSRF (Cross-Site Request Forgery).
+// Fonctions :
+// - token : génère ou retourne le token CSRF de la session
+// - check : vérifie la validité du token CSRF lors d'une requête POST
+
 declare(strict_types=1);
 
 final class Csrf
 {
+    // Retourne le token CSRF de la session (le crée si besoin)
     public static function token(): string
     {
         if (empty($_SESSION['_csrf'])) {
@@ -11,6 +18,7 @@ final class Csrf
         return $_SESSION['_csrf'];
     }
 
+    // Vérifie le token CSRF lors d'une requête POST (403 si invalide)
     public static function check(): void
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') return;

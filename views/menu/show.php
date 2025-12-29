@@ -1,19 +1,31 @@
+
 <?php
-// $menu vient du contrôleur
+// Fichier : menu/show.php
+// Rôle : Affiche le détail d'un menu public, ses plats et ses informations
+// Utilisé par : route page=menu&id=...
+// $menu, $plats, $image sont fournis par le contrôleur
 $pageTitle = 'Menu - ' . htmlspecialchars($menu['titre']);
 require __DIR__ . '/../partials/header.php';
 ?>
 
+
+<!-- Titre du menu -->
 <h2><?= htmlspecialchars($menu['titre']) ?></h2>
 
+
+<!-- Affichage de l'image principale du menu si disponible -->
 <?php if ($image): ?>
     <img src="uploads/menus/<?= htmlspecialchars($image['chemin']) ?>"
          alt="<?= htmlspecialchars($image['alt_text'] ?? $menu['titre']) ?>"
          style="max-width:400px;">
 <?php endif; ?>
 
+
+<!-- Description du menu -->
 <p><?= nl2br(htmlspecialchars($menu['description'])) ?></p>
 
+
+<!-- Informations principales du menu -->
 <ul>
     <li>Thème : <?= htmlspecialchars((string)($menu['theme'] ?? '')) ?></li>
     <li>Régime : <?= htmlspecialchars((string)($menu['regime'] ?? '')) ?></li>
@@ -29,18 +41,24 @@ require __DIR__ . '/../partials/header.php';
     </li>
 </ul>
 
+
+<!-- Affichage des conditions particulières si présentes -->
 <?php if (!empty($menu['conditions_particulieres'])): ?>
     <h3>Conditions particulières</h3>
     <p><?= nl2br(htmlspecialchars($menu['conditions_particulieres'])) ?></p>
 <?php endif; ?>
 
+
+<!-- Lien de retour vers la liste des menus -->
 <p>
     <a href="index.php?page=menus">← Retour aux menus</a>
 </p>
 
+
 <?php
 $isOutOfStock = ($menu['stock'] !== null && (int)$menu['stock'] <= 0);
 ?>
+<!-- Affichage du bouton de commande ou message d'indisponibilité -->
 <p>
     <?php if ($isOutOfStock): ?>
         <strong>Menu indisponible (rupture de stock).</strong>
@@ -51,7 +69,10 @@ $isOutOfStock = ($menu['stock'] !== null && (int)$menu['stock'] <= 0);
     <?php endif; ?>
 </p>
 
+
+<!-- Liste des plats inclus dans le menu -->
 <h2>Plats inclus</h2>
+
 
 <?php if (empty($plats)): ?>
     <p>Aucun plat associé pour le moment.</p>
@@ -62,10 +83,12 @@ $isOutOfStock = ($menu['stock'] !== null && (int)$menu['stock'] <= 0);
                 <strong><?= htmlspecialchars($p['type']) ?> :</strong>
                 <?= htmlspecialchars($p['nom']) ?>
 
+                <!-- Description du plat si présente -->
                 <?php if (!empty($p['description'])): ?>
                     — <?= htmlspecialchars($p['description']) ?>
                 <?php endif; ?>
 
+                <!-- Affichage des allergènes du plat si présents -->
                 <?php if (!empty($p['allergenes'])): ?>
                     <div>
                         <small>
@@ -84,5 +107,6 @@ $isOutOfStock = ($menu['stock'] !== null && (int)$menu['stock'] <= 0);
         <?php endforeach; ?>
     </ul>
 <?php endif; ?>
+
 
 <?php require __DIR__ . '/../partials/footer.php'; ?>

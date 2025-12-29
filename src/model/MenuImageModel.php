@@ -1,4 +1,12 @@
 <?php
+
+// Modèle pour la gestion des images associées à un menu.
+// Fonctions :
+// - findByMenu : récupère les images d'un menu
+// - create : ajoute une image (et gère l'image principale)
+// - delete : supprime une image et retourne son chemin
+// - getMainImage : récupère l'image principale d'un menu
+
 declare(strict_types=1);
 
 class MenuImageModel
@@ -10,6 +18,7 @@ class MenuImageModel
         $this->pdo = $pdo;
     }
 
+    // Récupère toutes les images d'un menu, l'image principale en premier
     public function findByMenu(int $menuId): array
     {
         $stmt = $this->pdo->prepare(
@@ -22,6 +31,7 @@ class MenuImageModel
         return $stmt->fetchAll();
     }
 
+    // Ajoute une image à un menu (et gère l'unicité de l'image principale)
     public function create(int $menuId, string $chemin, ?string $altText, bool $isPrincipale): void
     {
         if ($isPrincipale) {
@@ -42,6 +52,7 @@ class MenuImageModel
         ]);
     }
 
+    // Supprime une image par son id et retourne son chemin (pour suppression du fichier physique)
     public function delete(int $id): ?string
     {
         $stmt = $this->pdo->prepare(
@@ -59,6 +70,7 @@ class MenuImageModel
         return $row['chemin'];
     }
 
+    // Récupère l'image principale d'un menu (ou null si aucune)
     public function getMainImage(int $menuId): ?array
     {
         $stmt = $this->pdo->prepare(

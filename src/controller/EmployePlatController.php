@@ -1,4 +1,13 @@
 <?php
+
+// Fonctions principales :
+// - index()        : Affiche la liste des plats
+// - createForm()   : Affiche le formulaire de création de plat
+// - store()        : Traite la création d'un plat
+// - editForm()     : Affiche le formulaire d'édition d'un plat
+// - update()       : Traite la modification d'un plat
+// - delete()       : Supprime un plat
+
 declare(strict_types=1);
 
 require_once __DIR__ . '/../model/PlatModel.php';
@@ -14,6 +23,7 @@ class EmployePlatController
         $this->pdo = $pdo;
     }
 
+    // Vérifie que l'utilisateur est employé ou admin
     private function requireEmployeOrAdmin(): void
     {
         $user = $_SESSION['user'] ?? null;
@@ -24,12 +34,14 @@ class EmployePlatController
         }
     }
 
+    // Normalise le type de plat (ENTREE, PLAT, DESSERT)
     private function normalizeType(string $type): ?string
     {
         $type = strtoupper(trim($type));
         return in_array($type, ['ENTREE','PLAT','DESSERT'], true) ? $type : null;
     }
 
+    // Affiche la liste des plats
     public function index(): void
     {
         $this->requireEmployeOrAdmin();
@@ -38,6 +50,7 @@ class EmployePlatController
         require __DIR__ . '/../../views/employe/plat_index.php';
     }
 
+    // Affiche le formulaire de création de plat
     public function createForm(): void
     {
         $this->requireEmployeOrAdmin();
@@ -49,6 +62,7 @@ class EmployePlatController
         require __DIR__ . '/../../views/employe/plat_create.php';
     }
 
+    // Traite la création d'un plat et l'association des allergènes
     public function store(): void
     {
         $this->requireEmployeOrAdmin();
@@ -87,6 +101,7 @@ class EmployePlatController
         exit;
     }
 
+    // Affiche le formulaire d'édition d'un plat et ses allergènes
     public function editForm(): void
     {
         $this->requireEmployeOrAdmin();
@@ -119,6 +134,7 @@ class EmployePlatController
         require __DIR__ . '/../../views/employe/plat_edit.php';
     }
 
+    // Traite la modification d'un plat et l'association des allergènes
     public function update(): void
     {
         $this->requireEmployeOrAdmin();
@@ -158,6 +174,7 @@ class EmployePlatController
         exit;
     }
 
+    // Supprime un plat
     public function delete(): void
     {
         $this->requireEmployeOrAdmin();

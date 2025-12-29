@@ -1,4 +1,10 @@
 <?php
+
+// Fonctions principales :
+// - index()      : Affiche la liste de tous les menus
+// - show(int $id): Affiche le détail d'un menu
+// - filterAjax() : Filtrage AJAX des menus (HTML partiel)
+
 declare(strict_types=1);
 
 require_once __DIR__ . '/../model/MenuModel.php';
@@ -12,7 +18,7 @@ class MenuController
         $this->pdo = $pdo;
     }
 
-    // Liste de tous les menus
+    // Affiche la liste de tous les menus
     public function index(): void
     {
         $menuModel = new MenuModel($this->pdo);
@@ -21,7 +27,7 @@ class MenuController
         require __DIR__ . '/../../views/menu/index.php';
     }
 
-    // Détail d’un menu
+    // Affiche le détail d'un menu
     public function show(int $id): void
     {
         if ($id <= 0) {
@@ -46,7 +52,7 @@ class MenuController
         require __DIR__ . '/../../views/menu/show.php';
     }
 
-    // Filtrage AJAX des menus (sans layout)
+    // Filtrage AJAX des menus (HTML partiel, sans layout)
     public function filterAjax(): void
     {
         // Sécurité minimale : requête GET uniquement

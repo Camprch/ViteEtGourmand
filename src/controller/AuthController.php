@@ -1,23 +1,34 @@
 <?php
 declare(strict_types=1);
 
+// Ce contrôleur gère toute l'authentification utilisateur :
+// - Inscription
+// - Connexion
+// - Déconnexion
+// - Mot de passe oublié et réinitialisation
+// Chaque méthode correspond à une action liée à l'authentification.
+
 require_once __DIR__ . '/../model/UserModel.php';
 require_once __DIR__ . '/../security/Csrf.php';
 
 class AuthController
 {
+    // Connexion PDO à la base de données
     private PDO $pdo;
 
+    // Constructeur : injection de la connexion PDO
     public function __construct(PDO $pdo)
     {
         $this->pdo = $pdo;
     }
 
+    // Affiche le formulaire d'inscription
     public function showRegisterForm(): void
     {
         require __DIR__ . '/../../views/auth/register.php';
     }
 
+    // Traite la soumission du formulaire d'inscription
     public function registerPost(): void
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -27,6 +38,7 @@ class AuthController
 
         Csrf::check();
 
+        // Récupération et nettoyage des données du formulaire
         $nom      = trim($_POST['nom'] ?? '');
         $prenom   = trim($_POST['prenom'] ?? '');
         $email    = trim($_POST['email'] ?? '');
@@ -37,12 +49,14 @@ class AuthController
 
         $errors = [];
 
+        // Validation des champs obligatoires
         if ($nom === '')     $errors[] = "Le nom est obligatoire.";
         if ($prenom === '')  $errors[] = "Le prénom est obligatoire.";
         if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $errors[] = "Email invalide.";
         }
 
+        // Validation du mot de passe et confirmation
         if ($password === '' || $confirm === '') {
             $errors[] = "Le mot de passe et sa confirmation sont obligatoires.";
         } elseif ($password !== $confirm) {
@@ -57,13 +71,13 @@ class AuthController
 
         $userModel = new UserModel($this->pdo);
 
-        // Email déjà utilisé ?
+        // Vérifie si l'email est déjà utilisé
         if ($email !== '' && $userModel->findByEmail($email)) {
             $errors[] = "Un compte existe déjà avec cet email.";
         }
 
+        // Affichage des erreurs éventuelles
         if (!empty($errors)) {
-            // Affichage ultra simple pour l’instant
             echo "<h2>Erreur lors de l'inscription :</h2><ul>";
             foreach ($errors as $e) {
                 echo "<li>" . htmlspecialchars($e) . "</li>";
@@ -73,7 +87,7 @@ class AuthController
             return;
         }
 
-        // Hash du mot de passe
+        // Hash du mot de passe puis création de l'utilisateur
         $hash = password_hash($password, PASSWORD_DEFAULT);
 
         $id = $userModel->create([
@@ -92,11 +106,14 @@ class AuthController
         echo "<p>Vous pouvez maintenant vous connecter.</p>";
         echo '<p><a href="index.php?page=login">Aller à la page de connexion</a></p>';
     }
+
+    // Affiche le formulaire de connexion
     public function showLoginForm(): void
     {
         require __DIR__ . '/../../views/auth/login.php';
     }
 
+    // Traite la soumission du formulaire de connexion
     public function loginPost(): void
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -111,6 +128,7 @@ class AuthController
 
         $errors = [];
 
+        // Validation des champs
         if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $errors[] = "Email invalide.";
         }
@@ -121,6 +139,7 @@ class AuthController
         $userModel = new UserModel($this->pdo);
         $user = null;
 
+        // Vérification des identifiants
         if (empty($errors)) {
             $user = $userModel->findByEmail($email);
 
@@ -133,6 +152,7 @@ class AuthController
             }
         }
 
+        // Affichage des erreurs éventuelles
         if (!empty($errors)) {
             echo "<h2>Erreur de connexion :</h2><ul>";
             foreach ($errors as $e) {
@@ -143,6 +163,7 @@ class AuthController
             return;
         }
 
+        // Connexion réussie : on stocke l'utilisateur en session
         session_regenerate_id(true);
 
         $_SESSION['user'] = [
@@ -153,17 +174,20 @@ class AuthController
             'role'  => $user['role'],
         ];
 
+        // Redirection après connexion
         $redirect = $_SESSION['redirect_after_login'] ?? 'index.php?page=home';
         unset($_SESSION['redirect_after_login']);
         header('Location: ' . $redirect);
         exit;
     }
 
+    // Affiche le formulaire "mot de passe oublié"
     public function showForgotPasswordForm(): void
     {
         require __DIR__ . '/../../views/auth/forgot_password.php';
     }
 
+    // Traite la demande de réinitialisation de mot de passe
     public function forgotPasswordPost(): void
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -199,10 +223,12 @@ class AuthController
             return;
         }
 
+        // Toujours la même réponse pour éviter de révéler si l'email existe
         echo "<h2>Demande prise en compte</h2>";
         echo "<p>Si un compte existe pour cet email, un lien de réinitialisation a été envoyé.</p>";
     }
 
+    // Affiche le formulaire de réinitialisation de mot de passe
     public function showResetPasswordForm(): void
     {
         $token = trim($_GET['token'] ?? '');
@@ -215,6 +241,7 @@ class AuthController
         require __DIR__ . '/../../views/auth/reset_password.php';
     }
 
+    // Traite la soumission du nouveau mot de passe
     public function resetPasswordPost(): void
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -234,6 +261,7 @@ class AuthController
         }
 
         $errors = [];
+        // Validation du mot de passe et confirmation
         if ($password === '' || $confirm === '') {
             $errors[] = "Le mot de passe et sa confirmation sont obligatoires.";
         } elseif ($password !== $confirm) {
@@ -245,6 +273,7 @@ class AuthController
             }
         }
 
+        // Affichage des erreurs éventuelles
         if (!empty($errors)) {
             echo "<h2>Erreur :</h2><ul>";
             foreach ($errors as $e) echo "<li>" . htmlspecialchars($e) . "</li>";
@@ -255,12 +284,14 @@ class AuthController
 
         $userModel = new UserModel($this->pdo);
 
+        // Vérifie la validité du token
         $resetRow = $userModel->findValidPasswordResetToken($token);
         if (!$resetRow) {
             echo "<p>Lien invalide ou expiré.</p>";
             return;
         }
 
+        // Met à jour le mot de passe et marque le token comme utilisé
         $hash = password_hash($password, PASSWORD_DEFAULT);
         $userModel->updatePassword((int)$resetRow['id_user'], $hash);
         $userModel->markPasswordResetTokenUsed((int)$resetRow['id'], date('Y-m-d H:i:s'));
@@ -269,7 +300,7 @@ class AuthController
         echo '<p><a href="index.php?page=login">Se connecter</a></p>';
     }
 
-
+    // Déconnecte l'utilisateur
     public function logout(): void
     {
     
@@ -280,7 +311,7 @@ class AuthController
     }
     session_destroy();
 
-    echo "<h2>Vous êtes maintenant déconnecté.</h2>";
-    echo '<p><a href="index.php?page=home">Retour à l\'accueil</a></p>';
+        echo "<h2>Vous êtes maintenant déconnecté.</h2>";
+        echo '<p><a href="index.php?page=home">Retour à l\'accueil</a></p>';
     }
-}   
+}

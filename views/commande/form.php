@@ -4,6 +4,8 @@ $pageTitle = "Commander : " . htmlspecialchars($menu['titre']);
 require __DIR__ . '/../partials/header.php';
 ?>
 
+<!-- Vue : formulaire de création d'une commande pour un menu donné -->
+
 <h2>Commander : <?= htmlspecialchars($menu['titre']) ?></h2>
 
 <p><strong>Minimum :</strong> <?= (int)$menu['personnes_min'] ?> personnes</p>

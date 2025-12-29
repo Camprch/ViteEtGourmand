@@ -1,15 +1,25 @@
 <?php
 declare(strict_types=1);
 
+// Ce contrôleur admin permet d'afficher des statistiques sur les menus commandés.
+// Il démontre l'utilisation combinée d'une base SQL (source de vérité) et d'une base NoSQL (MongoDB) pour le stockage et la consultation des stats.
+// Les étapes principales sont :
+// 1. Calcul des stats via SQL (requête sur les commandes)
+// 2. Sauvegarde/"upsert" des stats dans MongoDB (NoSQL)
+// 3. Lecture des stats depuis MongoDB pour affichage (preuve d'utilisation NoSQL)
+
 class AdminStatsController
 {
+    // Connexion PDO à la base SQL
     private PDO $pdo;
 
+    // Constructeur : injection de la connexion PDO
     public function __construct(PDO $pdo)
     {
         $this->pdo = $pdo;
     }
 
+    // Vérifie que l'utilisateur courant est admin (sécurité)
     private function requireAdmin(): void
     {
         $user = $_SESSION['user'] ?? null;
@@ -20,6 +30,7 @@ class AdminStatsController
         }
     }
 
+    // Récupère une variable d'environnement depuis le .env
     private function env(string $key, ?string $default = null): ?string
     {
         $envPath = __DIR__ . '/../../.env';
@@ -34,6 +45,7 @@ class AdminStatsController
         return $val;
     }
 
+    // Affiche la page de statistiques (calcul, stockage, lecture)
     public function index(): void
     {
         $this->requireAdmin();
@@ -49,6 +61,7 @@ class AdminStatsController
         $stats = [];
 
         try {
+            // Vérifie la config MongoDB
             if (!$mongoDsn) {
                 throw new RuntimeException("MONGO_DSN manquant dans .env");
             }
@@ -72,6 +85,7 @@ class AdminStatsController
             $params = [];
             $where = [];
 
+            // Ajout des filtres de date si présents
             if ($dateFrom) {
                 $where[] = "c.date_commande >= :from";
                 $params[':from'] = $dateFrom . " 00:00:00";
@@ -91,8 +105,8 @@ class AdminStatsController
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute($params);
             $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-            // MongoDB sert de base NoSQL pour stocker et relire les statistiques affichées dans le back-office.
+            
+            // MongoDB sert ici de base NoSQL pour stocker et relire les statistiques affichées dans le back-office.
             // Les agrégations sont calculées côté SQL (source de vérité),
             // puis persistées en NoSQL pour consultation (cache/statistiques).
             // Cela permet de démontrer l'utilisation d'une base non relationnelle conformément aux exigences.

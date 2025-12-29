@@ -1,4 +1,15 @@
 <?php
+
+// Fonctions principales :
+// - createForm()    : Affiche le formulaire de création de menu
+// - store()         : Traite la création d'un menu
+// - index()         : Affiche la liste des menus pour le backoffice
+// - editForm()      : Affiche le formulaire d'édition d'un menu
+// - update()        : Traite la modification d'un menu et la gestion des plats liés
+// - toggleStock()   : Active/désactive le stock d'un menu
+// - uploadImage()   : Gère l'upload d'une image pour un menu
+// - deleteImage()   : Supprime une image d'un menu
+
 declare(strict_types=1);
 
 require_once __DIR__ . '/../model/MenuModel.php';
@@ -15,6 +26,7 @@ class EmployeMenuController
         $this->pdo = $pdo;
     }
 
+    // Vérifie que l'utilisateur est employé ou admin
     private function requireEmployeOrAdmin(): void
     {
         $user = $_SESSION['user'] ?? null;
@@ -26,12 +38,14 @@ class EmployeMenuController
         }
     }
 
+    // Affiche le formulaire de création de menu
     public function createForm(): void
     {
         $this->requireEmployeOrAdmin();
         require __DIR__ . '/../../views/employe/menu_create.php';
     }
 
+    // Traite la création d'un menu
     public function store(): void
     {
         $this->requireEmployeOrAdmin();
@@ -87,6 +101,7 @@ class EmployeMenuController
         echo "<p><a href='index.php?page=dashboard_employe'>Retour dashboard</a></p>";
     }
 
+    // Affiche la liste des menus pour le backoffice
     public function index(): void
     {
         $this->requireEmployeOrAdmin();
@@ -97,6 +112,7 @@ class EmployeMenuController
         require __DIR__ . '/../../views/employe/menu_index.php';
     }
 
+    // Affiche le formulaire d'édition d'un menu (et ses plats/images)
     public function editForm(): void
     {
         $this->requireEmployeOrAdmin();
@@ -134,6 +150,7 @@ class EmployeMenuController
         require __DIR__ . '/../../views/employe/menu_edit.php';
     }
 
+    // Traite la modification d'un menu et la gestion des plats liés
     public function update(): void
     {
         $this->requireEmployeOrAdmin();
@@ -220,6 +237,7 @@ class EmployeMenuController
         exit;
     }
 
+    // Active ou désactive le stock d'un menu (stock illimité ou 0)
     public function toggleStock(): void
     {
         $this->requireEmployeOrAdmin();
@@ -254,6 +272,7 @@ class EmployeMenuController
         exit;
     }
 
+    // Gère l'upload d'une image pour un menu
     public function uploadImage(): void
     {
         $this->requireEmployeOrAdmin();
@@ -319,6 +338,7 @@ class EmployeMenuController
         exit;
     }
 
+    // Supprime une image d'un menu (et le fichier associé)
     public function deleteImage(): void
     {
         $this->requireEmployeOrAdmin();

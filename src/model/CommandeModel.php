@@ -1,4 +1,15 @@
 <?php
+
+// Fonctions principales :
+// - create(array $data)                : Crée une commande
+// - findByUserId(int $userId)          : Liste les commandes d'un utilisateur
+// - findByIdForUser(int $cid, int $u)  : Détail d'une commande pour un utilisateur
+// - updateStatus(int, string)           : Met à jour le statut courant
+// - getStatutHistorique(int)           : Historique des statuts d'une commande
+// - addStatutHistorique(...)           : Ajoute une entrée à l'historique des statuts
+// - findAllForEmploye(?string)         : Liste des commandes pour l'employé
+// - findByIdForEmploye(int)            : Détail d'une commande pour l'employé
+
 declare(strict_types=1);
 
 class CommandeModel
@@ -10,9 +21,7 @@ class CommandeModel
         $this->pdo = $pdo;
     }
 
-    /**
-     * Crée une commande et retourne l'ID inséré
-     */
+    // Crée une commande et retourne l'ID inséré
     public function create(array $data): int
     {
         $sql = "
@@ -54,6 +63,7 @@ class CommandeModel
         return (int)$this->pdo->lastInsertId();
     }
 
+    // Liste les commandes d'un utilisateur
     public function findByUserId(int $userId): array
     {
     $sql = "
@@ -76,6 +86,7 @@ class CommandeModel
     return $stmt->fetchAll();
     }
 
+    // Détail d'une commande pour un utilisateur
     public function findByIdForUser(int $commandeId, int $userId): ?array
     {
     $sql = "
@@ -96,6 +107,7 @@ class CommandeModel
     return $row ?: null;
     }
 
+    // Met à jour le statut courant d'une commande
     public function updateStatus(int $id, string $newStatus): bool
     {
     $sql = "UPDATE commande SET statut_courant = :statut WHERE id = :id";
@@ -106,6 +118,7 @@ class CommandeModel
     ]);
     }
 
+    // Retourne l'historique des statuts d'une commande
     public function getStatutHistorique(int $commandeId): array
     {
     $sql = "
@@ -122,6 +135,7 @@ class CommandeModel
     return $stmt->fetchAll();
     }
 
+    // Ajoute une entrée à l'historique des statuts
     public function addStatutHistorique(
         int $commandeId,
         string $statut,
@@ -147,6 +161,7 @@ class CommandeModel
         ]);
     }
 
+    // Liste les commandes à traiter pour l'employé (optionnellement filtrées par statut)
     public function findAllForEmploye(?string $statut = null): array
     {
         $sql = "
@@ -174,6 +189,7 @@ class CommandeModel
         return $stmt->fetchAll();
     }
 
+    // Détail d'une commande pour l'employé
     public function findByIdForEmploye(int $commandeId): ?array
     {
         $sql = "

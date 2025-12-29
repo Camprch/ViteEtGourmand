@@ -3,6 +3,8 @@ $pageTitle = 'Mes commandes';
 require __DIR__ . '/../partials/header.php';
 ?>
 
+<!-- Vue : liste des commandes passées par l'utilisateur connecté -->
+
 <?php require_once __DIR__ . '/../../src/security/Csrf.php'; ?>
 
 <h2>Mes commandes</h2>

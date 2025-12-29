@@ -1,4 +1,11 @@
 <?php
+
+// Modèle pour la gestion des horaires d'ouverture/fermeture du restaurant.
+// Fonctions :
+// - findAllOrdered : récupère tous les horaires triés par jour de la semaine
+// - updateJour : met à jour les horaires d'un jour donné
+// - findByJour : récupère les horaires d'un jour spécifique
+
 declare(strict_types=1);
 
 class HoraireModel
@@ -10,6 +17,7 @@ class HoraireModel
         $this->pdo = $pdo;
     }
 
+    // Récupère tous les horaires, triés selon l'ordre des jours de la semaine
     public function findAllOrdered(): array
     {
         $sql = "
@@ -25,6 +33,7 @@ class HoraireModel
         return $stmt->fetchAll();
     }
 
+    // Met à jour les horaires et l'état (fermé/ouvert) d'un jour donné
     public function updateJour(string $jour, ?string $ouverture, ?string $fermeture, int $ferme): void
     {
         $sql = "
@@ -43,6 +52,7 @@ class HoraireModel
         ]);
     }
 
+    // Récupère les horaires d'un jour précis (ou null si non trouvé)
     public function findByJour(string $jour): ?array
     {
         $stmt = $this->pdo->prepare("SELECT jour, heure_ouverture, heure_fermeture, ferme FROM horaire WHERE jour = :jour");

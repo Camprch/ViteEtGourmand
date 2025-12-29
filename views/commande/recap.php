@@ -1,7 +1,9 @@
 <?php
+
 // views/commande/recap.php
 // Variables attendues : $menu, $nbPersonnes, $prixParPersonne, $prixMenuTotal, $reduction, $fraisLivraison, $prixTotal, $commandeId,
 // $datePrestation, $heurePrestation, $adresse, $ville, $codePostal
+// Vue : récapitulatif d'une commande validée (affichage des infos et confirmation) -->
 
 $pageTitle = "Récap commande #" . (int)$commandeId;
 require __DIR__ . '/../partials/header.php';

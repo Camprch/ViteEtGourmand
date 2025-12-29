@@ -1,4 +1,8 @@
 <?php
+// Fonctions principales :
+// - showForm()  : Affiche le formulaire de contact
+// - submit()    : Traite l'envoi du formulaire, enregistre le message et tente un envoi email
+
 declare(strict_types=1);
 
 require_once __DIR__ . '/../model/ContactModel.php';
@@ -12,11 +16,13 @@ class ContactController
         $this->pdo = $pdo;
     }
 
+    // Affiche le formulaire de contact
     public function showForm(): void
     {
         require __DIR__ . '/../../views/contact/index.php';
     }
 
+    // Traite la soumission du formulaire de contact, enregistre le message et tente un envoi email
     public function submit(): void
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

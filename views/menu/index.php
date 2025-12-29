@@ -1,11 +1,18 @@
+
 <?php
-// views/menu/index.php
+// Fichier : menu/index.php
+// Rôle : Affiche la page de recherche et de filtrage des menus côté public
+// Utilisé par : route page=menus
 $pageTitle = 'Nos menus - Vite & Gourmand';
 require __DIR__ . '/../partials/header.php';
 ?>
 
+
+<!-- Titre de la page -->
 <h2>Nos menus</h2>
 
+
+<!-- Formulaire de filtrage des menus -->
 <form id="menu-filters">
     <label>
         Thème :
@@ -30,8 +37,11 @@ require __DIR__ . '/../partials/header.php';
     <button type="submit">Filtrer</button>
 </form>
 
+
 <hr>
 
+
+<!-- Conteneur pour l'affichage dynamique des menus (filtrés ou non) -->
 <div id="menus-container">
     <?php
     // Affichage initial (sans filtres)
@@ -39,6 +49,8 @@ require __DIR__ . '/../partials/header.php';
     ?>
 </div>
 
+
+<!-- Script JS pour la soumission AJAX du formulaire de filtres -->
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('menu-filters');
@@ -64,5 +76,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 </script>
+
 
 <?php require __DIR__ . '/../partials/footer.php'; ?>

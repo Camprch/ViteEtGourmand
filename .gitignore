@@ -1,18 +1,3 @@
-# OS / files parasites
-.DS_Store
-Thumbs.db
-Desktop.ini
-*.swp
-*.swo
-
-# Windows Mark-of-the-Web (Zone.Identifier)
-*:Zone.Identifier
-*Zone.Identifier*
-*/Zone.Identifier
-*.Zone.Identifier
-*/.Zone.Identifier
-*.Zone.Identifier
-
 # Environnement / secrets
 .env
 .env.*

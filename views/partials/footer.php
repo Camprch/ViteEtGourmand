@@ -1,8 +1,12 @@
+
 <?php
-// views/partials/footer.php
+// Fichier : partials/footer.php
+// Rôle : Pied de page HTML commun à toutes les pages (horaires, liens légaux, copyright)
+// Utilisé par : toutes les vues du site
 $horaires = $GLOBALS['horaires'] ?? [];
 ?>
     </main>
+    <!-- Début du pied de page -->
     <footer>
         <section>
             <h4>Horaires</h4>

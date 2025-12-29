@@ -3,6 +3,8 @@ $pageTitle = 'Contact - Vite & Gourmand';
 require __DIR__ . '/../partials/header.php';
 ?>
 
+<!-- Vue : formulaire de contact pour les utilisateurs du site -->
+
 <h2>Contact</h2>
 
 <form method="post" action="index.php?page=contact_post">

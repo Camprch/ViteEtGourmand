@@ -1,11 +1,23 @@
-<?php require __DIR__ . '/../partials/header.php'; ?>
 
+<?php
+// Fichier : plat_edit.php
+// Rôle : Affiche le formulaire d'édition d'un plat
+// Utilisé par : EmployePlatController::edit()
+require __DIR__ . '/../partials/header.php';
+?>
+
+
+<!-- Titre de la page -->
 <h1>Modifier un plat</h1>
 
+
+<!-- Formulaire d'édition d'un plat -->
 <form method="post" action="index.php?page=employe_plat_update">
+    <!-- Protection CSRF et identifiant du plat -->
     <input type="hidden" name="_csrf" value="<?= htmlspecialchars(Csrf::token()) ?>">
     <input type="hidden" name="id" value="<?= (int)$plat['id'] ?>">
 
+    <!-- Champs principaux du plat -->
     <div>
         <label>Nom</label><br>
         <input name="nom" value="<?= htmlspecialchars($plat['nom']) ?>" required>
@@ -26,6 +38,7 @@
     </div>
 
     <hr>
+    <!-- Section de sélection des allergènes associés au plat -->
     <h2>Allergènes</h2>
 
     <?php if (empty($allergenes)): ?>
@@ -43,10 +56,12 @@
         <?php endforeach; ?>
     <?php endif; ?>
 
-
     <button type="submit">Enregistrer</button>
 </form>
 
+
+<!-- Lien de retour vers la liste des plats -->
 <p><a href="index.php?page=employe_plats">← Retour liste</a></p>
+
 
 <?php require __DIR__ . '/../partials/footer.php'; ?>

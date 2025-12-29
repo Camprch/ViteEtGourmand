@@ -1,4 +1,7 @@
 <?php
+
+// Vue : formulaire de réinitialisation du mot de passe via un token
+
 $pageTitle = "Réinitialiser le mot de passe";
 require __DIR__ . '/../partials/header.php';
 

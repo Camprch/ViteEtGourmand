@@ -1,4 +1,7 @@
 <?php
+
+// Vue : gestion des employés (création, activation/désactivation, liste)
+
 $pageTitle = "Gestion employés - Admin";
 require __DIR__ . '/../partials/header.php';
 ?>

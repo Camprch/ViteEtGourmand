@@ -1,10 +1,22 @@
-<?php require __DIR__ . '/../partials/header.php'; ?>
 
+<?php
+// Fichier : profil/index.php
+// Rôle : Affiche et permet la modification des informations du profil utilisateur
+// Utilisé par : route page=profil
+require __DIR__ . '/../partials/header.php';
+?>
+
+
+<!-- Titre de la page -->
 <h1>Mon profil</h1>
 
+
+<!-- Messages de confirmation après modification -->
 <?php if (isset($_GET['updated'])): ?><p>✅ Profil mis à jour</p><?php endif; ?>
 <?php if (isset($_GET['password_updated'])): ?><p>✅ Mot de passe modifié</p><?php endif; ?>
 
+
+<!-- Formulaire de modification des informations du profil -->
 <h2>Informations</h2>
 <form method="post" action="index.php?page=profil_update">
     <input type="hidden" name="_csrf" value="<?= htmlspecialchars(Csrf::token()) ?>">
@@ -37,8 +49,11 @@
     <button type="submit">Enregistrer</button>
 </form>
 
+
 <hr>
 
+
+<!-- Formulaire de changement de mot de passe -->
 <h2>Changer le mot de passe</h2>
 <form method="post" action="index.php?page=profil_password">
     <input type="hidden" name="_csrf" value="<?= htmlspecialchars(Csrf::token()) ?>">
@@ -60,5 +75,6 @@
 
     <button type="submit">Mettre à jour</button>
 </form>
+
 
 <?php require __DIR__ . '/../partials/footer.php'; ?>

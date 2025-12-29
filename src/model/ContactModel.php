@@ -1,4 +1,8 @@
 <?php
+
+// Fonctions principales :
+// - create(array $data) : Crée un message de contact
+
 declare(strict_types=1);
 
 class ContactModel
@@ -10,6 +14,7 @@ class ContactModel
         $this->pdo = $pdo;
     }
 
+    // Crée un message de contact
     public function create(array $data): int
     {
         $sql = "INSERT INTO contact_message (nom, email, titre, message, date, traite)

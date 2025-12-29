@@ -1,4 +1,8 @@
 <?php
+
+// Fonctions principales :
+// - index() : Affiche la page d'accueil avec les menus et les avis validés
+
 declare(strict_types=1);
 
 require_once __DIR__ . '/../model/MenuModel.php';
@@ -13,6 +17,7 @@ class HomeController
         $this->pdo = $pdo;
     }
 
+    // Affiche la page d'accueil avec les menus et les avis validés
     public function index(): void
     {
         $menuModel = new MenuModel($this->pdo);

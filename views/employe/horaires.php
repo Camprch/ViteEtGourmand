@@ -1,21 +1,28 @@
 <?php
+// Fichier : horaires.php
+// Rôle : Affiche et permet la modification des horaires d'ouverture par jour
+// Utilisé par : EmployeHoraireController::index()
 $pageTitle = "Gestion des horaires";
 require __DIR__ . '/../partials/header.php';
 
-// index par jour pour accès facile
+// Indexation des horaires par jour pour accès facile dans le formulaire
 $byJour = [];
 foreach ($horaires as $h) {
     $byJour[$h['jour']] = $h;
 }
 ?>
 
+<!-- Titre de la page -->
 <h2>Gestion des horaires</h2>
 
+<!-- Message de confirmation après mise à jour -->
 <?php if (!empty($_GET['ok'])): ?>
     <p><strong>Horaires mis à jour ✅</strong></p>
 <?php endif; ?>
 
+<!-- Formulaire de modification des horaires d'ouverture par jour -->
 <form method="post" action="index.php?page=employe_horaires_update">
+    <!-- Protection CSRF -->
     <input type="hidden" name="_csrf" value="<?= htmlspecialchars(Csrf::token()) ?>">
 
     <table border="1" cellpadding="6" cellspacing="0">
@@ -28,7 +35,7 @@ foreach ($horaires as $h) {
             </tr>
         </thead>
         <tbody>
-        <?php foreach (['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'] as $jour): ?>
+        <?php foreach (["Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche"] as $jour): ?>
             <?php $h = $byJour[$jour] ?? ['heure_ouverture'=>null,'heure_fermeture'=>null,'ferme'=>0]; ?>
             <tr>
                 <td><?= htmlspecialchars($jour) ?></td>

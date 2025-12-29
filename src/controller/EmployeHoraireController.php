@@ -1,4 +1,9 @@
 <?php
+
+// Fonctions principales :
+// - index()  : Affiche la liste des horaires
+// - update() : Met à jour les horaires pour chaque jour
+
 declare(strict_types=1);
 
 require_once __DIR__ . '/../model/HoraireModel.php';
@@ -16,11 +21,13 @@ class EmployeHoraireController
         $this->pdo = $pdo;
     }
 
+    // Vérifie que l'utilisateur est employé ou admin
     private function requireEmployeOrAdmin(): void
     {
         Auth::requireRole(['EMPLOYE', 'ADMIN']);
     }
 
+    // Affiche la liste des horaires
     public function index(): void
     {
         $this->requireEmployeOrAdmin();
@@ -31,6 +38,7 @@ class EmployeHoraireController
         require __DIR__ . '/../../views/employe/horaires.php';
     }
 
+    // Met à jour les horaires pour chaque jour
     public function update(): void
     {
         $this->requireEmployeOrAdmin();

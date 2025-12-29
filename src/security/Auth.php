@@ -1,13 +1,22 @@
 <?php
+
+// Classe utilitaire pour la gestion de l'authentification et des droits d'accès.
+// Fonctions :
+// - user : retourne l'utilisateur connecté (ou null)
+// - requireLogin : force la connexion pour accéder à une page
+// - requireRole : force un rôle spécifique pour accéder à une page
+
 declare(strict_types=1);
 
 final class Auth
 {
+    // Retourne l'utilisateur connecté (ou null si non connecté)
     public static function user(): ?array
     {
         return $_SESSION['user'] ?? null;
     }
 
+    // Force la connexion pour accéder à la page (redirige sinon)
     public static function requireLogin(): void
     {
         if (!self::user()) {
@@ -17,6 +26,7 @@ final class Auth
         }
     }
 
+    // Force un rôle spécifique pour accéder à la page (403 sinon)
     public static function requireRole(array $roles): void
     {
         $u = self::user();

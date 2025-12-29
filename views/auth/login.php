@@ -1,4 +1,7 @@
 <?php
+
+// Vue : formulaire de connexion utilisateur
+
 $pageTitle = 'Connexion - Vite & Gourmand';
 require __DIR__ . '/../partials/header.php';
 ?>

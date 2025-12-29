@@ -1,4 +1,7 @@
 <?php
+
+// Vue : formulaire de création de compte utilisateur
+
 $pageTitle = 'Créer un compte - Vite & Gourmand';
 require __DIR__ . '/../partials/header.php';
 ?>

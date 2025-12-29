@@ -1,4 +1,10 @@
 <?php
+
+// Fonctions principales :
+// - show()           : Affiche la page de profil de l'utilisateur
+// - update()         : Met à jour les informations du profil
+// - updatePassword() : Met à jour le mot de passe de l'utilisateur
+
 declare(strict_types=1);
 
 require_once __DIR__ . '/../model/UserModel.php';
@@ -13,6 +19,7 @@ class ProfilController
         $this->pdo = $pdo;
     }
 
+    // Vérifie que l'utilisateur est connecté et retourne ses infos
     private function requireAuth(): array
     {
         if (!isset($_SESSION['user'])) {
@@ -22,6 +29,7 @@ class ProfilController
         return $_SESSION['user'];
     }
 
+    // Affiche la page de profil de l'utilisateur
     public function show(): void
     {
         $sessionUser = $this->requireAuth();
@@ -37,6 +45,7 @@ class ProfilController
         require __DIR__ . '/../../views/profil/index.php';
     }
 
+    // Met à jour les informations du profil
     public function update(): void
     {
         $sessionUser = $this->requireAuth();
@@ -85,6 +94,7 @@ class ProfilController
         exit;
     }
 
+    // Met à jour le mot de passe de l'utilisateur (et force la reconnexion)
     public function updatePassword(): void
     {
         $sessionUser = $this->requireAuth();

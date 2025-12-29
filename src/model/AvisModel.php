@@ -1,4 +1,13 @@
 <?php
+
+// Fonctions principales :
+// - getValidAvis()         : Retourne les avis validés (5 plus récents)
+// - existsForCommande()    : Vérifie si un avis existe déjà pour une commande
+// - create()               : Crée un avis (non validé par défaut)
+// - getPendingAvis()       : Retourne les avis en attente de validation
+// - setValid()             : Valide un avis
+// - delete()               : Supprime un avis
+
 declare(strict_types=1);
 
 class AvisModel
@@ -10,9 +19,7 @@ class AvisModel
         $this->pdo = $pdo;
 }
 
-    /**
-     * Retourne les avis validés (les plus récents d'abord)
-     */
+    // Retourne les avis validés (les plus récents d'abord)
     public function getValidAvis(): array
 {
         $stmt = $this->pdo->query("
@@ -27,9 +34,7 @@ class AvisModel
         return $stmt->fetchAll();
     }
 
-    /**
-     * Vérifie si un avis existe déjà pour une commande
-     */
+    // Vérifie si un avis existe déjà pour une commande
     public function existsForCommande(int $commandeId): bool
     {
         $stmt = $this->pdo->prepare(
@@ -42,9 +47,7 @@ class AvisModel
         return (bool)$stmt->fetch();
     }
 
-    /**
-     * Crée un avis (non validé par défaut)
-     */
+    // Crée un avis (non validé par défaut)
     public function create(array $data): int
 {
     $sql = "
@@ -58,6 +61,7 @@ class AvisModel
     return (int)$this->pdo->lastInsertId();
 }
 
+    // Retourne les avis en attente de validation
     public function getPendingAvis(): array
 {
     $sql = "
@@ -74,12 +78,14 @@ class AvisModel
     return $this->pdo->query($sql)->fetchAll();
 }
 
+    // Valide un avis
     public function setValid(int $avisId): void
     {
         $stmt = $this->pdo->prepare("UPDATE avis SET valide = 1 WHERE id = :id");
         $stmt->execute([':id' => $avisId]);
     }
 
+    // Supprime un avis
     public function delete(int $avisId): void
     {
         $stmt = $this->pdo->prepare("DELETE FROM avis WHERE id = :id");

@@ -1,4 +1,10 @@
 <?php
+
+// Fonctions principales :
+// - index()         : Affiche la liste des commandes à traiter
+// - updateStatut()  : Met à jour le statut d'une commande
+// - annuler()       : Annule une commande avec motif
+
 declare(strict_types=1);
 
 require_once __DIR__ . '/../model/CommandeModel.php';
@@ -14,12 +20,14 @@ class EmployeCommandeController
         $this->pdo = $pdo;
     }
 
+    // Vérifie le rôle et retourne l'utilisateur courant
     private function currentUser(): array
     {
         Auth::requireRole(['EMPLOYE', 'ADMIN']);
         return Auth::user();
     }
 
+    // Affiche la liste des commandes à traiter
     public function index(): void
     {
         $this->currentUser();
@@ -32,6 +40,7 @@ class EmployeCommandeController
         require __DIR__ . '/../../views/employe/commandes.php';
     }
 
+    // Met à jour le statut d'une commande (et ajoute à l'historique)
     public function updateStatut(): void
 {
     $user = $this->currentUser();
@@ -73,6 +82,7 @@ class EmployeCommandeController
     exit;
     }
 
+    // Annule une commande avec motif et mode de contact
     public function annuler(): void
     {
     $user = $this->currentUser();

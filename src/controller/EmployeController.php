@@ -1,4 +1,8 @@
 <?php
+
+// Fonctions principales :
+// - dashboard() : Affiche le tableau de bord employé
+
 declare(strict_types=1);
 
 class EmployeController
@@ -10,6 +14,7 @@ class EmployeController
         $this->pdo = $pdo;
     }
 
+    // Vérifie que l'utilisateur est employé ou admin
     private function requireEmployeOrAdmin(): void
     {
         $user = $_SESSION['user'] ?? null;
@@ -26,6 +31,7 @@ class EmployeController
         }
     }
 
+    // Affiche le tableau de bord employé
     public function dashboard(): void
     {
         $this->requireEmployeOrAdmin();

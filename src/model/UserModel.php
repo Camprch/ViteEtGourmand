@@ -1,4 +1,20 @@
 <?php
+
+// Modèle pour la gestion des utilisateurs (clients et employés).
+// Fonctions :
+// - findByEmail : récupère un utilisateur par email
+// - create : ajoute un utilisateur
+// - createPasswordResetToken : crée un token de réinitialisation de mot de passe
+// - findValidPasswordResetToken : vérifie un token de réinitialisation
+// - markPasswordResetTokenUsed : marque un token comme utilisé
+// - updatePassword : met à jour le mot de passe
+// - findAllEmployes : liste tous les employés
+// - setActif : active/désactive un employé
+// - findById : récupère un utilisateur par id
+// - emailExists : vérifie l'existence d'un email (hors id donné)
+// - updateProfile : met à jour le profil d'un utilisateur
+// - getPasswordHash : récupère le hash du mot de passe
+
 declare(strict_types=1);
 
 class UserModel
@@ -10,6 +26,7 @@ class UserModel
         $this->pdo = $pdo;
     }
 
+    // Récupère un utilisateur par son email (ou null si non trouvé)
     public function findByEmail(string $email): ?array
     {
         $sql = "SELECT * FROM `user` WHERE email = :email";
@@ -20,6 +37,7 @@ class UserModel
         return $user ?: null;
     }
 
+    // Crée un nouvel utilisateur et retourne son id
     public function create(array $data): int
     {
         $sql = "
@@ -43,6 +61,7 @@ class UserModel
         return (int)$this->pdo->lastInsertId();
     }
 
+    // Crée un token de réinitialisation de mot de passe pour un utilisateur
     public function createPasswordResetToken(int $userId, string $token): void
     {
         // Optionnel : invalider les anciens tokens non utilisés de cet utilisateur
@@ -62,6 +81,7 @@ class UserModel
 
     }
 
+    // Vérifie la validité d'un token de réinitialisation (non utilisé et non expiré)
     public function findValidPasswordResetToken(string $token): ?array
     {
         $sql = "SELECT id, id_user, token, expires_at, used
@@ -76,6 +96,7 @@ class UserModel
         return $row ?: null;
     }
 
+    // Marque un token de réinitialisation comme utilisé
     public function markPasswordResetTokenUsed(int $tokenId, string $usedAt): void
     {
         // Si ta table n'a pas de used_at, on ignore $usedAt et on met juste used=1
@@ -84,6 +105,7 @@ class UserModel
         $stmt->execute([':id' => $tokenId]);
     }
 
+    // Met à jour le mot de passe d'un utilisateur
     public function updatePassword(int $userId, string $passwordHash): void
     {
         $sql = "UPDATE `user` SET password = :password WHERE id = :id";
@@ -94,6 +116,7 @@ class UserModel
         ]);
     }
 
+    // Récupère la liste de tous les employés
     public function findAllEmployes(): array
     {
         $sql = "SELECT id, nom, prenom, email, role, actif, created_at
@@ -104,6 +127,7 @@ class UserModel
         return $stmt->fetchAll();
     }
 
+    // Active ou désactive un employé
     public function setActif(int $userId, int $actif): void
     {
         $sql = "UPDATE `user` SET actif = :actif WHERE id = :id AND role = 'EMPLOYE'";
@@ -114,6 +138,7 @@ class UserModel
         ]);
     }
 
+    // Récupère un utilisateur par son identifiant (ou null si non trouvé)
     public function findById(int $id): ?array
     {
         $sql = "SELECT id, nom, prenom, email, telephone, adresse, role, actif, created_at
@@ -126,6 +151,7 @@ class UserModel
         return $row ?: null;
     }
 
+    // Vérifie si un email existe déjà (hors utilisateur donné)
     public function emailExists(string $email, int $excludeId): bool
     {
         $sql = "SELECT COUNT(*) FROM `user` WHERE email = :email AND id != :id";
@@ -134,6 +160,7 @@ class UserModel
         return (int)$stmt->fetchColumn() > 0;
     }
 
+    // Met à jour les informations du profil d'un utilisateur
     public function updateProfile(int $id, array $data): bool
     {
         $sql = "UPDATE `user` SET
@@ -166,6 +193,7 @@ class UserModel
         return $stmt->execute();
     }
 
+    // Récupère le hash du mot de passe d'un utilisateur
     public function getPasswordHash(int $userId): string
     {
         $sql = "SELECT password FROM `user` WHERE id = :id";

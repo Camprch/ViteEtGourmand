@@ -1,9 +1,14 @@
+
 <?php
-// $menus vient du HomeController
+// Fichier : home.php
+// Rôle : Page d'accueil du site, présentation, avis clients, menus en avant
+// Utilisé par : route page=home
+// $menus, $avis sont fournis par HomeController
 $pageTitle = 'Accueil - Vite & Gourmand';
 require __DIR__ . '/partials/header.php';
 ?>
 
+<!-- Présentation de l'entreprise -->
 <section>
     <h2>Présentation de l'entreprise</h2>
     <p>
@@ -20,6 +25,7 @@ require __DIR__ . '/partials/header.php';
     </p>
 </section>
 
+<!-- Avis clients -->
 <section>
     <h2>Avis de nos clients</h2>
 
@@ -39,6 +45,7 @@ require __DIR__ . '/partials/header.php';
     <?php endif; ?>
 </section>
 
+<!-- Menus mis en avant sur la page d'accueil -->
 <h2>Nos menus</h2>
 
 <?php if (empty($menus)): ?>

@@ -1,4 +1,15 @@
 <?php
+
+// Modèle pour la gestion des plats (entrées, plats, desserts).
+// Fonctions :
+// - findAll : liste tous les plats
+// - findById : récupère un plat par son id
+// - create : ajoute un plat
+// - update : modifie un plat
+// - delete : supprime un plat
+// - getAllergenesForPlat : liste les allergènes d'un plat
+// - replaceAllergenes : remplace les allergènes d'un plat
+
 declare(strict_types=1);
 
 class PlatModel
@@ -10,6 +21,7 @@ class PlatModel
         $this->pdo = $pdo;
     }
 
+    // Récupère tous les plats, triés par type et nom
     public function findAll(): array
     {
         $sql = "SELECT id, nom, description, type
@@ -18,6 +30,7 @@ class PlatModel
         return $this->pdo->query($sql)->fetchAll();
     }
 
+    // Récupère un plat par son identifiant (ou null si non trouvé)
     public function findById(int $id): ?array
     {
         $stmt = $this->pdo->prepare("SELECT id, nom, description, type FROM plat WHERE id = :id");
@@ -26,6 +39,7 @@ class PlatModel
         return $row ?: null;
     }
 
+    // Ajoute un nouveau plat et retourne son id
     public function create(string $nom, ?string $description, string $type): int
     {
         $stmt = $this->pdo->prepare("INSERT INTO plat (nom, description, type) VALUES (:nom, :description, :type)");
@@ -37,6 +51,7 @@ class PlatModel
         return (int)$this->pdo->lastInsertId();
     }
 
+    // Met à jour les informations d'un plat
     public function update(int $id, string $nom, ?string $description, string $type): bool
     {
         $stmt = $this->pdo->prepare("UPDATE plat SET nom = :nom, description = :description, type = :type WHERE id = :id");
@@ -48,6 +63,7 @@ class PlatModel
         ]);
     }
 
+    // Supprime un plat (les liens sont supprimés automatiquement en base)
     public function delete(int $id): bool
     {
         // OK car menu_plat et plat_allergene ont ON DELETE CASCADE côté plat
@@ -55,6 +71,7 @@ class PlatModel
         return $stmt->execute([':id' => $id]);
     }
 
+    // Récupère la liste des allergènes associés à un plat
     public function getAllergenesForPlat(int $platId): array
     {
         $sql = "SELECT a.id, a.nom
@@ -67,6 +84,7 @@ class PlatModel
         return $stmt->fetchAll();
     }
 
+    // Remplace la liste des allergènes d'un plat (suppression puis insertion, sans doublons)
     public function replaceAllergenes(int $platId, array $allergeneIds): void
     {
         $this->pdo->beginTransaction();

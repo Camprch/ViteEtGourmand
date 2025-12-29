@@ -1,4 +1,19 @@
 <?php
+
+// Modèle pour la gestion des menus (cartes de plats).
+// Fonctions :
+// - findAll : récupère tous les menus disponibles
+// - findFiltered : récupère les menus selon des filtres dynamiques
+// - findById : récupère un menu par son id
+// - create : ajoute un menu
+// - findAllForBackoffice : liste tous les menus pour l'admin
+// - update : modifie un menu
+// - setStock : met à jour le stock d'un menu
+// - getPlatsForMenu : liste les plats d'un menu
+// - replacePlats : remplace les plats d'un menu
+// - getPlatsWithAllergenesForFront : plats + allergènes pour affichage client
+// - getMainImage : récupère l'image principale d'un menu
+
 declare(strict_types=1);
 
 class MenuModel
@@ -10,9 +25,7 @@ class MenuModel
         $this->pdo = $pdo;
     }
 
-    /**
-     * Retourne tous les menus, pour l’instant sans filtres.
-     */
+    // Récupère tous les menus disponibles (stock > 0 ou illimité)
     public function findAll(): array
     {
         $sql = 'SELECT id, titre, description, personnes_min, prix_par_personne, stock
@@ -23,9 +36,7 @@ class MenuModel
         return $stmt->fetchAll();
     }
 
-    /**
-     * Retourne les menus filtrés dynamiquement
-     */
+    // Récupère les menus filtrés dynamiquement selon les critères fournis
     public function findFiltered(array $filters): array
     {
         $sql = 'SELECT id, titre, description, personnes_min, prix_par_personne, stock
@@ -73,9 +84,7 @@ class MenuModel
         return $stmt->fetchAll();
     }
 
-    /**
-     * Retourne un menu par son ID
-     */
+    // Récupère un menu par son identifiant (ou null si non trouvé)
     public function findById(int $id): ?array
     {
         $sql = 'SELECT id, titre, description, theme, personnes_min, prix_par_personne,
@@ -92,6 +101,7 @@ class MenuModel
         return $menu ?: null;
     }
 
+    // Crée un nouveau menu et retourne son id
     public function create(array $data): int
     {
         $sql = "
@@ -119,6 +129,7 @@ class MenuModel
         return (int)$this->pdo->lastInsertId();
     }
 
+    // Récupère tous les menus pour le backoffice (admin), triés par date de création
     public function findAllForBackoffice(): array
     {
         $sql = 'SELECT id, titre, theme, regime, personnes_min, prix_par_personne, stock, created_at
@@ -127,6 +138,7 @@ class MenuModel
         return $this->pdo->query($sql)->fetchAll();
     }
 
+    // Met à jour les informations d'un menu
     public function update(int $id, array $data): bool
     {
         $sql = "UPDATE menu SET
@@ -154,6 +166,7 @@ class MenuModel
         ]);
     }
 
+    // Met à jour le stock d'un menu (null = illimité)
     public function setStock(int $id, ?int $stock): bool
     {
         $stmt = $this->pdo->prepare("UPDATE menu SET stock = :stock WHERE id = :id");
@@ -167,6 +180,7 @@ class MenuModel
         return $stmt->execute();
     }
 
+    // Récupère la liste des plats associés à un menu
     public function getPlatsForMenu(int $menuId): array
     {
         $sql = "SELECT mp.id_plat, mp.ordre, p.nom, p.type
@@ -184,18 +198,12 @@ class MenuModel
         return $stmt->fetchAll();
     }
 
-    /**
-     * $items = [
-     *   ['id_plat' => 12, 'ordre' => 1],
-     *   ['id_plat' => 7,  'ordre' => 2],
-     * ]
-     */
+    // Remplace la liste des plats d'un menu (suppression puis insertion)
     public function replacePlats(int $menuId, array $items): void
     {
         $this->pdo->beginTransaction();
 
         try {
-            // On remplace tout (simple, fiable, jury-proof)
             $del = $this->pdo->prepare("DELETE FROM menu_plat WHERE id_menu = :id_menu");
             $del->execute([':id_menu' => $menuId]);
 
@@ -225,6 +233,7 @@ class MenuModel
         }
     }
     
+    // Récupère les plats d'un menu avec leurs allergènes (pour affichage client)
     public function getPlatsWithAllergenesForFront(int $menuId): array
     {
         $sql = "SELECT
@@ -277,6 +286,7 @@ class MenuModel
         return array_values($plats);
     }
 
+    // Récupère l'image principale d'un menu (ou null si aucune)
     public function getMainImage(int $menuId): ?array
     {
         $stmt = $this->pdo->prepare(

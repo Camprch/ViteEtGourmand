@@ -1,4 +1,13 @@
 <?php
+
+// Fonctions principales :
+// - index()       : Affiche la liste des allergènes
+// - createForm()  : Affiche le formulaire de création d'allergène
+// - store()       : Traite la création d'un allergène
+// - editForm()    : Affiche le formulaire d'édition d'un allergène
+// - update()      : Traite la modification d'un allergène
+// - delete()      : Supprime un allergène
+
 declare(strict_types=1);
 
 require_once __DIR__ . '/../model/AllergeneModel.php';
@@ -13,6 +22,7 @@ class EmployeAllergeneController
         $this->pdo = $pdo;
     }
 
+    // Vérifie que l'utilisateur est employé ou admin
     private function requireEmployeOrAdmin(): void
     {
         $user = $_SESSION['user'] ?? null;
@@ -23,6 +33,7 @@ class EmployeAllergeneController
         }
     }
 
+    // Affiche la liste des allergènes
     public function index(): void
     {
         $this->requireEmployeOrAdmin();
@@ -31,12 +42,14 @@ class EmployeAllergeneController
         require __DIR__ . '/../../views/employe/allergene_index.php';
     }
 
+    // Affiche le formulaire de création d'allergène
     public function createForm(): void
     {
         $this->requireEmployeOrAdmin();
         require __DIR__ . '/../../views/employe/allergene_create.php';
     }
 
+    // Traite la création d'un allergène
     public function store(): void
     {
         $this->requireEmployeOrAdmin();
@@ -62,6 +75,7 @@ class EmployeAllergeneController
         }
     }
 
+    // Affiche le formulaire d'édition d'un allergène
     public function editForm(): void
     {
         $this->requireEmployeOrAdmin();
@@ -85,6 +99,7 @@ class EmployeAllergeneController
         require __DIR__ . '/../../views/employe/allergene_edit.php';
     }
 
+    // Traite la modification d'un allergène
     public function update(): void
     {
         $this->requireEmployeOrAdmin();
@@ -111,6 +126,7 @@ class EmployeAllergeneController
         }
     }
 
+    // Supprime un allergène
     public function delete(): void
     {
         $this->requireEmployeOrAdmin();

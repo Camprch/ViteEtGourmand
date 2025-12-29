@@ -1,4 +1,7 @@
 <?php
+
+// Vue : liste des avis en attente de validation (admin ou employé)
+
 $pageTitle = 'Avis à valider';
 require __DIR__ . '/../partials/header.php';
 ?>

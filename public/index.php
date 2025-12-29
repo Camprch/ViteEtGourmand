@@ -1,6 +1,22 @@
 <?php
 declare(strict_types=1);
 
+// Ce fichier est le point d'entrée principal de l'application web (front controller).
+// Il initialise la session, configure la sécurité, charge la connexion à la base de données,
+// puis route la requête vers le bon contrôleur selon le paramètre ?page= dans l'URL.
+
+// 1. Configuration de la session et des cookies pour la sécurité.
+// 2. Activation de l'affichage des erreurs (utile en développement).
+// 3. Connexion à la base de données (BDD).
+// 4. Chargement des outils de sécurité (CSRF, Auth).
+// 5. Chargement des horaires pour le footer (affichage global).
+// 6. Chargement des helpers et du contrôleur principal (HomeController).
+// 7. Détermination de la page à afficher via ?page= dans l'URL.
+// 8. Gestion du contexte du dashboard selon la section visitée (admin/employé).
+// 9. Vérification des droits d'accès selon la page demandée.
+// 10. Utilisation d'un switch pour router la requête vers le bon contrôleur ou la bonne vue.
+
+
 ini_set('session.use_strict_mode', '1');
 
 session_set_cookie_params([
@@ -12,32 +28,32 @@ session_set_cookie_params([
     'samesite' => 'Lax',
 ]);
 
-// Activer les sessions
+// Activer les sessions (permet de stocker des infos utilisateur entre les requêtes)
 session_start();
 
-// Afficher les erreurs en dev
+// Afficher les erreurs en dev (à désactiver en production)
 ini_set('display_errors', '1');
 error_reporting(E_ALL);
 
-// Connexion BDD
+// Connexion à la base de données
 require_once __DIR__ . '/../src/config/db.php';
 
-// Sécurité et Authentification
+// Sécurité : protection CSRF et gestion de l'authentification
 require_once __DIR__ . '/../src/security/Csrf.php';
 require_once __DIR__ . '/../src/security/Auth.php';
 
-// Chargement global des horaires (footer)
+// Chargement global des horaires (pour affichage dans le footer)
 require_once __DIR__ . '/../src/model/HoraireModel.php';
 $horaireModel = new HoraireModel($pdo);
 $horaires = $horaireModel->findAllOrdered();
 
-// Helpers
+// Helpers (fonctions utilitaires)
 require_once __DIR__ . '/../src/helper/format.php';
 
-// Controllers
+// Contrôleur principal (page d'accueil)
 require_once __DIR__ . '/../src/controller/HomeController.php';
 
-// Router ultra simple basé sur ?page=
+// Router ultra simple basé sur ?page= dans l'URL
 $page = $_GET['page'] ?? 'home';
 
 // Mémoriser le dashboard courant selon la section visitée
@@ -55,6 +71,11 @@ if ($page === 'dashboard_admin' || str_starts_with($page, 'admin_')) {
 if ($page === 'dashboard_employe' || str_starts_with($page, 'employe_')) {
     Auth::requireRole(['EMPLOYE', 'ADMIN']);
 }
+
+// Le switch ci-dessous permet de router la requête vers le bon contrôleur ou la bonne vue
+// en fonction de la valeur du paramètre ?page= dans l'URL.
+// Chaque case correspond à une page ou une action de l'application.
+// Si la page n'est pas reconnue, on affiche la page d'accueil par défaut.
 
 switch ($page) {
     case 'home':

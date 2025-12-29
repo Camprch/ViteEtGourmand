@@ -1,11 +1,23 @@
-<?php require __DIR__ . '/../partials/header.php'; ?>
 
+<?php
+// Fichier : menu_edit.php
+// Rôle : Affiche le formulaire d'édition d'un menu, la gestion des plats associés et des images
+// Utilisé par : EmployeMenuController::edit()
+require __DIR__ . '/../partials/header.php';
+?>
+
+
+<!-- Titre de la page -->
 <h1>Modifier un menu</h1>
 
+
+<!-- Formulaire d'édition du menu -->
 <form method="post" action="index.php?page=employe_menu_update">
+    <!-- Protection CSRF et identifiant du menu -->
     <input type="hidden" name="_csrf" value="<?= htmlspecialchars(Csrf::token()) ?>">
     <input type="hidden" name="id" value="<?= (int)$menu['id'] ?>">
 
+    <!-- Champs principaux du menu -->
     <div>
         <label>Titre</label><br>
         <input name="titre" value="<?= htmlspecialchars($menu['titre']) ?>" required>
@@ -47,6 +59,7 @@
     </div>
 
     <hr>
+    <!-- Section de gestion des plats associés au menu -->
     <h2>Plats du menu</h2>
 
     <p>Coche les plats inclus et donne un ordre (optionnel). Si l’ordre est vide, le plat sera mis après ceux ordonnés.</p>
@@ -88,9 +101,12 @@
     <button type="submit">Enregistrer</button>
 </form>
 
+
 <hr>
+    <!-- Section de gestion des images du menu -->
     <h2>Images du menu</h2>
 
+    <!-- Formulaire d'upload d'une nouvelle image -->
     <form method="post"
         action="index.php?page=employe_menu_image_upload"
         enctype="multipart/form-data">
@@ -115,6 +131,7 @@
         <button type="submit">Uploader</button>
     </form>
 
+    <!-- Affichage des images existantes du menu -->
     <?php if (!empty($images)): ?>
         <h3>Images existantes</h3>
         <?php foreach ($images as $img): ?>
@@ -127,6 +144,7 @@
                     <strong>Image principale</strong>
                 <?php endif; ?>
 
+                <!-- Formulaire pour supprimer une image -->
                 <form method="post" action="index.php?page=employe_menu_image_delete">
                     <input type="hidden" name="_csrf" value="<?= htmlspecialchars(Csrf::token()) ?>">
                     <input type="hidden" name="id" value="<?= (int)$img['id'] ?>">
@@ -137,6 +155,8 @@
         <?php endforeach; ?>
     <?php endif; ?>
 
+
+<!-- Lien de retour vers la liste des menus -->
 <p><a href="index.php?page=employe_menus">← Retour liste</a></p>
 
 <?php require __DIR__ . '/../partials/footer.php'; ?>

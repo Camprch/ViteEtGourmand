@@ -1,9 +1,18 @@
 <?php
+
+// Fonctions principales du contrôleur :
+// - form(int $menuId)         : Affiche le formulaire de commande pour un menu
+// - store()                   : Traite la soumission et la validation d'une commande
+// - mesCommandes()            : Affiche la liste des commandes de l'utilisateur connecté
+// - detail(int $id)           : Affiche le détail d'une commande
+// - annulerCommande()         : Permet à l'utilisateur d'annuler une commande en attente
+
 declare(strict_types=1);
 
 require_once __DIR__ . '/../model/MenuModel.php';
 require_once __DIR__ . '/../model/CommandeModel.php';
 
+// Contrôleur de gestion des commandes : formulaire, validation, affichage, annulation
 class CommandeController
 {
     private PDO $pdo;
@@ -13,8 +22,9 @@ class CommandeController
         $this->pdo = $pdo;
     }
 
-    // Affichage du formulaire de commande
+    // Affiche le formulaire de commande pour un menu donné (utilisateur connecté)
     public function form(int $menuId): void
+        // Vérifie que l'utilisateur est connecté
     {
         Auth::requireLogin();
 
@@ -32,6 +42,9 @@ class CommandeController
 
     public function store(): void
     {
+    // Traite la soumission du formulaire de commande
+        // Vérifie la méthode, la sécurité CSRF et l'authentification
+        // Vérifie que la date et l'heure de prestation sont valides et dans les horaires d'ouverture
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         echo "Méthode invalide.";
         return;
@@ -161,6 +174,7 @@ class CommandeController
     }
 
     // --- Total final ---
+        // Création de la commande et ajout de l'historique de statut
     $prixTotal = $prixApresReduction + $fraisLivraison;
 
     $commandeModel = new CommandeModel($this->pdo);
@@ -191,6 +205,7 @@ class CommandeController
 
     public function mesCommandes(): void
     {
+    // Affiche la liste des commandes de l'utilisateur connecté
     Auth::requireLogin();
     $userId = (int)Auth::user()['id'];
 
@@ -202,6 +217,7 @@ class CommandeController
 
     public function detail(int $id): void
     {
+    // Affiche le détail d'une commande pour l'utilisateur connecté
     Auth::requireLogin();
 
     if ($id <= 0) {
@@ -225,6 +241,7 @@ class CommandeController
 
     public function annulerCommande(): void
     {
+    // Permet à l'utilisateur d'annuler une commande si elle est encore en attente
 
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         echo "Méthode invalide.";

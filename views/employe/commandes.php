@@ -1,7 +1,13 @@
 <?php
+
+// Fichier : commandes.php
+// Rôle : Gestion des commandes par l'employé (filtrage, modification de statut, annulation)
+// Utilisé par : EmployeCommandeController::index()
+
 $pageTitle = "Commandes - Employé";
 require __DIR__ . '/../partials/header.php';
 
+// Liste des statuts possibles pour filtrer et modifier les commandes
 $statuts = [
     '' => 'Tous',
     'EN_ATTENTE' => 'En attente',
@@ -16,8 +22,10 @@ $statuts = [
 $current = $_GET['statut'] ?? '';
 ?>
 
+<!-- Titre de la page -->
 <h2>Gestion des commandes</h2>
 
+<!-- Formulaire de filtrage des commandes par statut -->
 <form method="get" action="index.php">
     <input type="hidden" name="page" value="employe_commandes">
     <label for="statut">Filtrer par statut :</label>
@@ -33,9 +41,11 @@ $current = $_GET['statut'] ?? '';
 
 <hr>
 
+<!-- Affichage de la liste des commandes ou message si aucune -->
 <?php if (empty($commandes)): ?>
     <p>Aucune commande.</p>
 <?php else: ?>
+    <!-- Tableau listant les commandes -->
     <table border="1" cellpadding="6" cellspacing="0">
         <thead>
             <tr>
@@ -58,6 +68,7 @@ $current = $_GET['statut'] ?? '';
                 <td><?= htmlspecialchars($c['ville']) ?></td>
                 <td><?= number_format((float)$c['prix_total'], 2, ',', ' ') ?> €</td>
                 <td>
+                    <!-- Formulaire pour changer le statut de la commande -->
                     <form method="post" action="index.php?page=employe_commande_update_statut" style="margin-bottom:5px;">
                         <input type="hidden" name="_csrf" value="<?= htmlspecialchars(Csrf::token()) ?>">
                         <input type="hidden" name="id" value="<?= (int)$c['id'] ?>">
@@ -74,6 +85,7 @@ $current = $_GET['statut'] ?? '';
                         <button type="submit">OK</button>
                     </form>
 
+                    <!-- Formulaire pour annuler la commande (nécessite motif et contact) -->
                     <form method="post" action="index.php?page=employe_commande_annuler">
                         <input type="hidden" name="_csrf" value="<?= htmlspecialchars(Csrf::token()) ?>">
                         <input type="hidden" name="id" value="<?= (int)$c['id'] ?>">
@@ -89,12 +101,14 @@ $current = $_GET['statut'] ?? '';
 <?php endif; ?>
 
 <?php
+// Détermination du dashboard de retour selon le rôle utilisateur
 $user = $_SESSION['user'] ?? null;
 $dashboard = $_SESSION['dashboard_context'] ?? (
     ($user && $user['role'] === 'ADMIN') ? 'dashboard_admin' : 'dashboard_employe'
 );
 ?>
 
+<!-- Lien de retour vers le dashboard adapté -->
 <p><a href="index.php?page=<?= $dashboard ?>">Retour dashboard</a></p>
 
 <?php require __DIR__ . '/../partials/footer.php'; ?>
