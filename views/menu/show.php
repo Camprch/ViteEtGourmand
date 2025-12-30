@@ -15,8 +15,8 @@ require __DIR__ . '/../partials/header.php';
 
 
 <!-- Affichage de l'image principale du menu si disponible -->
-<?php if ($image): ?>
-    <img src="uploads/menus/<?= htmlspecialchars($image['chemin']) ?>"
+<?php if (!empty($image['chemin'])): ?>
+    <img src="/<?= htmlspecialchars($image['chemin']) ?>"
          alt="<?= htmlspecialchars($image['alt_text'] ?? $menu['titre']) ?>"
          style="max-width:400px;">
 <?php endif; ?>

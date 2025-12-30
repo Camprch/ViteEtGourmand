@@ -44,8 +44,8 @@ MongoDB est utilisé pour les statistiques :
   - Chiffre d’affaires par menu
 - Filtrage par période (dates)
 
-👉 SQL = base transactionnelle  
-👉 MongoDB = base analytique (statistiques)
+SQL = base transactionnelle  
+MongoDB = base analytique (statistiques)
 
 ---
 
@@ -55,7 +55,7 @@ Envoi d’emails réels via SMTP :
 - Réinitialisation du mot de passe
 - Notifications liées aux commandes
 
-Configuration via `.env`.
+Configuration via `.env` avec `MAIL_FROM_EMAIL` et `MAILER_DSN`
 
 ---
 
@@ -66,59 +66,71 @@ Configuration via `.env`.
 - `src/controller/` : Contrôleurs (logique métier)
 - `src/model/` : Modèles (accès aux données)
 - `views/` : Vues (pages affichées)
-- `sql/` : Scripts SQL (structure de la base de données)
+- `db/` : Scripts SQL exécutés automatiquement par MariaDB (schema + données de démonstration)
+- `sql/` : Scripts SQL de référence (lecture / documentation)
 
 ---
 
 ## 💾 Installation
 
-1. Clôner le repo
+### Prérequis
+- Docker
+- Docker Compose
+- PHP 8.x
+- Extension PHP MongoDB
+- Composer
+
+### 1. Cloner le dépôt
 
 ```bash
-git clone https://github.com/Camprch/vite-gourmand
-```
-2. Configurer l'accès à la base de données dans vite-gourmand/.env  
-(modifie les valeurs de DB_DSN, DB_USER, DB_PASS selon ta config)
-
-3. Importer le schema dans la db.
-
-```bash
-mysql -u vg_user -p vite_gourmand < sql/schema.sql
-```
-
----
-
-## 🚀 Lancement
-
-```bash
+git clone https://github.com/Camprch/vite-gourmand.git
 cd vite-gourmand
+```
+
+### 2. Configuration
+
+Créer le fichier .env à partir de l’exemple :
+```bash
+cp .env.example .env
+```
+
+### 3. Démarrer les bases de données (initialisation automatique)
+
+Les bases de données sont initialisées automatiquement via Docker :
+- MariaDB (schéma + données de démonstration)
+- MongoDB (statistiques)
+
+```bash
+docker-compose up -d
+```
+### 4. Lancer l'application
+
+```bash
 php -S localhost:8000 -t public
 ```
 
-Accès via : 👉 http://localhost:8000
+Accès via : [http://localhost:8000](http://localhost:8000)
 
----
+### 5. (Optionnel) Réinitialiser les bases de données.
 
-⚙️ Prérequis
-
-- PHP 8.x
-- MySQL ou MariaDB
-- MongoDB
-- Extension PHP MongoDB
-- Composer
+⚠️ Cette commande supprime toutes les données et rejoue automatiquement le schéma et les données de démonstration.
+```bash
+docker-compose down -v
+docker-compose up -d
+```
 
 ---
 
 ## 🔐 Identifiants de test
 
 - Compte ADMIN :  
-Email : admin@vite-gourmand.local   
+Email : admin@vitegourmand.local   
 Mot de passe : Admin12345!   
 
 - Compte EMPLOYÉ :  
-Email : employe@vite-gourmand.local   
+Email : employe@vitegourmand.local   
 Mot de passe : Employe123!  
 
 - Compte Utilisateur :  
-Email : utilisateur@vite-gourmand.local  
+Email : utilisateur@vitegourmand.local  
 Mot de passe : Utilisateur123!  

@@ -9,11 +9,18 @@ use MongoDB\Client;
 
 function mongoClient(): Client
 {
-    $uri = $_ENV['MONGODB_URI'] ?? 'mongodb://root:rootpass@127.0.0.1:27017';
+    $uri =
+        $_ENV['MONGODB_URI']
+        ?? $_ENV['MONGO_DSN']
+        ?? 'mongodb://root:rootpass@127.0.0.1:27017';
+
     return new Client($uri);
 }
 
 function mongoDbName(): string
 {
-    return $_ENV['MONGODB_DB'] ?? 'vite_gourmand';
+    return
+        $_ENV['MONGODB_DB']
+        ?? $_ENV['MONGO_DB']
+        ?? 'vite_gourmand';
 }
