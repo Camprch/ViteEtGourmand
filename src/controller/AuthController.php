@@ -216,9 +216,8 @@ class AuthController
             // Envoi mail réel
             require_once __DIR__ . '/../service/MailerService.php';
 
-            $appUrl = getenv('APP_URL') ?: 'http://localhost';
-            // si ton projet est dans un sous-dossier, ajuste APP_URL (ex: http://localhost/vite-gourmand)
-            $link = $appUrl . "/public/index.php?page=reset_password&token=" . urlencode($token);
+            $appUrl = getenv('APP_URL') ?: 'http://localhost:8000';
+            $link = rtrim($appUrl, '/') . "/index.php?page=reset_password&token=" . urlencode($token);
 
             $mailer = new MailerService();
             $ok = $mailer->send(

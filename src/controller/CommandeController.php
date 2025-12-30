@@ -61,13 +61,13 @@ class CommandeController
     $jour = fr_jour_depuis_date((string)$datePrest);
     if ($jour === null) {
         echo "<h2>Date de prestation invalide</h2>";
-        exit;
+        return;
     }
 
     $minutesPrest = hhmm_to_minutes((string)$heurePrest);
     if ($minutesPrest === null) {
         echo "<h2>Heure de prestation invalide</h2>";
-        exit;
+        return;
     }
 
     $horaireModel = new HoraireModel($this->pdo);
@@ -75,7 +75,7 @@ class CommandeController
 
     if (!$h || !empty($h['ferme'])) {
         echo "<h2>Le restaurant est fermé le $jour</h2>";
-        exit;
+        return;
     }
 
     $openMin = !empty($h['heure_ouverture'])
@@ -88,12 +88,12 @@ class CommandeController
 
     if ($openMin === null || $closeMin === null || $openMin >= $closeMin) {
         echo "<h2>Horaires non configurés correctement pour $jour</h2>";
-        exit;
+        return;
     }
 
     if ($minutesPrest < $openMin || $minutesPrest > $closeMin) {
         echo "<h2>Heure de prestation hors horaires ($h[heure_ouverture] – $h[heure_fermeture])</h2>";
-        exit;
+        return;
     }
 
     // 1. Récupération des données
@@ -198,34 +198,54 @@ class CommandeController
 
     ]);
 
-    // Envoi de l'email de confirmation
+    if ($commandeId <= 0) {
+        error_log("Commande non créée, email non envoyé");
+        echo "<h2>Erreur lors de la création de la commande</h2>";
+        return;
+    }
 
+    $commandeModel->addStatutHistorique($commandeId, 'EN_ATTENTE');
+
+    // Envoi de l'email de confirmation
     require_once __DIR__ . '/../service/MailerService.php';
 
-    $sessionUser = $_SESSION['user'] ?? null;
-    if ($sessionUser) {
+    try {
+        $user = Auth::user();
+
+        $toEmail = $user['email'];
+        $toName  = trim(($user['prenom'] ?? '') . ' ' . ($user['nom'] ?? ''));
+        if ($toName === '') {
+            $toName = $toEmail;
+        }
+
         $mailer = new MailerService();
 
-        $toEmail = $sessionUser['email'];
-        $toName = trim(($sessionUser['prenom'] ?? '') . ' ' . ($sessionUser['nom'] ?? ''));
-        if ($toName === '') $toName = $toEmail;
+        $html = "<p>Merci pour votre commande !</p>
+                <p>Votre commande <strong>#$commandeId</strong> a bien été enregistrée.</p>
+                <p>Menu : " . htmlspecialchars((string)$menu['titre']) . "</p>
+                <p>Date : " . htmlspecialchars($datePrestation) . " à " . htmlspecialchars($heurePrestation) . "</p>
+                <p>Total : " . number_format($prixTotal, 2, ',', ' ') . " €</p>";
+
+        $text = "Merci pour votre commande !\n"
+            . "Commande #$commandeId enregistrée.\n"
+            . "Menu : " . (string)$menu['titre'] . "\n"
+            . "Date : $datePrestation $heurePrestation\n"
+            . "Total : " . number_format($prixTotal, 2, ',', ' ') . " €\n";
 
         $ok = $mailer->send(
             $toEmail,
             $toName,
             "Confirmation de votre commande #$commandeId",
-            "<p>Merci pour votre commande !</p>
-            <p>Votre commande <strong>#$commandeId</strong> a bien été enregistrée.</p>",
-            "Commande #$commandeId confirmée."
+            $html,
+            $text
         );
 
         if (!$ok) {
             error_log("Email commande non envoyé (commandeId=$commandeId)");
         }
+    } catch (Throwable $e) {
+        error_log("Mailer exception (commandeId=$commandeId): " . $e->getMessage());
     }
-
-
-    $commandeModel->addStatutHistorique($commandeId, 'EN_ATTENTE');
 
     require __DIR__ . '/../../views/commande/recap.php';
     }

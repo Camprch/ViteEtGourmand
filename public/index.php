@@ -28,18 +28,18 @@ session_set_cookie_params([
     'samesite' => 'Lax',
 ]);
 
-// Activer les sessions (permet de stocker des infos utilisateur entre les requêtes)
-session_start();
-
 // Autoload Composer
 require_once __DIR__ . '/../vendor/autoload.php';
 
-// Charger .env (si installé)
+// Charger .env (dev/local)
 if (class_exists(\Symfony\Component\Dotenv\Dotenv::class) && is_file(__DIR__ . '/../.env')) {
     $dotenv = new \Symfony\Component\Dotenv\Dotenv();
     $dotenv->usePutenv(true);
     $dotenv->loadEnv(__DIR__ . '/../.env');
 }
+
+// Activer les sessions (permet de stocker des infos utilisateur entre les requêtes)
+session_start();
 
 // Afficher les erreurs en dev (à désactiver en production)
 ini_set('display_errors', '1');
@@ -88,12 +88,6 @@ if ($page === 'dashboard_employe' || str_starts_with($page, 'employe_')) {
 // Si la page n'est pas reconnue, on affiche la page d'accueil par défaut.
 
 switch ($page) {
-    case 'test_mail':
-    Auth::requireRole(['ADMIN']); 
-    require_once __DIR__ . '/../src/controller/TestMailController.php';
-    (new TestMailController($pdo))->send();
-    break;
-
     case 'home':
     $controller = new HomeController($pdo);
     $controller->index();
