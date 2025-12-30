@@ -41,10 +41,15 @@ require __DIR__ . '/../partials/header.php';
 <?php endif; ?>
 
 <?php if (empty($stats)): ?>
-    <p>Aucune donnée.</p>
+    <p>Aucune donnée pour la période sélectionnée.</p>
+    <p><small>Note : seules les commandes passées au statut <strong>ACCEPTEE</strong> sont enregistrées dans MongoDB.</small></p>
 <?php else: ?>
     <h3>Commandes par menu</h3>
-
+        <h3>Résumé</h3>
+        <ul>
+            <li><strong>Nb commandes acceptées :</strong> <?= (int)$nbTotal ?></li>
+            <li><strong>Chiffre d’affaires total :</strong> <?= number_format((float)$caTotal, 2, ',', ' ') ?> €</li>
+        </ul>
     <table border="1" cellpadding="6" cellspacing="0">
         <thead>
         <tr>

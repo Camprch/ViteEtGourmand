@@ -6,21 +6,66 @@ Vite & Gourmand est une application web de gestion de commandes pour un service 
 
 ## 🎯 Fonctionnalités principales
 
-- Gestion des utilisateurs (inscription, connexion, mot de passe oublié)
-- Gestion des menus et affichage des plats
-- Prise de commandes en ligne
-- Gestion des avis clients
+### Front (utilisateur)
+- Inscription, connexion, réinitialisation du mot de passe (email)
+- Consultation des menus et plats
+- Passage de commandes en ligne
+- Gestion du profil utilisateur
+- Dépôt d’avis clients
 - Formulaire de contact
+
+### Back-office (admin et employé)
+- Gestion des menus (CRUD, activation/désactivation, images)
+- Gestion des plats et allergènes
+- Association menus ↔ plats ↔ allergènes
+- Gestion des commandes (statuts, historique)
+- Gestion des employés (ADMIN)
+- Statistiques de ventes (ADMIN)
+
+---
+
+## 👥 Rôles utilisateurs
+
+- **USER** : client final
+- **EMPLOYE** : gestion des commandes, menus, plats
+- **ADMIN** : gestion globale + statistiques
+
+Les accès sont contrôlés côté serveur selon le rôle.
+
+---
+
+## 📊 Statistiques (NoSQL – MongoDB)
+
+MongoDB est utilisé pour les statistiques :
+- Les commandes sont enregistrées dans MongoDB **au moment où elles passent au statut `ACCEPTEE`**
+- Calculs via agrégations MongoDB :
+  - Nombre de commandes
+  - Chiffre d’affaires total
+  - Chiffre d’affaires par menu
+- Filtrage par période (dates)
+
+👉 SQL = base transactionnelle  
+👉 MongoDB = base analytique (statistiques)
+
+---
+
+## 📧 Emails
+
+Envoi d’emails réels via SMTP :
+- Réinitialisation du mot de passe
+- Notifications liées aux commandes
+
+Configuration via `.env`.
 
 ---
 
 ## 🏗️ Structure du projet
 
-- `public/` : Fichiers accessibles publiquement (ex : index.php)
-- `src/config/` : Fichiers de configuration (connexion à la base de données)
+- `public/` : Fichiers accessibles publiquement (index et image upload)
+- `src/config/` : Fichiers de configuration (env et db)
 - `src/controller/` : Contrôleurs (logique métier)
 - `src/model/` : Modèles (accès aux données)
-- `views/` : Vues (pages affichées à l'utilisateur)
+- `views/` : Vues (pages affichées)
 - `sql/` : Scripts SQL (structure de la base de données)
 
 ---
@@ -49,14 +94,18 @@ mysql -u vg_user -p vite_gourmand < sql/schema.sql
 cd vite-gourmand
 php -S localhost:8000 -t public
 ```
-Accéder à l'application via `http://localhost/vite-gourmand/public`
+
+Accès via : 👉 http://localhost:8000
 
 ---
 
-## ⚙️ Prérequis
+⚙️ Prérequis
 
-- PHP 8.x ou supérieur
-- MySQL/MariaDB
+- PHP 8.x
+- MySQL ou MariaDB
+- MongoDB
+- Extension PHP MongoDB
+- Composer
 
 ---
 

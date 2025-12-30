@@ -56,108 +56,83 @@ class AdminStatsController
 
         $mongoDsn = $this->env('MONGO_DSN');
         $mongoDb  = $this->env('MONGO_DB', 'vite_gourmand');
-        $collection = 'stats_menu';
+        $collection = 'orders_stats';
 
         $error = null;
         $stats = [];
+        $caTotal = 0.0;
+        $nbTotal = 0;
 
         try {
-            // Vérifie la config MongoDB
             if (!$mongoDsn) {
                 throw new RuntimeException("MONGO_DSN manquant dans .env");
             }
             if (!class_exists(\MongoDB\Driver\Manager::class)) {
-                throw new RuntimeException("Extension PHP MongoDB non installée (MongoDB\\Driver\\Manager introuvable)");
+                throw new RuntimeException("Extension PHP MongoDB non installée");
             }
 
             $manager = new \MongoDB\Driver\Manager($mongoDsn);
 
-            // 1) Calcul des stats depuis SQL (source de vérité)
-            $sql = "
-                SELECT
-                    m.id AS menu_id,
-                    m.titre AS menu_titre,
-                    COUNT(c.id) AS nb_commandes,
-                    COALESCE(SUM(c.prix_total), 0) AS chiffre_affaires
-                FROM menu m
-                LEFT JOIN commande c ON c.id_menu = m.id
-            ";
-
-            $params = [];
-            $where = [];
-
-            // Ajout des filtres de date si présents
-            if ($dateFrom) {
-                $where[] = "c.date_commande >= :from";
-                $params[':from'] = $dateFrom . " 00:00:00";
-            }
-            if ($dateTo) {
-                $where[] = "c.date_commande <= :to";
-                $params[':to'] = $dateTo . " 23:59:59";
+            $match = [];
+            if ($dateFrom || $dateTo) {
+                $range = [];
+                if ($dateFrom) {
+                    $dt = new DateTimeImmutable($dateFrom . ' 00:00:00');
+                    $range['$gte'] = new \MongoDB\BSON\UTCDateTime($dt->getTimestamp() * 1000);
+                }
+                if ($dateTo) {
+                    $dt = new DateTimeImmutable($dateTo . ' 23:59:59');
+                    $range['$lte'] = new \MongoDB\BSON\UTCDateTime($dt->getTimestamp() * 1000);
+                }
+                $match['accepted_at'] = $range;
             }
 
-            if (!empty($where)) {
-                // attention: LEFT JOIN + filtres -> on filtre seulement si commande existe
-                $sql .= " WHERE (" . implode(" AND ", $where) . ") OR c.id IS NULL";
-            }
+            // 1) CA total + nb total
+            $pipelineTotal = [];
+            if ($match) $pipelineTotal[] = ['$match' => $match];
+            $pipelineTotal[] = ['$group' => [
+                '_id' => null,
+                'ca_total' => ['$sum' => '$prix_total'],
+                'nb_total' => ['$sum' => 1],
+            ]];
 
-            $sql .= " GROUP BY m.id, m.titre ORDER BY nb_commandes DESC, m.titre ASC";
+            $cmdTotal = new \MongoDB\Driver\Command([
+                'aggregate' => $collection,
+                'pipeline' => $pipelineTotal,
+                'cursor' => new stdClass(),
+            ]);
 
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->execute($params);
-            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            
-            // MongoDB sert ici de base NoSQL pour stocker et relire les statistiques affichées dans le back-office.
-            // Les agrégations sont calculées côté SQL (source de vérité),
-            // puis persistées en NoSQL pour consultation (cache/statistiques).
-            // Cela permet de démontrer l'utilisation d'une base non relationnelle conformément aux exigences.
+            $resTotal = $manager->executeCommand($mongoDb, $cmdTotal)->toArray();
+            $caTotal = $resTotal ? (float)$resTotal[0]->ca_total : 0.0;
+            $nbTotal = $resTotal ? (int)$resTotal[0]->nb_total : 0;
 
-            // 2) Upsert dans MongoDB (NoSQL)
-            $bulk = new \MongoDB\Driver\BulkWrite();
+            // 2) Par menu
+            $pipelineMenu = [];
+            if ($match) $pipelineMenu[] = ['$match' => $match];
+            $pipelineMenu[] = ['$group' => [
+                '_id' => ['menu_id' => '$menu_id', 'menu_titre' => '$menu_titre'],
+                'nb' => ['$sum' => 1],
+                'ca' => ['$sum' => '$prix_total'],
+            ]];
+            $pipelineMenu[] = ['$sort' => ['nb' => -1, 'ca' => -1]];
 
-            $periodKey = ($dateFrom ?: 'null') . '_' . ($dateTo ?: 'null');
+            $cmdMenu = new \MongoDB\Driver\Command([
+                'aggregate' => $collection,
+                'pipeline' => $pipelineMenu,
+                'cursor' => new stdClass(),
+            ]);
 
-            foreach ($rows as $r) {
-                $doc = [
-                    'menu_id' => (int)$r['menu_id'],
-                    'menu_titre' => (string)$r['menu_titre'],
-                    'nb_commandes' => (int)$r['nb_commandes'],
-                    'chiffre_affaires' => (float)$r['chiffre_affaires'],
-                    'from' => $dateFrom ?: null,
-                    'to' => $dateTo ?: null,
-                    'updated_at' => (new DateTimeImmutable())->format(DateTimeInterface::ATOM),
-                    'period_key' => $periodKey,
-                ];
+            $resMenu = $manager->executeCommand($mongoDb, $cmdMenu)->toArray();
 
-                // clé unique par menu + période
-                $filter = [
-                    'menu_id' => $doc['menu_id'],
-                    'period_key' => $periodKey,
-                    'from' => $doc['from'],
-                    'to' => $doc['to'],
-                ];
-
-                $bulk->update($filter, ['$set' => $doc], ['upsert' => true]);
-            }
-
-            $manager->executeBulkWrite($mongoDb . '.' . $collection, $bulk);
-
-            // 3) Lecture depuis MongoDB (preuve NoSQL)
-            $query = new \MongoDB\Driver\Query(
-            ['period_key' => $periodKey],
-            ['sort' => ['nb_commandes' => -1, 'menu_titre' => 1]]
-            );
-            $cursor = $manager->executeQuery($mongoDb . '.' . $collection, $query);
-
-            foreach ($cursor as $doc) {
-                // $doc est un objet BSON -> cast simple
+            foreach ($resMenu as $doc) {
                 $stats[] = [
-                    'menu_id' => (int)$doc->menu_id,
-                    'menu_titre' => (string)$doc->menu_titre,
-                    'nb_commandes' => (int)$doc->nb_commandes,
-                    'chiffre_affaires' => (float)$doc->chiffre_affaires,
+                    'menu_id' => (int)$doc->_id->menu_id,
+                    'menu_titre' => (string)$doc->_id->menu_titre,
+                    'nb_commandes' => (int)$doc->nb,
+                    'chiffre_affaires' => (float)$doc->ca,
                 ];
             }
+
         } catch (Throwable $e) {
             $error = $e->getMessage();
         }
@@ -165,3 +140,4 @@ class AdminStatsController
         require __DIR__ . '/../../views/admin/stats.php';
     }
 }
+
