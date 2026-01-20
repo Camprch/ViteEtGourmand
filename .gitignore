@@ -21,19 +21,20 @@
 /storage/logs/
 
 # Uploads / fichiers utilisateurs
-# (si tu veux versionner un dossier vide, ajoute un .gitkeep dedans)
 /public/uploads/
 
 # Tests / coverage
 /coverage/
 .phpunit.result.cache
 
-# Build / bundlers (si tu as Vite/webpack plus tard)
+# Build / bundlers
 /dist/
 /build/
 .vite/
 
 # Adminer / outils locaux
-# (je te conseille de ne PAS versionner adminer.php)
 /public/adminer.php
 adminer.php
+
+# User stories
+US.txt

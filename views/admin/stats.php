@@ -8,27 +8,34 @@ $pageTitle = "Statistiques - Admin";
 require __DIR__ . '/../partials/header.php';
 ?>
 
-<h2>Statistiques (NoSQL + graphique)</h2>
+<section class="page-head">
+    <div>
+        <p class="eyebrow">Administration</p>
+        <h2>Statistiques</h2>
+        <p class="muted">Analyse des commandes acceptées (MongoDB).</p>
+    </div>
+</section>
 
-<form method="get" action="index.php">
-    <input type="hidden" name="page" value="admin_stats">
+<section class="card">
+    <form method="get" action="index.php" class="form-inline">
+        <input type="hidden" name="page" value="admin_stats">
 
-    <label>Du :
-        <input type="date" name="from" value="<?= htmlspecialchars($_GET['from'] ?? '') ?>">
-    </label>
+        <label>Du
+            <input type="date" name="from" value="<?= htmlspecialchars($_GET['from'] ?? '') ?>">
+        </label>
 
-    <label>Au :
-        <input type="date" name="to" value="<?= htmlspecialchars($_GET['to'] ?? '') ?>">
-    </label>
+        <label>Au
+            <input type="date" name="to" value="<?= htmlspecialchars($_GET['to'] ?? '') ?>">
+        </label>
 
-    <button type="submit">Mettre à jour</button>
-</form>
-
-<hr>
+        <button type="submit">Mettre à jour</button>
+    </form>
+</section>
 
 <?php if (!empty($error)): ?>
-    <h3>MongoDB non disponible</h3>
-    <p><?= htmlspecialchars($error) ?></p>
+    <section class="card">
+        <h3>MongoDB non disponible</h3>
+        <p><?= htmlspecialchars($error) ?></p>
 
     <p><strong>À faire pour valider l’exigence NoSQL :</strong></p>
     <ul>
@@ -36,21 +43,32 @@ require __DIR__ . '/../partials/header.php';
         <li>Installer/activer l’extension PHP MongoDB (ou configurer l’environnement de déploiement)</li>
     </ul>
 
-    <p><a href="index.php?page=dashboard_admin">Retour dashboard</a></p>
+        <p><a href="index.php?page=dashboard_admin">Retour dashboard</a></p>
+    </section>
     <?php require __DIR__ . '/../partials/footer.php'; exit; ?>
 <?php endif; ?>
 
 <?php if (empty($stats)): ?>
-    <p>Aucune donnée pour la période sélectionnée.</p>
-    <p><small>Note : seules les commandes passées au statut <strong>ACCEPTEE</strong> sont enregistrées dans MongoDB.</small></p>
+    <section class="card">
+        <p>Aucune donnée pour la période sélectionnée.</p>
+        <p class="muted"><small>Note : seules les commandes passées au statut <strong>ACCEPTEE</strong> sont enregistrées dans MongoDB.</small></p>
+    </section>
 <?php else: ?>
-    <h3>Commandes par menu</h3>
-        <h3>Résumé</h3>
-        <ul>
-            <li><strong>Nb commandes acceptées :</strong> <?= (int)$nbTotal ?></li>
-            <li><strong>Chiffre d’affaires total :</strong> <?= number_format((float)$caTotal, 2, ',', ' ') ?> €</li>
-        </ul>
-    <table border="1" cellpadding="6" cellspacing="0">
+    <section class="cards-grid">
+        <div class="card">
+            <h3>Résumé</h3>
+            <p><strong>Nb commandes acceptées :</strong> <?= (int)$nbTotal ?></p>
+            <p><strong>Chiffre d’affaires total :</strong> <?= number_format((float)$caTotal, 2, ',', ' ') ?> €</p>
+        </div>
+        <div class="card">
+            <h3>Commandes par menu</h3>
+            <p class="muted">Comparatif par menu pour la période sélectionnée.</p>
+        </div>
+    </section>
+
+    <section class="card">
+    <div class="table-wrap">
+    <table class="table">
         <thead>
         <tr>
             <th>Menu</th>
@@ -68,11 +86,13 @@ require __DIR__ . '/../partials/header.php';
         <?php endforeach; ?>
         </tbody>
     </table>
+    </div>
+    </section>
 
-    <hr>
-
-    <h3>Graphique</h3>
-    <canvas id="chart" width="900" height="380"></canvas>
+    <section class="chart-card">
+        <h3>Graphique</h3>
+        <canvas id="chart" width="900" height="380"></canvas>
+    </section>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>

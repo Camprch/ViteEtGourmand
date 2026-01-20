@@ -8,46 +8,54 @@ require __DIR__ . '/../partials/header.php';
 ?>
 
 
-<!-- Titre de la page -->
-<h2>Nos menus</h2>
+<section class="page-head">
+    <div>
+        <p class="eyebrow">Menus maison</p>
+        <h2>Nos menus</h2>
+        <p class="muted">Affinez votre recherche par thème, régime ou budget.</p>
+    </div>
+</section>
 
 
 <!-- Formulaire de filtrage des menus -->
-<form id="menu-filters">
-    <label>
-        Thème :
-        <input type="text" name="theme">
-    </label>
+<section class="filters">
+    <form id="menu-filters" class="filters-grid">
+        <label>
+            Thème
+            <input type="text" name="theme" placeholder="Ex : italien">
+        </label>
 
-    <label>
-        Régime :
-        <input type="text" name="regime">
-    </label>
+        <label>
+            Régime
+            <input type="text" name="regime" placeholder="Ex : vegan">
+        </label>
 
-    <label>
-        Prix max :
-        <input type="number" name="prix_max" step="0.01" min="0">
-    </label>
+        <label>
+            Prix max (€)
+            <input type="number" name="prix_max" step="0.01" min="0" placeholder="25">
+        </label>
 
-    <label>
-        Personnes minimum :
-        <input type="number" name="personnes_min" min="1">
-    </label>
+        <label>
+            Personnes minimum
+            <input type="number" name="personnes_min" min="1" placeholder="8">
+        </label>
 
-    <button type="submit">Filtrer</button>
-</form>
-
-
-<hr>
+        <div class="filters-actions">
+            <button type="submit">Filtrer</button>
+        </div>
+    </form>
+</section>
 
 
 <!-- Conteneur pour l'affichage dynamique des menus (filtrés ou non) -->
+<section>
 <div id="menus-container">
     <?php
     // Affichage initial (sans filtres)
     require __DIR__ . '/_list_partial.php';
     ?>
 </div>
+</section>
 
 
 <!-- Script JS pour la soumission AJAX du formulaire de filtres -->

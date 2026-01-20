@@ -10,104 +10,105 @@ require __DIR__ . '/../partials/header.php';
 ?>
 
 
-<!-- Titre du menu -->
-<h2><?= htmlspecialchars($menu['titre']) ?></h2>
-
-
-<!-- Affichage de l'image principale du menu si disponible -->
-<?php if (!empty($image['chemin'])): ?>
-    <img src="/<?= htmlspecialchars($image['chemin']) ?>"
-         alt="<?= htmlspecialchars($image['alt_text'] ?? $menu['titre']) ?>"
-         style="max-width:400px;">
-<?php endif; ?>
-
-
-<!-- Description du menu -->
-<p><?= nl2br(htmlspecialchars($menu['description'])) ?></p>
-
-
-<!-- Informations principales du menu -->
-<ul>
-    <li>Thème : <?= htmlspecialchars((string)($menu['theme'] ?? '')) ?></li>
-    <li>Régime : <?= htmlspecialchars((string)($menu['regime'] ?? '')) ?></li>
-    <li>Minimum : <?= (int)$menu['personnes_min'] ?> personnes</li>
-    <li>Prix par personne :
-        <?= number_format((float)$menu['prix_par_personne'], 2, ',', ' ') ?> €</li>
-    <li>Stock disponible :
-        <?php if ($menu['stock'] === null): ?>
-            Illimité
+<section class="menu-hero">
+    <div class="menu-hero-media">
+        <?php if (!empty($image['chemin'])): ?>
+            <img src="/<?= htmlspecialchars($image['chemin']) ?>"
+                 alt="<?= htmlspecialchars($image['alt_text'] ?? $menu['titre']) ?>">
         <?php else: ?>
-            <?= (int)$menu['stock'] ?>
+            <div class="placeholder">Menu du moment</div>
         <?php endif; ?>
-    </li>
-</ul>
+    </div>
+    <div class="menu-hero-text">
+        <p class="eyebrow">Menu signature</p>
+        <h2><?= htmlspecialchars($menu['titre']) ?></h2>
+        <p><?= nl2br(htmlspecialchars($menu['description'])) ?></p>
+        <div class="menu-meta">
+            <span class="badge"><?= htmlspecialchars((string)($menu['theme'] ?? '')) ?></span>
+            <span class="badge badge-outline"><?= htmlspecialchars((string)($menu['regime'] ?? '')) ?></span>
+            <span class="badge badge-outline">Min <?= (int)$menu['personnes_min'] ?> pers.</span>
+            <span class="badge badge-outline">
+                <?= number_format((float)$menu['prix_par_personne'], 2, ',', ' ') ?> € / pers.
+            </span>
+        </div>
+    </div>
+</section>
 
 
 <!-- Affichage des conditions particulières si présentes -->
 <?php if (!empty($menu['conditions_particulieres'])): ?>
-    <h3>Conditions particulières</h3>
-    <p><?= nl2br(htmlspecialchars($menu['conditions_particulieres'])) ?></p>
+    <section>
+        <h3>Conditions particulières</h3>
+        <p><?= nl2br(htmlspecialchars($menu['conditions_particulieres'])) ?></p>
+    </section>
 <?php endif; ?>
-
-
-<!-- Lien de retour vers la liste des menus -->
-<p>
-    <a href="index.php?page=menus">← Retour aux menus</a>
-</p>
 
 
 <?php
 $isOutOfStock = ($menu['stock'] !== null && (int)$menu['stock'] <= 0);
 ?>
 <!-- Affichage du bouton de commande ou message d'indisponibilité -->
-<p>
-    <?php if ($isOutOfStock): ?>
-        <strong>Menu indisponible (rupture de stock).</strong>
-    <?php else: ?>
-        <a href="index.php?page=commande&menu_id=<?= (int)$menu['id'] ?>">
-            Commander ce menu
-        </a>
-    <?php endif; ?>
-</p>
+<section class="cta-bar">
+    <p class="muted">
+        Stock :
+        <?php if ($menu['stock'] === null): ?>
+            Illimité
+        <?php else: ?>
+            <?= (int)$menu['stock'] ?>
+        <?php endif; ?>
+    </p>
+    <div class="cta-actions">
+        <a class="btn btn-ghost" href="index.php?page=menus">← Retour aux menus</a>
+        <?php if ($isOutOfStock): ?>
+            <span class="badge badge-warn">Indisponible</span>
+        <?php else: ?>
+            <a class="btn" href="index.php?page=commande&menu_id=<?= (int)$menu['id'] ?>">
+                Commander ce menu
+            </a>
+        <?php endif; ?>
+    </div>
+</section>
 
 
 <!-- Liste des plats inclus dans le menu -->
+<section>
 <h2>Plats inclus</h2>
 
 
 <?php if (empty($plats)): ?>
     <p>Aucun plat associé pour le moment.</p>
 <?php else: ?>
-    <ul>
+    <div class="cards-grid">
         <?php foreach ($plats as $p): ?>
-            <li>
-                <strong><?= htmlspecialchars($p['type']) ?> :</strong>
-                <?= htmlspecialchars($p['nom']) ?>
+            <article class="card">
+                <p class="card-title">
+                    <?= htmlspecialchars($p['type']) ?> —
+                    <?= htmlspecialchars($p['nom']) ?>
+                </p>
 
                 <!-- Description du plat si présente -->
                 <?php if (!empty($p['description'])): ?>
-                    — <?= htmlspecialchars($p['description']) ?>
+                    <p><?= htmlspecialchars($p['description']) ?></p>
                 <?php endif; ?>
 
                 <!-- Affichage des allergènes du plat si présents -->
                 <?php if (!empty($p['allergenes'])): ?>
-                    <div>
-                        <small>
-                            Allergènes :
-                            <?php
-                            $names = [];
-                            foreach ($p['allergenes'] as $a) {
-                                $names[] = $a['nom'];
-                            }
-                            echo htmlspecialchars(implode(', ', $names));
-                            ?>
-                        </small>
-                    </div>
+                    <p class="muted">
+                        Allergènes :
+                        <?php
+                        $names = [];
+                        foreach ($p['allergenes'] as $a) {
+                            $names[] = $a['nom'];
+                        }
+                        echo htmlspecialchars(implode(', ', $names));
+                        ?>
+                    </p>
                 <?php endif; ?>
-            </li>
+            </article>
         <?php endforeach; ?>
-    </ul>
+    </div>
 <?php endif; ?>
+</section>
 
 
 <?php require __DIR__ . '/../partials/footer.php'; ?>

@@ -7,20 +7,25 @@
 require __DIR__ . '/../partials/header.php';
 ?>
 
-<!-- Titre de la page -->
-<h1>Allergènes</h1>
+<section class="page-head">
+    <div>
+        <p class="eyebrow">Allergènes</p>
+        <h1>Référentiel des allergènes</h1>
+    </div>
+</section>
 
-<!-- Lien vers la création d'un nouvel allergène -->
-<p><a href="index.php?page=employe_allergene_create">+ Créer un allergène</a></p>
+<section class="toolbar">
+    <a class="btn" href="index.php?page=employe_allergene_create">+ Créer un allergène</a>
+</section>
 
-<!-- Affichage des messages de succès ou d'erreur -->
-<?php if (isset($_GET['created'])): ?><p>✅ Créé</p><?php endif; ?>
-<?php if (isset($_GET['updated'])): ?><p>✅ Modifié</p><?php endif; ?>
-<?php if (isset($_GET['deleted'])): ?><p>✅ Supprimé</p><?php endif; ?>
-<?php if (isset($_GET['delete_error'])): ?><p>❌ Impossible : allergène utilisé par un plat.</p><?php endif; ?>
+<?php if (isset($_GET['created'])): ?><section class="notice">✅ Créé</section><?php endif; ?>
+<?php if (isset($_GET['updated'])): ?><section class="notice">✅ Modifié</section><?php endif; ?>
+<?php if (isset($_GET['deleted'])): ?><section class="notice">✅ Supprimé</section><?php endif; ?>
+<?php if (isset($_GET['delete_error'])): ?><section class="notice">❌ Impossible : allergène utilisé par un plat.</section><?php endif; ?>
 
-<!-- Tableau listant tous les allergènes -->
-<table border="1" cellpadding="6">
+<section>
+<div class="table-wrap">
+<table class="table">
     <thead>
         <tr>
             <th>ID</th>
@@ -35,18 +40,20 @@ require __DIR__ . '/../partials/header.php';
             <td><?= htmlspecialchars($a['nom']) ?></td>
             <td>
                 <!-- Lien pour éditer l'allergène -->
-                <a href="index.php?page=employe_allergene_edit&id=<?= (int)$a['id'] ?>">Éditer</a>
+                <a class="btn btn-ghost btn-sm" href="index.php?page=employe_allergene_edit&id=<?= (int)$a['id'] ?>">Éditer</a>
 
                 <!-- Formulaire pour supprimer l'allergène (avec confirmation JS) -->
-                <form method="post" action="index.php?page=employe_allergene_delete" style="display:inline" onsubmit="return confirm('Supprimer ?');">
+                <form method="post" action="index.php?page=employe_allergene_delete" class="action-row" onsubmit="return confirm('Supprimer ?');">
                     <input type="hidden" name="_csrf" value="<?= htmlspecialchars(Csrf::token()) ?>">
                     <input type="hidden" name="id" value="<?= (int)$a['id'] ?>">
-                    <button type="submit">Supprimer</button>
+                    <button class="btn btn-ghost btn-sm" type="submit">Supprimer</button>
                 </form>
             </td>
         </tr>
     <?php endforeach; ?>
     </tbody>
 </table>
+</div>
+</section>
 
 <?php require __DIR__ . '/../partials/footer.php'; ?>

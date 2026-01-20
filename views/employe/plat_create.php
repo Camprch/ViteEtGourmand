@@ -7,56 +7,58 @@ require __DIR__ . '/../partials/header.php';
 ?>
 
 
-<!-- Titre de la page -->
-<h1>Créer un plat</h1>
+<section class="page-head">
+    <div>
+        <p class="eyebrow">Plats</p>
+        <h1>Créer un plat</h1>
+    </div>
+</section>
 
-
-<!-- Formulaire de création d'un plat -->
-<form method="post" action="index.php?page=employe_plat_store">
+<section class="card">
+<form method="post" action="index.php?page=employe_plat_store" class="form-grid">
     <!-- Protection CSRF -->
     <input type="hidden" name="_csrf" value="<?= htmlspecialchars(Csrf::token()) ?>">
 
     <!-- Champs principaux du plat -->
-    <div>
-        <label>Nom</label><br>
+    <label>Nom
         <input name="nom" required>
-    </div>
+    </label>
 
-    <div>
-        <label>Description</label><br>
+    <label class="span-2">Description
         <textarea name="description"></textarea>
-    </div>
+    </label>
 
-    <div>
-        <label>Type</label><br>
+    <label>Type
         <select name="type" required>
             <option value="ENTREE">ENTREE</option>
             <option value="PLAT">PLAT</option>
             <option value="DESSERT">DESSERT</option>
         </select>
-    </div>
+    </label>
 
     <hr>
     <!-- Section de sélection des allergènes associés au plat -->
-    <h2>Allergènes</h2>
+    <h2 class="span-2">Allergènes</h2>
 
     <?php if (empty($allergenes)): ?>
         <p>Aucun allergène créé pour le moment.</p>
     <?php else: ?>
-        <?php foreach ($allergenes as $a): ?>
-            <label style="display:block; margin:4px 0;">
-                <input type="checkbox" name="allergenes[]" value="<?= (int)$a['id'] ?>">
-                <?= htmlspecialchars($a['nom']) ?>
-            </label>
-        <?php endforeach; ?>
+        <div class="stack span-2">
+            <?php foreach ($allergenes as $a): ?>
+                <label>
+                    <input type="checkbox" name="allergenes[]" value="<?= (int)$a['id'] ?>">
+                    <?= htmlspecialchars($a['nom']) ?>
+                </label>
+            <?php endforeach; ?>
+        </div>
     <?php endif; ?>
 
-    <button type="submit">Créer</button>
+    <div class="form-actions span-2">
+        <button type="submit">Créer</button>
+        <a class="btn btn-ghost" href="index.php?page=employe_plats">Retour</a>
+    </div>
 </form>
-
-
-<!-- Lien de retour vers la liste des plats -->
-<p><a href="index.php?page=employe_plats">← Retour liste</a></p>
+</section>
 
 
 <?php require __DIR__ . '/../partials/footer.php'; ?>

@@ -5,10 +5,12 @@
 // Utilisé par : toutes les vues du site
 $horaires = $GLOBALS['horaires'] ?? [];
 ?>
+    </div>
     </main>
     <!-- Début du pied de page -->
-    <footer>
-        <section>
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <section>
             <h4>Horaires</h4>
             <?php if (!empty($horaires)): ?>
                 <ul>
@@ -28,13 +30,14 @@ $horaires = $GLOBALS['horaires'] ?? [];
             <?php else: ?>
                 <p>Horaires non renseignés.</p>
             <?php endif; ?>
-        </section>
+            </section>
 
-        <p>© Vite & Gourmand</p>
-        <p>
-        <a href="index.php?page=mentions_legales">Mentions légales</a> |
-        <a href="index.php?page=cgv">CGV</a>
-    </p>
+            <p>© Vite & Gourmand</p>
+            <p>
+                <a href="index.php?page=mentions_legales">Mentions légales</a> |
+                <a href="index.php?page=cgv">CGV</a>
+            </p>
+        </div>
     </footer>
 </body>
 </html>

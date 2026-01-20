@@ -6,80 +6,96 @@ $pageTitle = 'Détail commande n°' . (int)$commande['id'];
 require __DIR__ . '/../partials/header.php';
 ?>
 
-<h2>Commande n°<?= (int)$commande['id'] ?></h2>
+<section class="page-head">
+    <div>
+        <p class="eyebrow">Commande</p>
+        <h2>Commande n°<?= (int)$commande['id'] ?></h2>
+        <p class="muted">Statut actuel : <?= htmlspecialchars($commande['statut_courant']) ?></p>
+    </div>
+</section>
 
-<p><strong>Menu :</strong> <?= htmlspecialchars($commande['menu_titre']) ?></p>
-<p><strong>Date commande :</strong> <?= fr_datetime($commande['date_commande'] ?? null) ?></p>
-<p><strong>Date prestation :</strong> <?= fr_date($commande['date_prestation'] ?? null) ?>
-    à <?= htmlspecialchars((string)($commande['heure_prestation'] ?? '')) ?></p>
+<section class="order-detail">
+    <div class="card">
+        <h3>Détails</h3>
+        <p><strong>Menu :</strong> <?= htmlspecialchars($commande['menu_titre']) ?></p>
+        <p class="muted">Commande : <?= fr_datetime($commande['date_commande'] ?? null) ?></p>
+        <p class="muted">Prestation : <?= fr_date($commande['date_prestation'] ?? null) ?>
+            à <?= htmlspecialchars((string)($commande['heure_prestation'] ?? '')) ?></p>
 
-<p><strong>Adresse :</strong>
-    <?= htmlspecialchars($commande['adresse_prestation']) ?>,
-    <?= htmlspecialchars($commande['code_postal']) ?>
-    <?= htmlspecialchars($commande['ville']) ?>
-</p>
+        <p><strong>Adresse :</strong>
+            <?= htmlspecialchars($commande['adresse_prestation']) ?>,
+            <?= htmlspecialchars($commande['code_postal']) ?>
+            <?= htmlspecialchars($commande['ville']) ?>
+        </p>
 
-<p><strong>Nombre de personnes :</strong> <?= (int)$commande['nb_personnes'] ?></p>
+        <p><strong>Nombre de personnes :</strong> <?= (int)$commande['nb_personnes'] ?></p>
+    </div>
 
-<p><strong>Total menus :</strong>
-    <?= number_format((float)$commande['prix_menu_total'], 2, ',', ' ') ?> €</p>
-<p><strong>Réduction appliquée :</strong>
-    <?= number_format((float)$commande['reduction_appliquee'], 2, ',', ' ') ?> €</p>
-<p><strong>Frais de livraison :</strong>
-    <?= number_format((float)$commande['frais_livraison'], 2, ',', ' ') ?> €</p>
-<p><strong>Prix total :</strong>
-    <?= number_format((float)$commande['prix_total'], 2, ',', ' ') ?> €</p>
+    <div class="card">
+        <h3>Récapitulatif</h3>
+        <p><strong>Total menus :</strong>
+            <?= number_format((float)$commande['prix_menu_total'], 2, ',', ' ') ?> €</p>
+        <p><strong>Réduction :</strong>
+            <?= number_format((float)$commande['reduction_appliquee'], 2, ',', ' ') ?> €</p>
+        <p><strong>Frais de livraison :</strong>
+            <?= number_format((float)$commande['frais_livraison'], 2, ',', ' ') ?> €</p>
+        <p class="card-title">Prix total :
+            <?= number_format((float)$commande['prix_total'], 2, ',', ' ') ?> €</p>
 
-<p><strong>Statut actuel :</strong>
-    <?= htmlspecialchars($commande['statut_courant']) ?></p>
+        <?php if ($commande['statut_courant'] === 'EN_ATTENTE'): ?>
+            <form method="post" action="index.php?page=annuler_commande" onsubmit="return confirm('Voulez-vous vraiment annuler cette commande ?');" class="form-actions">
+                <input type="hidden" name="id_commande" value="<?= (int)$commande['id'] ?>">
+                <input type="hidden" name="_csrf" value="<?= htmlspecialchars(Csrf::token()) ?>">
+                <button type="submit">Annuler la commande</button>
+            </form>
+        <?php endif; ?>
+    </div>
+</section>
 
-<?php if ($commande['statut_courant'] === 'EN_ATTENTE'): ?>
-    <form method="post" action="index.php?page=annuler_commande" onsubmit="return confirm('Voulez-vous vraiment annuler cette commande ?');">
-        <input type="hidden" name="id_commande" value="<?= (int)$commande['id'] ?>">
-        <input type="hidden" name="_csrf" value="<?= htmlspecialchars(Csrf::token()) ?>">
-        <button type="submit">Annuler la commande</button>
-    </form>
-<?php endif; ?>
+<section>
+    <h3>Historique des statuts</h3>
 
-<h3>Historique des statuts</h3>
-
-<?php if (empty($historiqueStatuts)): ?>
-    <p>Aucun historique disponible.</p>
-<?php else: ?>
-    <ul>
-        <?php foreach ($historiqueStatuts as $h): ?>
-            <li>
-                <?= htmlspecialchars($h['statut']) ?>
-                — <?= fr_datetime($h['date_heure'] ?? null) ?>
-                <?php if (!empty($h['commentaire'])): ?>
-                — <?= htmlspecialchars($h['commentaire']) ?>
-                <?php endif; ?>
-            </li>
-        <?php endforeach; ?>
-    </ul>
-<?php endif; ?>
+    <?php if (empty($historiqueStatuts)): ?>
+        <p>Aucun historique disponible.</p>
+    <?php else: ?>
+        <ul class="timeline">
+            <?php foreach ($historiqueStatuts as $h): ?>
+                <li>
+                    <strong><?= htmlspecialchars($h['statut']) ?></strong>
+                    <span class="muted">— <?= fr_datetime($h['date_heure'] ?? null) ?></span>
+                    <?php if (!empty($h['commentaire'])): ?>
+                        <div class="muted"><?= htmlspecialchars($h['commentaire']) ?></div>
+                    <?php endif; ?>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    <?php endif; ?>
+</section>
 
 <?php if ($commande['statut_courant'] === 'TERMINEE'): ?>
-    <h3>Laisser un avis</h3>
+    <section class="card">
+        <h3>Laisser un avis</h3>
 
-    <form method="post" action="index.php?page=avis_post">
-        <input type="hidden" name="id_commande" value="<?= (int)$commande['id'] ?>">
-        <input type="hidden" name="id_menu" value="<?= (int)$commande['id_menu'] ?>">
-        <input type="hidden" name="_csrf" value="<?= htmlspecialchars(Csrf::token()) ?>">
+        <form method="post" action="index.php?page=avis_post" class="form-stack">
+            <input type="hidden" name="id_commande" value="<?= (int)$commande['id'] ?>">
+            <input type="hidden" name="id_menu" value="<?= (int)$commande['id_menu'] ?>">
+            <input type="hidden" name="_csrf" value="<?= htmlspecialchars(Csrf::token()) ?>">
 
-        <label>Note (1 à 5) :</label>
-        <input type="number" name="note" min="1" max="5" required>
+            <label>Note (1 à 5)
+                <input type="number" name="note" min="1" max="5" required>
+            </label>
 
-        <label>Commentaire :</label>
-        <textarea name="commentaire" required></textarea>
+            <label>Commentaire
+                <textarea name="commentaire" required></textarea>
+            </label>
 
-        <br><br>
-        <button type="submit">Envoyer mon avis</button>
-    </form>
+            <button type="submit">Envoyer mon avis</button>
+        </form>
+    </section>
 <?php endif; ?>
 
-<p>
-    <a href="index.php?page=mes_commandes">← Retour à mes commandes</a>
-</p>
+<section class="cta-bar">
+    <a class="btn btn-ghost" href="index.php?page=mes_commandes">← Retour à mes commandes</a>
+</section>
 
 <?php require __DIR__ . '/../partials/footer.php'; ?>

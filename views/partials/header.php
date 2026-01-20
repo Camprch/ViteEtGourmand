@@ -23,13 +23,14 @@ $user = $_SESSION['user'] ?? null;
           href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dominant-baseline='central' font-size='52'%3E🍲%3C/text%3E%3C/svg%3E">
 </head>
 
-<body>
+<body class="site-body">
 
 <!-- En-tête du site avec navigation principale -->
-<header>
-    <h1>Vite & Gourmand</h1>
+<header class="site-header">
+    <div class="container header-inner">
+        <h1 class="site-title">Vite & Gourmand</h1>
 
-    <nav>
+        <nav class="site-nav">
         <!-- Liens accessibles à tout le monde -->
         <a href="index.php?page=home">Accueil</a>
         <a href="index.php?page=menus">Nos menus</a>
@@ -60,8 +61,10 @@ $user = $_SESSION['user'] ?? null;
             <a href="index.php?page=login">Connexion</a>
             <a href="index.php?page=register">Créer un compte</a>
         <?php endif; ?>
-    </nav>
+        </nav>
+    </div>
 </header>
 
 <!-- Début du contenu principal de la page -->
-<main>
+<main class="site-main">
+    <div class="container">

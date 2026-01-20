@@ -22,31 +22,37 @@ $statuts = [
 $current = $_GET['statut'] ?? '';
 ?>
 
-<!-- Titre de la page -->
-<h2>Gestion des commandes</h2>
+<section class="page-head">
+    <div>
+        <p class="eyebrow">Commandes</p>
+        <h2>Gestion des commandes</h2>
+        <p class="muted">Filtrez, mettez à jour les statuts ou annulez une commande.</p>
+    </div>
+</section>
 
 <!-- Formulaire de filtrage des commandes par statut -->
-<form method="get" action="index.php">
-    <input type="hidden" name="page" value="employe_commandes">
-    <label for="statut">Filtrer par statut :</label>
-    <select id="statut" name="statut">
-        <?php foreach ($statuts as $value => $label): ?>
-            <option value="<?= htmlspecialchars($value) ?>" <?= ($current === $value) ? 'selected' : '' ?>>
-                <?= htmlspecialchars($label) ?>
-            </option>
-        <?php endforeach; ?>
-    </select>
-    <button type="submit">Filtrer</button>
-</form>
-
-<hr>
+<section class="card">
+    <form method="get" action="index.php" class="form-inline">
+        <input type="hidden" name="page" value="employe_commandes">
+        <label for="statut">Filtrer par statut</label>
+        <select id="statut" name="statut">
+            <?php foreach ($statuts as $value => $label): ?>
+                <option value="<?= htmlspecialchars($value) ?>" <?= ($current === $value) ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($label) ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+        <button type="submit">Filtrer</button>
+    </form>
+</section>
 
 <!-- Affichage de la liste des commandes ou message si aucune -->
 <?php if (empty($commandes)): ?>
     <p>Aucune commande.</p>
 <?php else: ?>
-    <!-- Tableau listant les commandes -->
-    <table border="1" cellpadding="6" cellspacing="0">
+    <section>
+    <div class="table-wrap">
+    <table class="table">
         <thead>
             <tr>
                 <th>ID</th>
@@ -69,7 +75,7 @@ $current = $_GET['statut'] ?? '';
                 <td><?= number_format((float)$c['prix_total'], 2, ',', ' ') ?> €</td>
                 <td>
                     <!-- Formulaire pour changer le statut de la commande -->
-                    <form method="post" action="index.php?page=employe_commande_update_statut" style="margin-bottom:5px;">
+                    <form method="post" action="index.php?page=employe_commande_update_statut" class="action-row">
                         <input type="hidden" name="_csrf" value="<?= htmlspecialchars(Csrf::token()) ?>">
                         <input type="hidden" name="id" value="<?= (int)$c['id'] ?>">
                         <select name="statut">
@@ -82,22 +88,24 @@ $current = $_GET['statut'] ?? '';
                                 <?php endif; ?>
                             <?php endforeach; ?>
                         </select>
-                        <button type="submit">OK</button>
+                        <button class="btn-sm" type="submit">OK</button>
                     </form>
 
                     <!-- Formulaire pour annuler la commande (nécessite motif et contact) -->
-                    <form method="post" action="index.php?page=employe_commande_annuler">
+                    <form method="post" action="index.php?page=employe_commande_annuler" class="action-row">
                         <input type="hidden" name="_csrf" value="<?= htmlspecialchars(Csrf::token()) ?>">
                         <input type="hidden" name="id" value="<?= (int)$c['id'] ?>">
                         <input type="text" name="mode_contact" placeholder="Téléphone / Email" required>
                         <input type="text" name="motif" placeholder="Motif annulation" required>
-                        <button type="submit">Annuler</button>
+                        <button class="btn btn-ghost btn-sm" type="submit">Annuler</button>
                     </form>
                 </td>
             </tr>
         <?php endforeach; ?>
         </tbody>
     </table>
+    </div>
+    </section>
 <?php endif; ?>
 
 <?php
@@ -110,6 +118,8 @@ $dashboard = $_SESSION['dashboard_context'] ?? (
 ?>
 
 <!-- Lien de retour vers le dashboard adapté -->
-<p><a href="index.php?page=<?= $dashboard ?>">Retour dashboard</a></p>
+<section class="cta-bar">
+    <a class="btn btn-ghost" href="index.php?page=<?= $dashboard ?>">Retour dashboard</a>
+</section>
 
 <?php require __DIR__ . '/../partials/footer.php'; ?>

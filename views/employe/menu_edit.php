@@ -7,64 +7,60 @@ require __DIR__ . '/../partials/header.php';
 ?>
 
 
-<!-- Titre de la page -->
-<h1>Modifier un menu</h1>
+<section class="page-head">
+    <div>
+        <p class="eyebrow">Menus</p>
+        <h1>Modifier un menu</h1>
+    </div>
+</section>
 
-
-<!-- Formulaire d'édition du menu -->
-<form method="post" action="index.php?page=employe_menu_update">
+<section class="card">
+<form method="post" action="index.php?page=employe_menu_update" class="form-grid">
     <!-- Protection CSRF et identifiant du menu -->
     <input type="hidden" name="_csrf" value="<?= htmlspecialchars(Csrf::token()) ?>">
     <input type="hidden" name="id" value="<?= (int)$menu['id'] ?>">
 
     <!-- Champs principaux du menu -->
-    <div>
-        <label>Titre</label><br>
+    <label>Titre
         <input name="titre" value="<?= htmlspecialchars($menu['titre']) ?>" required>
-    </div>
+    </label>
 
-    <div>
-        <label>Description</label><br>
+    <label class="span-2">Description
         <textarea name="description" required><?= htmlspecialchars($menu['description']) ?></textarea>
-    </div>
+    </label>
 
-    <div>
-        <label>Thème</label><br>
+    <label>Thème
         <input name="theme" value="<?= htmlspecialchars($menu['theme'] ?? '') ?>">
-    </div>
+    </label>
 
-    <div>
-        <label>Régime</label><br>
+    <label>Régime
         <input name="regime" value="<?= htmlspecialchars($menu['regime'] ?? '') ?>">
-    </div>
+    </label>
 
-    <div>
-        <label>Prix par personne</label><br>
+    <label>Prix par personne
         <input type="number" step="0.01" name="prix_par_personne" value="<?= htmlspecialchars((string)$menu['prix_par_personne']) ?>" required>
-    </div>
+    </label>
 
-    <div>
-        <label>Personnes min</label><br>
+    <label>Personnes min
         <input type="number" name="personnes_min" value="<?= (int)$menu['personnes_min'] ?>" required>
-    </div>
+    </label>
 
-    <div>
-        <label>Conditions particulières</label><br>
+    <label class="span-2">Conditions particulières
         <textarea name="conditions_particulieres"><?= htmlspecialchars($menu['conditions_particulieres'] ?? '') ?></textarea>
-    </div>
+    </label>
 
-    <div>
-        <label>Stock (vide = illimité)</label><br>
+    <label>Stock (vide = illimité)
         <input type="number" name="stock" min="0" value="<?= htmlspecialchars((string)($menu['stock'] ?? '')) ?>">
-    </div>
+    </label>
 
-    <hr>
+    <hr class="span-2">
     <!-- Section de gestion des plats associés au menu -->
-    <h2>Plats du menu</h2>
+    <h2 class="span-2">Plats du menu</h2>
 
-    <p>Coche les plats inclus et donne un ordre (optionnel). Si l’ordre est vide, le plat sera mis après ceux ordonnés.</p>
+    <p class="span-2">Coche les plats inclus et donne un ordre (optionnel). Si l’ordre est vide, le plat sera mis après ceux ordonnés.</p>
 
-    <table border="1" cellpadding="6">
+    <div class="table-wrap span-2">
+    <table class="table">
         <thead>
             <tr>
                 <th>Inclure</th>
@@ -97,66 +93,74 @@ require __DIR__ . '/../partials/header.php';
         <?php endforeach; ?>
         </tbody>
     </table>
+    </div>
 
-    <button type="submit">Enregistrer</button>
+        <div class="form-actions span-2">
+            <button class="btn-sm" type="submit">Enregistrer</button>
+        </div>
 </form>
+</section>
 
-
-<hr>
+<section class="card">
     <!-- Section de gestion des images du menu -->
     <h2>Images du menu</h2>
 
     <!-- Formulaire d'upload d'une nouvelle image -->
     <form method="post"
         action="index.php?page=employe_menu_image_upload"
-        enctype="multipart/form-data">
+        enctype="multipart/form-data" class="form-grid">
 
         <input type="hidden" name="_csrf" value="<?= htmlspecialchars(Csrf::token()) ?>">
         <input type="hidden" name="menu_id" value="<?= (int)$menu['id'] ?>">
 
-        <div>
+        <label class="span-2">
             <input type="file" name="image" accept="image/*" required>
-        </div>
+        </label>
 
-        <div>
-            <label>Texte alternatif</label><br>
+        <label>Texte alternatif
             <input name="alt">
-        </div>
+        </label>
 
         <label>
             <input type="checkbox" name="is_main">
             Image principale
         </label>
 
-        <button type="submit">Uploader</button>
+        <div class="form-actions span-2">
+            <button type="submit">Uploader</button>
+        </div>
     </form>
 
     <!-- Affichage des images existantes du menu -->
     <?php if (!empty($images)): ?>
         <h3>Images existantes</h3>
-        <?php foreach ($images as $img): ?>
-            <div style="margin:10px 0;">
-                <img src="uploads/menus/<?= htmlspecialchars($img['chemin']) ?>"
-                    alt="<?= htmlspecialchars($img['alt_text'] ?? '') ?>"
-                    style="max-width:200px; display:block;">
+        <div class="cards-grid">
+            <?php foreach ($images as $img): ?>
+                <article class="card">
+                    <img src="uploads/menus/<?= htmlspecialchars($img['chemin']) ?>"
+                        alt="<?= htmlspecialchars($img['alt_text'] ?? '') ?>"
+                        style="max-width:100%; display:block; border-radius:12px;">
 
-                <?php if ($img['is_principale']): ?>
-                    <strong>Image principale</strong>
-                <?php endif; ?>
+                    <?php if ($img['is_principale']): ?>
+                        <p><span class="badge">Image principale</span></p>
+                    <?php endif; ?>
 
-                <!-- Formulaire pour supprimer une image -->
-                <form method="post" action="index.php?page=employe_menu_image_delete">
-                    <input type="hidden" name="_csrf" value="<?= htmlspecialchars(Csrf::token()) ?>">
-                    <input type="hidden" name="id" value="<?= (int)$img['id'] ?>">
-                    <input type="hidden" name="menu_id" value="<?= (int)$menu['id'] ?>">
-                    <button type="submit">Supprimer</button>
-                </form>
-            </div>
-        <?php endforeach; ?>
+                    <form method="post" action="index.php?page=employe_menu_image_delete" class="action-row">
+                        <input type="hidden" name="_csrf" value="<?= htmlspecialchars(Csrf::token()) ?>">
+                        <input type="hidden" name="id" value="<?= (int)$img['id'] ?>">
+                        <input type="hidden" name="menu_id" value="<?= (int)$menu['id'] ?>">
+                        <button class="btn btn-ghost btn-sm" type="submit">Supprimer</button>
+                    </form>
+                </article>
+            <?php endforeach; ?>
+        </div>
     <?php endif; ?>
+</section>
 
 
 <!-- Lien de retour vers la liste des menus -->
-<p><a href="index.php?page=employe_menus">← Retour liste</a></p>
+<section class="cta-bar">
+    <a class="btn btn-ghost" href="index.php?page=employe_menus">← Retour liste</a>
+</section>
 
 <?php require __DIR__ . '/../partials/footer.php'; ?>

@@ -7,24 +7,24 @@ require __DIR__ . '/../partials/header.php';
 ?>
 
 
-<!-- Titre de la page -->
-<h1>Gestion des menus</h1>
+<section class="page-head">
+    <div>
+        <p class="eyebrow">Menus</p>
+        <h1>Gestion des menus</h1>
+    </div>
+</section>
 
+<section class="toolbar">
+    <a class="btn" href="index.php?page=employe_menu_create">+ Créer un menu</a>
+</section>
 
-<!-- Lien vers la création d'un nouveau menu -->
-<p>
-    <a href="index.php?page=employe_menu_create">+ Créer un menu</a>
-</p>
-
-
-<!-- Message de confirmation ou d'erreur après mise à jour -->
 <?php if (isset($_GET['updated'])): ?>
-    <p><?= $_GET['updated'] === '1' ? '✅ Menu mis à jour' : '❌ Échec mise à jour' ?></p>
+    <section class="notice"><?= $_GET['updated'] === '1' ? '✅ Menu mis à jour' : '❌ Échec mise à jour' ?></section>
 <?php endif; ?>
 
-
-<!-- Tableau listant tous les menus avec actions d'édition et d'activation/désactivation -->
-<table border="1" cellpadding="6">
+<section>
+<div class="table-wrap">
+<table class="table">
     <thead>
         <tr>
             <th>ID</th>
@@ -54,14 +54,14 @@ require __DIR__ . '/../partials/header.php';
             </td>
             <td>
                 <!-- Lien pour éditer le menu -->
-                <a href="index.php?page=employe_menu_edit&id=<?= (int)$m['id'] ?>">Éditer</a>
+                <a class="btn btn-ghost btn-sm" href="index.php?page=employe_menu_edit&id=<?= (int)$m['id'] ?>">Éditer</a>
 
                 <!-- Formulaire pour activer/désactiver le menu (stock) -->
-                <form method="post" action="index.php?page=employe_menu_toggle_stock" style="display:inline">
+                <form method="post" action="index.php?page=employe_menu_toggle_stock" class="action-row">
                     <input type="hidden" name="_csrf" value="<?= htmlspecialchars(Csrf::token()) ?>">
                     <input type="hidden" name="id" value="<?= (int)$m['id'] ?>">
                     <input type="hidden" name="current_stock" value="<?= htmlspecialchars((string)($m['stock'] ?? '')) ?>">
-                    <button type="submit">
+                    <button class="btn-sm" type="submit">
                         <?= ((int)($m['stock'] ?? 1) === 0) ? 'Réactiver' : 'Désactiver' ?>
                     </button>
                 </form>
@@ -70,10 +70,14 @@ require __DIR__ . '/../partials/header.php';
     <?php endforeach; ?>
     </tbody>
 </table>
+</div>
+</section>
 
 
 <!-- Lien de retour vers le dashboard employé -->
-<p><a href="index.php?page=dashboard_employe">Retour dashboard</a></p>
+<section class="cta-bar">
+    <a class="btn btn-ghost" href="index.php?page=dashboard_employe">Retour dashboard</a>
+</section>
 
 
 <?php require __DIR__ . '/../partials/footer.php'; ?>

@@ -7,24 +7,24 @@ require __DIR__ . '/../partials/header.php';
 ?>
 
 
-<!-- Titre de la page -->
-<h1>Gestion des plats</h1>
+<section class="page-head">
+    <div>
+        <p class="eyebrow">Plats</p>
+        <h1>Gestion des plats</h1>
+    </div>
+</section>
 
+<section class="toolbar">
+    <a class="btn" href="index.php?page=employe_plat_create">+ Créer un plat</a>
+</section>
 
-<!-- Lien vers la création d'un nouveau plat -->
-<p>
-    <a href="index.php?page=employe_plat_create">+ Créer un plat</a>
-</p>
+<?php if (isset($_GET['created'])): ?><section class="notice">✅ Plat créé</section><?php endif; ?>
+<?php if (isset($_GET['updated'])): ?><section class="notice">✅ Plat modifié</section><?php endif; ?>
+<?php if (isset($_GET['deleted'])): ?><section class="notice">✅ Plat supprimé</section><?php endif; ?>
 
-
-<!-- Messages de confirmation après action -->
-<?php if (isset($_GET['created'])): ?><p>✅ Plat créé</p><?php endif; ?>
-<?php if (isset($_GET['updated'])): ?><p>✅ Plat modifié</p><?php endif; ?>
-<?php if (isset($_GET['deleted'])): ?><p>✅ Plat supprimé</p><?php endif; ?>
-
-
-<!-- Tableau listant tous les plats avec actions d'édition et de suppression -->
-<table border="1" cellpadding="6">
+<section>
+<div class="table-wrap">
+<table class="table">
     <thead>
         <tr>
             <th>ID</th>
@@ -43,19 +43,21 @@ require __DIR__ . '/../partials/header.php';
             <td><?= htmlspecialchars($p['description'] ?? '') ?></td>
             <td>
                 <!-- Lien pour éditer le plat -->
-                <a href="index.php?page=employe_plat_edit&id=<?= (int)$p['id'] ?>">Éditer</a>
+                <a class="btn btn-ghost btn-sm" href="index.php?page=employe_plat_edit&id=<?= (int)$p['id'] ?>">Éditer</a>
 
                 <!-- Formulaire pour supprimer le plat (avec confirmation JS) -->
-                <form method="post" action="index.php?page=employe_plat_delete" style="display:inline" onsubmit="return confirm('Supprimer ce plat ?');">
+                <form method="post" action="index.php?page=employe_plat_delete" class="action-row" onsubmit="return confirm('Supprimer ce plat ?');">
                     <input type="hidden" name="_csrf" value="<?= htmlspecialchars(Csrf::token()) ?>">
                     <input type="hidden" name="id" value="<?= (int)$p['id'] ?>">
-                    <button type="submit">Supprimer</button>
+                    <button class="btn btn-ghost btn-sm" type="submit">Supprimer</button>
                 </form>
             </td>
         </tr>
     <?php endforeach; ?>
     </tbody>
 </table>
+</div>
+</section>
 
 
 <?php require __DIR__ . '/../partials/footer.php'; ?>

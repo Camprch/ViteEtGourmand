@@ -7,21 +7,25 @@
 require __DIR__ . '/../partials/header.php';
 ?>
 
-<!-- Titre de la page -->
-<h1>Créer un allergène</h1>
+<section class="page-head">
+    <div>
+        <p class="eyebrow">Allergènes</p>
+        <h1>Créer un allergène</h1>
+    </div>
+</section>
 
-<!-- Formulaire de création d'un allergène -->
-<form method="post" action="index.php?page=employe_allergene_store">
+<section class="card">
+<form method="post" action="index.php?page=employe_allergene_store" class="form-stack">
     <!-- Protection CSRF -->
     <input type="hidden" name="_csrf" value="<?= htmlspecialchars(Csrf::token()) ?>">
-    <div>
-        <label>Nom</label><br>
+    <label>Nom
         <input name="nom" required>
+    </label>
+    <div class="form-actions">
+        <button type="submit">Créer</button>
+        <a class="btn btn-ghost" href="index.php?page=employe_allergenes">Retour</a>
     </div>
-    <button type="submit">Créer</button>
 </form>
-
-<!-- Lien de retour vers la liste des allergènes -->
-<p><a href="index.php?page=employe_allergenes">← Retour</a></p>
+</section>
 
 <?php require __DIR__ . '/../partials/footer.php'; ?>

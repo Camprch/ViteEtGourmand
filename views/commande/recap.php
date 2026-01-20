@@ -10,34 +10,44 @@ $pageTitle = "Récap commande #" . (int)$commandeId;
 require __DIR__ . '/../partials/header.php';
 ?>
 
-<h2>Récapitulatif de votre commande</h2>
+<section class="page-head">
+    <div>
+        <p class="eyebrow">Confirmation</p>
+        <h2>Récapitulatif de votre commande</h2>
+        <p class="muted">Commande n°<?= (int)$commandeId ?> enregistrée.</p>
+    </div>
+</section>
 
-<p>Menu : <strong><?= htmlspecialchars((string)$menu['titre']) ?></strong></p>
+<section class="order-detail">
+    <div class="card">
+        <h3>Menu choisi</h3>
+        <p><strong><?= htmlspecialchars((string)$menu['titre']) ?></strong></p>
+        <p class="muted">
+            Prestation le <?= htmlspecialchars((string)$datePrestation) ?>
+            à <?= htmlspecialchars((string)$heurePrestation) ?>
+        </p>
+        <p class="muted">
+            Adresse : <?= htmlspecialchars((string)$adresse) ?>,
+            <?= htmlspecialchars((string)$codePostal) ?>
+            <?= htmlspecialchars((string)$ville) ?>
+        </p>
+    </div>
 
-<ul>
-    <li>Nombre de personnes : <?= (int)$nbPersonnes ?></li>
-    <li>Prix par personne : <?= number_format((float)$prixParPersonne, 2, ',', ' ') ?> €</li>
-    <li>Total menus : <strong><?= number_format((float)$prixMenuTotal, 2, ',', ' ') ?> €</strong></li>
-    <li>Réduction : <?= number_format((float)$reduction, 2, ',', ' ') ?> €</li>
-    <li>Frais de livraison : <?= number_format((float)$fraisLivraison, 2, ',', ' ') ?> €</li>
-    <li>Prix total : <strong><?= number_format((float)$prixTotal, 2, ',', ' ') ?> €</strong></li>
-</ul>
+    <div class="card">
+        <h3>Récapitulatif</h3>
+        <ul class="recap-list">
+            <li><span>Nombre de personnes</span><strong><?= (int)$nbPersonnes ?></strong></li>
+            <li><span>Prix par personne</span><strong><?= number_format((float)$prixParPersonne, 2, ',', ' ') ?> €</strong></li>
+            <li><span>Total menus</span><strong><?= number_format((float)$prixMenuTotal, 2, ',', ' ') ?> €</strong></li>
+            <li><span>Réduction</span><strong><?= number_format((float)$reduction, 2, ',', ' ') ?> €</strong></li>
+            <li><span>Frais de livraison</span><strong><?= number_format((float)$fraisLivraison, 2, ',', ' ') ?> €</strong></li>
+            <li><span>Prix total</span><strong><?= number_format((float)$prixTotal, 2, ',', ' ') ?> €</strong></li>
+        </ul>
+    </div>
+</section>
 
-<p>Commande n° <strong><?= (int)$commandeId ?></strong> enregistrée.</p>
-
-<hr>
-
-<p>
-    Prestation le <?= htmlspecialchars((string)$datePrestation) ?>
-    à <?= htmlspecialchars((string)$heurePrestation) ?>
-</p>
-
-<p>
-    Adresse : <?= htmlspecialchars((string)$adresse) ?>,
-    <?= htmlspecialchars((string)$codePostal) ?>
-    <?= htmlspecialchars((string)$ville) ?>
-</p>
-
-<p><a href="index.php?page=menus">← Retour aux menus</a></p>
+<section class="cta-bar">
+    <a class="btn btn-ghost" href="index.php?page=menus">← Retour aux menus</a>
+</section>
 
 <?php require __DIR__ . '/../partials/footer.php'; ?>
