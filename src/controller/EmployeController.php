@@ -5,6 +5,8 @@ declare(strict_types=1);
 
 // - dashboard() : Affiche le tableau de bord employé
 
+require_once __DIR__ . '/../security/Auth.php';
+
 class EmployeController
 {
     private PDO $pdo;
@@ -17,18 +19,7 @@ class EmployeController
     // Vérifie que l'utilisateur est employé ou admin
     private function requireEmployeOrAdmin(): void
     {
-        $user = $_SESSION['user'] ?? null;
-
-        if (!$user) {
-            header('Location: index.php?page=login');
-            exit;
-        }
-
-        if (!in_array($user['role'], ['EMPLOYE', 'ADMIN'], true)) {
-            http_response_code(403);
-            echo "<h2>Accès refusé</h2>";
-            exit;
-        }
+        Auth::requireRole(['EMPLOYE', 'ADMIN']);
     }
 
     // Affiche le tableau de bord employé

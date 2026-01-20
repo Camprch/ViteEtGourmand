@@ -26,9 +26,8 @@ final class Csrf
         $valid = $_SESSION['_csrf'] ?? '';
 
         if (!$sent || !$valid || !hash_equals($valid, (string)$sent)) {
-            http_response_code(403);
-            echo "<h2>Action refusée (CSRF)</h2>";
-            exit;
+            require_once __DIR__ . '/../helper/errors.php';
+            render_error(403, 'Action refusée', 'Votre session a expiré ou la requête est invalide.');
         }
 
         unset($_SESSION['_csrf']);

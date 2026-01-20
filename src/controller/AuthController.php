@@ -103,6 +103,28 @@ class AuthController
             'created_at' => date('Y-m-d H:i:s'),
         ]);
 
+        // Email de bienvenue (si configuré)
+        try {
+            require_once __DIR__ . '/../service/MailerService.php';
+            $mailer = new MailerService();
+
+            $appUrl = getenv('APP_URL') ?: 'http://localhost:8000';
+            $loginLink = rtrim($appUrl, '/') . "/index.php?page=login";
+            $fullName = trim($prenom . ' ' . $nom);
+
+            $html = "<p>Bienvenue chez Vite &amp; Gourmand !</p>
+                    <p>Votre compte a bien été créé.</p>
+                    <p>Vous pouvez vous connecter ici : <a href=\"$loginLink\">$loginLink</a></p>";
+
+            $text = "Bienvenue chez Vite & Gourmand !\n"
+                . "Votre compte a bien été créé.\n"
+                . "Connexion : $loginLink\n";
+
+            $mailer->send($email, $fullName !== '' ? $fullName : $email, "Bienvenue chez Vite & Gourmand", $html, $text);
+        } catch (Throwable $e) {
+            error_log("Email bienvenue non envoyé à {$email}: " . $e->getMessage());
+        }
+
         echo "<h2>Compte créé avec succès 👍</h2>";
         echo "<p>Vous pouvez maintenant vous connecter.</p>";
         echo '<p><a href="index.php?page=login">Aller à la page de connexion</a></p>';

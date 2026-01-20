@@ -37,9 +37,8 @@ class ProfilController
         $profileUser = $model->findById((int)$sessionUser['id']);
 
         if (!$profileUser) {
-            http_response_code(404);
-            echo "<h2>Utilisateur introuvable</h2>";
-            exit;
+            require_once __DIR__ . '/../helper/errors.php';
+            render_error(404, 'Utilisateur introuvable', 'Ce compte n’existe pas.');
         }
 
         require __DIR__ . '/../../views/profil/index.php';

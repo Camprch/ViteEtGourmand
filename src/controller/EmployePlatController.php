@@ -90,8 +90,6 @@ class EmployePlatController
         }
        
         $platModel = new PlatModel($this->pdo);
-        $platModel->create($nom, $description !== '' ? $description : null, $type);
-
         $platId = $platModel->create($nom, $description !== '' ? $description : null, $type);
 
         $selectedAllergenes = $_POST['allergenes'] ?? [];
@@ -126,9 +124,8 @@ class EmployePlatController
         }
 
         if (!$plat) {
-            http_response_code(404);
-            echo "<h2>Plat introuvable</h2>";
-            exit;
+            require_once __DIR__ . '/../helper/errors.php';
+            render_error(404, 'Plat introuvable', 'Le plat demandé n’existe pas.');
         }
 
         require __DIR__ . '/../../views/employe/plat_edit.php';

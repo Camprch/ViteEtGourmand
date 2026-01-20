@@ -247,6 +247,32 @@ class CommandeController
         error_log("Mailer exception (commandeId=$commandeId): " . $e->getMessage());
     }
 
+    // Notification employé d'une nouvelle commande
+    $notifyEmail = getenv('MAIL_NOTIFY_EMAIL') ?: '';
+    if ($notifyEmail !== '') {
+        try {
+            $notifyName = getenv('MAIL_NOTIFY_NAME') ?: 'Equipe Vite Gourmand';
+            $mailer = new MailerService();
+
+            $html = "<p>Nouvelle commande reçue.</p>
+                    <p><strong>Commande #$commandeId</strong></p>
+                    <p>Menu : " . htmlspecialchars((string)$menu['titre']) . "</p>
+                    <p>Date : " . htmlspecialchars($datePrestation) . " à " . htmlspecialchars($heurePrestation) . "</p>
+                    <p>Ville : " . htmlspecialchars($ville) . "</p>
+                    <p>Total : " . number_format($prixTotal, 2, ',', ' ') . " €</p>";
+
+            $text = "Nouvelle commande #$commandeId\n"
+                . "Menu : " . (string)$menu['titre'] . "\n"
+                . "Date : $datePrestation $heurePrestation\n"
+                . "Ville : $ville\n"
+                . "Total : " . number_format($prixTotal, 2, ',', ' ') . " €\n";
+
+            $mailer->send($notifyEmail, $notifyName, "Nouvelle commande #$commandeId", $html, $text);
+        } catch (Throwable $e) {
+            error_log("Email notif commande non envoyé: " . $e->getMessage());
+        }
+    }
+
     require __DIR__ . '/../../views/commande/recap.php';
     }
 

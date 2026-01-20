@@ -64,6 +64,12 @@ require __DIR__ . '/../partials/header.php';
             <li>Indiquez la date et l’adresse.</li>
             <li>Recevez la confirmation par email.</li>
         </ol>
+
+        <h3>Règles d’annulation</h3>
+        <ul class="steps">
+            <li>Annulation possible uniquement tant que la commande est <strong>En attente</strong>.</li>
+            <li>Dès qu’elle est acceptée ou en préparation, l’annulation n’est plus possible.</li>
+        </ul>
     </div>
 </section>
 

@@ -13,7 +13,7 @@ require __DIR__ . '/../partials/header.php';
 <section class="menu-hero">
     <div class="menu-hero-media">
         <?php if (!empty($image['chemin'])): ?>
-            <img src="/<?= htmlspecialchars($image['chemin']) ?>"
+            <img src="/uploads/menus/<?= htmlspecialchars($image['chemin']) ?>"
                  alt="<?= htmlspecialchars($image['alt_text'] ?? $menu['titre']) ?>">
         <?php else: ?>
             <div class="placeholder">Menu du moment</div>

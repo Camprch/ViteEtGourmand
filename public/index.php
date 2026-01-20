@@ -44,6 +44,12 @@ session_start();
 // Afficher les erreurs en dev (à désactiver en production)
 ini_set('display_errors', '1');
 error_reporting(E_ALL);
+ini_set('log_errors', '1');
+$logDir = __DIR__ . '/../var/log';
+if (!is_dir($logDir)) {
+    mkdir($logDir, 0755, true);
+}
+ini_set('error_log', $logDir . '/app.log');
 
 // Connexion à la base de données
 require_once __DIR__ . '/../src/config/db.php';
@@ -59,12 +65,39 @@ $horaires = $horaireModel->findAllOrdered();
 
 // Helpers (fonctions utilitaires)
 require_once __DIR__ . '/../src/helper/format.php';
+require_once __DIR__ . '/../src/helper/errors.php';
 
 // Contrôleur principal (page d'accueil)
 require_once __DIR__ . '/../src/controller/HomeController.php';
 
 // Router ultra simple basé sur ?page= dans l'URL
 $page = $_GET['page'] ?? 'home';
+
+// Cache simple des pages publiques (GET, non connecté)
+$cacheablePages = ['home', 'menus', 'menu'];
+$cacheEnabled = ($_SERVER['REQUEST_METHOD'] === 'GET')
+    && empty($_SESSION['user'])
+    && in_array($page, $cacheablePages, true);
+
+$cacheFile = null;
+$cacheTtlSeconds = 60;
+
+if ($cacheEnabled) {
+    $cacheDir = __DIR__ . '/../var/cache';
+    if (!is_dir($cacheDir)) {
+        mkdir($cacheDir, 0755, true);
+    }
+    $cacheKey = md5($_SERVER['REQUEST_URI'] ?? 'home');
+    $cacheFile = $cacheDir . '/page_' . $cacheKey . '.html';
+
+    if (is_file($cacheFile) && (time() - filemtime($cacheFile)) < $cacheTtlSeconds) {
+        header('X-Cache: HIT');
+        readfile($cacheFile);
+        exit;
+    }
+
+    ob_start();
+}
 
 // Mémoriser le dashboard courant selon la section visitée
 if ($page === 'dashboard_admin' || str_starts_with($page, 'admin_')) {
@@ -233,6 +266,10 @@ switch ($page) {
 
     case 'mentions_legales':
     require __DIR__ . '/../views/legal/mentions_legales.php';
+    break;
+
+    case 'rgpd':
+    require __DIR__ . '/../views/legal/rgpd.php';
     break;
 
     case 'cgv':
@@ -423,7 +460,13 @@ switch ($page) {
     break;
 
     default:
-    $controller = new HomeController($pdo);
-    $controller->index();
+    render_error(404, 'Page introuvable', 'La page demandée n’existe pas ou a été déplacée.');
     break;
+}
+
+if ($cacheEnabled && $cacheFile) {
+    $html = ob_get_clean();
+    file_put_contents($cacheFile, $html);
+    header('X-Cache: MISS');
+    echo $html;
 }

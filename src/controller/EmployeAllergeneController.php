@@ -91,9 +91,8 @@ class EmployeAllergeneController
         $allergene = $model->findById($id);
 
         if (!$allergene) {
-            http_response_code(404);
-            echo "<h2>Allergène introuvable</h2>";
-            exit;
+            require_once __DIR__ . '/../helper/errors.php';
+            render_error(404, 'Allergène introuvable', 'L’allergène demandé n’existe pas.');
         }
 
         require __DIR__ . '/../../views/employe/allergene_edit.php';

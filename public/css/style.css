@@ -48,6 +48,22 @@ a:hover {
     color: var(--accent-dark);
 }
 
+.skip-link {
+    position: absolute;
+    left: -999px;
+    top: 8px;
+    background: var(--cream);
+    color: var(--ink);
+    padding: 8px 12px;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    z-index: 100;
+}
+
+.skip-link:focus {
+    left: 12px;
+}
+
 .eyebrow {
     text-transform: uppercase;
     letter-spacing: 0.18em;
@@ -331,6 +347,7 @@ label {
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     align-items: end;
 }
+
 
 .filters-actions {
     display: flex;

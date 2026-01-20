@@ -25,12 +25,14 @@ $user = $_SESSION['user'] ?? null;
 
 <body class="site-body">
 
+<a class="skip-link" href="#main-content">Aller au contenu</a>
+
 <!-- En-tête du site avec navigation principale -->
 <header class="site-header">
     <div class="container header-inner">
         <h1 class="site-title">Vite & Gourmand</h1>
 
-        <nav class="site-nav">
+        <nav class="site-nav" aria-label="Navigation principale">
         <!-- Liens accessibles à tout le monde -->
         <a href="index.php?page=home">Accueil</a>
         <a href="index.php?page=menus">Nos menus</a>
@@ -66,5 +68,5 @@ $user = $_SESSION['user'] ?? null;
 </header>
 
 <!-- Début du contenu principal de la page -->
-<main class="site-main">
+<main class="site-main" id="main-content">
     <div class="container">

@@ -31,18 +31,16 @@ class MenuController
     public function show(int $id): void
     {
         if ($id <= 0) {
-            http_response_code(404);
-            echo 'Menu introuvable.';
-            return;
+            require_once __DIR__ . '/../helper/errors.php';
+            render_error(404, 'Menu introuvable', 'Le menu demandé n’existe pas.');
         }
 
         $menuModel = new MenuModel($this->pdo);
         $menu = $menuModel->findById($id);
 
         if (!$menu) {
-            http_response_code(404);
-            echo 'Menu introuvable.';
-            return;
+            require_once __DIR__ . '/../helper/errors.php';
+            render_error(404, 'Menu introuvable', 'Le menu demandé n’existe pas.');
         }
 
         $plats = $menuModel->getPlatsWithAllergenesForFront($id);
@@ -68,7 +66,9 @@ class MenuController
             'prix_max' => isset($_GET['prix_max']) && $_GET['prix_max'] !== ''
                 ? (float)str_replace(',', '.', (string)$_GET['prix_max'])
                 : null,
-            'personnes_min' => isset($_GET['personnes_min']) ? (int)$_GET['personnes_min'] : null,
+            'personnes_min' => isset($_GET['personnes_min']) && $_GET['personnes_min'] !== ''
+                ? (int)$_GET['personnes_min']
+                : null,
         ];
 
         $menuModel = new MenuModel($this->pdo);

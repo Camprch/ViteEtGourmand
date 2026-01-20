@@ -85,6 +85,32 @@ class AvisController
             'commentaire' => $commentaire,
         ]);
 
+        // Notification employé d'un nouvel avis
+        $notifyEmail = getenv('MAIL_NOTIFY_EMAIL') ?: '';
+        if ($notifyEmail !== '') {
+            try {
+                require_once __DIR__ . '/../service/MailerService.php';
+                $notifyName = getenv('MAIL_NOTIFY_NAME') ?: 'Equipe Vite Gourmand';
+                $mailer = new MailerService();
+
+                $fullName = trim((string)(Auth::user()['prenom'] ?? '') . ' ' . (string)(Auth::user()['nom'] ?? ''));
+                $html = "<p>Nouvel avis reçu.</p>
+                        <p>Commande #$commandeId — Note : <strong>$note/5</strong></p>
+                        <p>Client : " . htmlspecialchars($fullName !== '' ? $fullName : 'Client') . "</p>
+                        <p>Commentaire :</p>
+                        <p>" . nl2br(htmlspecialchars($commentaire)) . "</p>";
+
+                $text = "Nouvel avis reçu\n"
+                    . "Commande #$commandeId — Note : $note/5\n"
+                    . "Client : " . ($fullName !== '' ? $fullName : 'Client') . "\n"
+                    . "Commentaire :\n" . $commentaire . "\n";
+
+                $mailer->send($notifyEmail, $notifyName, "Nouvel avis - commande #$commandeId", $html, $text);
+            } catch (Throwable $e) {
+                error_log("Email notif avis non envoyé: " . $e->getMessage());
+            }
+        }
+
         echo "<h2>Avis envoyé ✅</h2>";
         echo "<p>Merci ! Votre avis sera visible après validation.</p>";
         echo '<p><a href="index.php?page=commande_detail&id=' . $commandeId . '">Retour à la commande</a></p>';

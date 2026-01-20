@@ -142,9 +142,8 @@ class EmployeMenuController
         }
 
         if (!$menu) {
-            http_response_code(404);
-            echo "<h2>Menu introuvable</h2>";
-            exit;
+            require_once __DIR__ . '/../helper/errors.php';
+            render_error(404, 'Menu introuvable', 'Le menu demandé n’existe pas.');
         }
 
         require __DIR__ . '/../../views/employe/menu_edit.php';
@@ -306,7 +305,8 @@ class EmployeMenuController
             exit;
         }
 
-        $chemin = bin2hex(random_bytes(16)) . '.' . $allowed[$mime];
+        $baseName = bin2hex(random_bytes(16));
+        $targetExt = $allowed[$mime];
 
         $uploadDir = realpath(__DIR__ . '/../../public') . '/uploads/menus';
         if ($uploadDir === false) {
@@ -321,11 +321,59 @@ class EmployeMenuController
             }
         }
 
+        // Optimisation simple : redimensionnement + compression si GD dispo
+        $chemin = $baseName . '.' . $targetExt;
         $dest = $uploadDir . '/' . $chemin;
 
-        if (!move_uploaded_file($file['tmp_name'], $dest)) {
-            echo "<h2>Erreur sauvegarde fichier</h2>";
-            exit;
+        $optimized = false;
+        if (function_exists('imagecreatetruecolor')) {
+            $srcImg = null;
+            if ($mime === 'image/jpeg' && function_exists('imagecreatefromjpeg')) {
+                $srcImg = @imagecreatefromjpeg($file['tmp_name']);
+            } elseif ($mime === 'image/png' && function_exists('imagecreatefrompng')) {
+                $srcImg = @imagecreatefrompng($file['tmp_name']);
+            } elseif ($mime === 'image/webp' && function_exists('imagecreatefromwebp')) {
+                $srcImg = @imagecreatefromwebp($file['tmp_name']);
+            }
+
+            if ($srcImg) {
+                $maxSize = 1600;
+                $w = imagesx($srcImg);
+                $h = imagesy($srcImg);
+                $scale = min(1, $maxSize / max($w, $h));
+                $newW = (int)floor($w * $scale);
+                $newH = (int)floor($h * $scale);
+
+                $dstImg = $srcImg;
+                if ($scale < 1) {
+                    $dstImg = imagecreatetruecolor($newW, $newH);
+                    if ($mime === 'image/png' || $mime === 'image/webp') {
+                        imagealphablending($dstImg, false);
+                        imagesavealpha($dstImg, true);
+                    }
+                    imagecopyresampled($dstImg, $srcImg, 0, 0, 0, 0, $newW, $newH, $w, $h);
+                }
+
+                if ($mime === 'image/jpeg' && function_exists('imagejpeg')) {
+                    $optimized = imagejpeg($dstImg, $dest, 82);
+                } elseif ($mime === 'image/png' && function_exists('imagepng')) {
+                    $optimized = imagepng($dstImg, $dest, 6);
+                } elseif ($mime === 'image/webp' && function_exists('imagewebp')) {
+                    $optimized = imagewebp($dstImg, $dest, 82);
+                }
+
+                if ($dstImg !== $srcImg) {
+                    imagedestroy($dstImg);
+                }
+                imagedestroy($srcImg);
+            }
+        }
+
+        if (!$optimized) {
+            if (!move_uploaded_file($file['tmp_name'], $dest)) {
+                echo "<h2>Erreur sauvegarde fichier</h2>";
+                exit;
+            }
         }
 
         $alt = trim($_POST['alt'] ?? '');

@@ -9,6 +9,12 @@ declare(strict_types=1);
 
 final class Auth
 {
+    // Charge le helper d'erreurs pour pages propres
+    private static function error(string $title, string $message, int $code = 403): void
+    {
+        require_once __DIR__ . '/../helper/errors.php';
+        render_error($code, $title, $message);
+    }
     // Retourne l'utilisateur connecté (ou null si non connecté)
     public static function user(): ?array
     {
@@ -30,9 +36,7 @@ final class Auth
     {
         $u = self::user();
         if (!$u || !in_array($u['role'], $roles, true)) {
-            http_response_code(403);
-            echo "<h2>Accès refusé</h2>";
-            exit;
+            self::error('Accès refusé', 'Vous n’avez pas les droits nécessaires pour accéder à cette page.', 403);
         }
     }
 }

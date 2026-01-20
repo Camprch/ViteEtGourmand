@@ -32,7 +32,7 @@ require __DIR__ . '/../partials/header.php';
 
         <label>
             Prix max (€)
-            <input type="number" name="prix_max" step="0.01" min="0" placeholder="25">
+            <input type="number" name="prix_max" step="5" min="0" placeholder="25">
         </label>
 
         <label>
@@ -63,7 +63,6 @@ require __DIR__ . '/../partials/header.php';
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('menu-filters');
     const container = document.getElementById('menus-container');
-
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 

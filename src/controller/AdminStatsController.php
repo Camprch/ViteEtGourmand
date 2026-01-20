@@ -25,9 +25,8 @@ class AdminStatsController
     {
         $user = $_SESSION['user'] ?? null;
         if (!$user || $user['role'] !== 'ADMIN') {
-            http_response_code(403);
-            echo "<h2>Accès refusé</h2>";
-            exit;
+            require_once __DIR__ . '/../helper/errors.php';
+            render_error(403, 'Accès refusé', 'Vous n’avez pas les droits nécessaires pour accéder à cette page.');
         }
     }
 
@@ -140,4 +139,3 @@ class AdminStatsController
         require __DIR__ . '/../../views/admin/stats.php';
     }
 }
-

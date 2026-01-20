@@ -54,6 +54,7 @@ require __DIR__ . '/../partials/header.php';
 
 <section>
     <h3>Historique des statuts</h3>
+    <p class="muted">Règle d’annulation : possible uniquement tant que la commande est <strong>EN_ATTENTE</strong>.</p>
 
     <?php if (empty($historiqueStatuts)): ?>
         <p>Aucun historique disponible.</p>

@@ -71,6 +71,17 @@ Configuration via `.env` avec `MAIL_FROM_EMAIL` et `MAILER_DSN`
 
 ---
 
+## 🗄️ Base de données : scripts SQL
+
+Deux fichiers de schéma coexistent volontairement :
+- `db/01_schema.sql` : utilisé par **Docker/MariaDB** pour l’initialisation automatique en local.
+- `sql/schema.sql` : **référence de schéma** pour déploiement / prod / usage manuel.
+
+Conseil d’usage :
+- Modifie d’abord `sql/schema.sql`, puis reporte la modification dans `db/01_schema.sql` si tu veux garder l’init Docker à jour.
+
+---
+
 ## 💾 Installation
 
 ### Prérequis

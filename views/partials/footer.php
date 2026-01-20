@@ -35,6 +35,7 @@ $horaires = $GLOBALS['horaires'] ?? [];
             <p>© Vite & Gourmand</p>
             <p>
                 <a href="index.php?page=mentions_legales">Mentions légales</a> |
+                <a href="index.php?page=rgpd">RGPD</a> |
                 <a href="index.php?page=cgv">CGV</a>
             </p>
         </div>
