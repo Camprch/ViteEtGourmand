@@ -6,6 +6,22 @@
 
 // Raccourci pratique pour savoir si on est connecté
 $user = $_SESSION['user'] ?? null;
+
+$pageSlug = $_GET['page'] ?? 'home';
+$defaultDescription = 'Traiteur local : menus sur mesure pour vos repas de famille et événements professionnels.';
+$pageDescription = $pageDescription ?? $defaultDescription;
+
+$publicPages = ['home', 'menus', 'menu', 'contact', 'mentions_legales', 'rgpd', 'cgv'];
+$pageRobots = in_array($pageSlug, $publicPages, true) ? 'index,follow' : 'noindex,nofollow';
+
+$baseUrl = rtrim((string)getenv('APP_URL'), '/');
+if ($baseUrl === '') {
+    $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+    $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+    $baseUrl = $scheme . '://' . $host;
+}
+$requestUri = $_SERVER['REQUEST_URI'] ?? '/';
+$canonicalUrl = $baseUrl . $requestUri;
 ?>
 
 <!DOCTYPE html>
@@ -13,6 +29,17 @@ $user = $_SESSION['user'] ?? null;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="<?= htmlspecialchars($pageDescription) ?>">
+    <meta name="robots" content="<?= htmlspecialchars($pageRobots) ?>">
+    <link rel="canonical" href="<?= htmlspecialchars($canonicalUrl) ?>">
+    <meta property="og:site_name" content="Vite & Gourmand">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="<?= isset($pageTitle) ? htmlspecialchars($pageTitle) : 'Vite & Gourmand' ?>">
+    <meta property="og:description" content="<?= htmlspecialchars($pageDescription) ?>">
+    <meta property="og:url" content="<?= htmlspecialchars($canonicalUrl) ?>">
+    <meta property="og:locale" content="fr_FR">
+    <meta name="twitter:card" content="summary">
+    <meta name="theme-color" content="#f7f2ea">
     <link rel="stylesheet" href="css/style.css">
 
     <title>
@@ -30,39 +57,46 @@ $user = $_SESSION['user'] ?? null;
 <!-- En-tête du site avec navigation principale -->
 <header class="site-header">
     <div class="container header-inner">
-        <h1 class="site-title">Vite & Gourmand</h1>
+        <div class="site-brand">
+            <h1 class="site-title">
+                <a class="site-logo" href="index.php?page=home" aria-label="Retour à l'accueil">
+                    🍲 Vite & Gourmand
+                </a>
+            </h1>
+            <?php if ($user): ?>
+                <p class="site-greeting">Bonjour <?= htmlspecialchars($user['prenom']) ?></p>
+            <?php endif; ?>
+        </div>
 
         <nav class="site-nav" aria-label="Navigation principale">
-        <!-- Liens accessibles à tout le monde -->
-        <a href="index.php?page=home">Accueil</a>
-        <a href="index.php?page=menus">Nos menus</a>
-        <a href="index.php?page=contact">Contact</a>
+            <div class="nav-primary">
+                <a href="index.php?page=home">Accueil</a>
+                <a href="index.php?page=menus">Nos menus</a>
+                <a href="index.php?page=contact">Contact</a>
+            </div>
 
-        <?php if ($user): ?>
-            <!-- Zone utilisateur connecté -->
-            <span>
-                Bonjour <?= htmlspecialchars($user['prenom']) ?> (<?= htmlspecialchars($user['role']) ?>)
-            </span>
+            <div class="nav-secondary">
+                <?php if ($user): ?>
+                    <a href="index.php?page=mes_commandes">Mes commandes</a>
 
-            <a href="index.php?page=mes_commandes">Mes commandes</a>
-
-            <?php if (in_array($user['role'], ['EMPLOYE','ADMIN'], true)): ?>
-                <a href="index.php?page=dashboard_employe">Espace employé</a>
-            <?php endif; ?>
-
-            <?php if ($user['role'] === 'ADMIN'): ?>
-                <a href="index.php?page=dashboard_admin">Administration</a>
-            <?php endif; ?>
-
-            <a href="index.php?page=profil">Mon profil</a>
-
-            <a href="index.php?page=logout">Déconnexion</a>
-
-        <?php else: ?>
-            <!-- Zone visiteur -->
-            <a href="index.php?page=login">Connexion</a>
-            <a href="index.php?page=register">Créer un compte</a>
-        <?php endif; ?>
+                    <details class="nav-menu">
+                        <summary>Mon compte</summary>
+                        <div class="nav-menu-panel">
+                            <a href="index.php?page=profil">Mon profil</a>
+                            <?php if (in_array($user['role'], ['EMPLOYE','ADMIN'], true)): ?>
+                                <a href="index.php?page=dashboard_employe">Espace employé</a>
+                            <?php endif; ?>
+                            <?php if ($user['role'] === 'ADMIN'): ?>
+                                <a href="index.php?page=dashboard_admin">Administration</a>
+                            <?php endif; ?>
+                            <a href="index.php?page=logout">Déconnexion</a>
+                        </div>
+                    </details>
+                <?php else: ?>
+                    <a href="index.php?page=login">Connexion</a>
+                    <a href="index.php?page=register">Créer un compte</a>
+                <?php endif; ?>
+            </div>
         </nav>
     </div>
 </header>

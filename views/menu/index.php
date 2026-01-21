@@ -4,6 +4,7 @@
 
 // Utilisé par : route page=menus
 $pageTitle = 'Nos menus - Vite & Gourmand';
+$pageDescription = 'Découvrez nos menus maison, adaptés à tous les goûts et à vos événements.';
 require __DIR__ . '/../partials/header.php';
 ?>
 

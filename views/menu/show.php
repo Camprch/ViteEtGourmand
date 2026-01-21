@@ -6,6 +6,12 @@
 
 // $menu, $plats, $image sont fournis par le contrôleur
 $pageTitle = 'Menu - ' . htmlspecialchars($menu['titre']);
+$menuDescription = trim((string)($menu['description'] ?? ''));
+if ($menuDescription !== '') {
+    $pageDescription = substr($menuDescription, 0, 160);
+} else {
+    $pageDescription = 'Détails et composition du menu sélectionné.';
+}
 require __DIR__ . '/../partials/header.php';
 ?>
 
@@ -13,7 +19,11 @@ require __DIR__ . '/../partials/header.php';
 <section class="menu-hero">
     <div class="menu-hero-media">
         <?php if (!empty($image['chemin'])): ?>
-            <img src="/uploads/menus/<?= htmlspecialchars($image['chemin']) ?>"
+            <?php
+            $rawPath = (string)$image['chemin'];
+            $imgPath = str_starts_with($rawPath, 'uploads/menus/') ? $rawPath : 'uploads/menus/' . ltrim($rawPath, '/');
+            ?>
+            <img src="<?= htmlspecialchars($imgPath) ?>"
                  alt="<?= htmlspecialchars($image['alt_text'] ?? $menu['titre']) ?>">
         <?php else: ?>
             <div class="placeholder">Menu du moment</div>

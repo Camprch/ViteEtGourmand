@@ -3,6 +3,7 @@
 // Vue : formulaire de contact pour les utilisateurs du site
 
 $pageTitle = 'Contact - Vite & Gourmand';
+$pageDescription = 'Contactez Vite & Gourmand pour vos questions, demandes et devis.';
 require __DIR__ . '/../partials/header.php';
 ?>
 

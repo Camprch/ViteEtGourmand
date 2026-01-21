@@ -1,0 +1,23 @@
+<!-- Ce fichier contient la liste des URLs du site pour les moteurs de recherche -->
+<!-- Il faudra modifier les URLs pour les faire correspondre à l'URL prod -->
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>http://localhost:8000/index.php?page=home</loc>
+  </url>
+  <url>
+    <loc>http://localhost:8000/index.php?page=menus</loc>
+  </url>
+  <url>
+    <loc>http://localhost:8000/index.php?page=contact</loc>
+  </url>
+  <url>
+    <loc>http://localhost:8000/index.php?page=mentions_legales</loc>
+  </url>
+  <url>
+    <loc>http://localhost:8000/index.php?page=rgpd</loc>
+  </url>
+  <url>
+    <loc>http://localhost:8000/index.php?page=cgv</loc>
+  </url>
+</urlset>

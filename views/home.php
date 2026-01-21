@@ -6,6 +6,7 @@
 
 // $menus, $avis sont fournis par HomeController
 $pageTitle = 'Accueil - Vite & Gourmand';
+$pageDescription = 'Traiteur local pour repas de famille, anniversaires et événements professionnels.';
 require __DIR__ . '/partials/header.php';
 ?>
 

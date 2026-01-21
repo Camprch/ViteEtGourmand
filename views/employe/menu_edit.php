@@ -137,7 +137,11 @@ require __DIR__ . '/../partials/header.php';
         <div class="cards-grid">
             <?php foreach ($images as $img): ?>
                 <article class="card">
-                    <img src="uploads/menus/<?= htmlspecialchars($img['chemin']) ?>"
+                    <?php
+                    $rawPath = (string)$img['chemin'];
+                    $imgPath = str_starts_with($rawPath, 'uploads/menus/') ? $rawPath : 'uploads/menus/' . ltrim($rawPath, '/');
+                    ?>
+                    <img src="<?= htmlspecialchars($imgPath) ?>"
                         alt="<?= htmlspecialchars($img['alt_text'] ?? '') ?>"
                         style="max-width:100%; display:block; border-radius:12px;">
 

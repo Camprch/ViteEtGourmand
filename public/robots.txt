@@ -1,0 +1,18 @@
+# Ce fichier sert à définir les pages qui doivent être ignorée par l'indexation SEO.
+
+User-agent: *
+Disallow: /index.php?page=login
+Disallow: /index.php?page=register
+Disallow: /index.php?page=forgot_password
+Disallow: /index.php?page=reset_password
+Disallow: /index.php?page=profil
+Disallow: /index.php?page=mes_commandes
+Disallow: /index.php?page=dashboard_admin
+Disallow: /index.php?page=dashboard_employe
+Disallow: /index.php?page=admin_
+Disallow: /index.php?page=employe_
+Disallow: /index.php?page=avis_pending
+
+# Cet URL devra être modifier pour pointer le site en prod.
+
+Sitemap: http://localhost:8000/sitemap.xml

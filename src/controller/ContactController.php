@@ -7,6 +7,7 @@ declare(strict_types=1);
 // - submit()    : Traite l'envoi du formulaire, enregistre le message et tente un envoi email
 
 require_once __DIR__ . '/../model/ContactModel.php';
+require_once __DIR__ . '/../service/MailerService.php';
 
 class ContactController
 {
@@ -71,21 +72,27 @@ class ContactController
             'traite' => 0,
         ]);
 
-        // 2) Envoi email (mode simple)
-        $to = 'contact@vite-gourmand.local'; // à remplacer par l’email réel en prod
+        // 2) Envoi email via SMTP (MailerService)
+        $to = getenv('MAIL_NOTIFY_EMAIL') ?: getenv('MAIL_FROM_EMAIL') ?: 'contact@vite-gourmand.local';
+        $toName = getenv('MAIL_NOTIFY_NAME') ?: 'Equipe Vite Gourmand';
         $subject = "[Vite & Gourmand] " . $titre;
-        $body = "Nouveau message de contact\n\n"
+        $text = "Nouveau message de contact\n\n"
               . "Nom: {$nom}\n"
               . "Email: {$email}\n"
               . "Titre: {$titre}\n\n"
               . "Message:\n{$message}\n";
-
-        $from = 'no-reply@vite-gourmand.local';
-        $headers = "From: {$from}\r\nReply-To: {$email}\r\n";
+        $html = "<p><strong>Nouveau message de contact</strong></p>"
+              . "<p><strong>Nom :</strong> " . htmlspecialchars($nom) . "<br>"
+              . "<strong>Email :</strong> " . htmlspecialchars($email) . "<br>"
+              . "<strong>Titre :</strong> " . htmlspecialchars($titre) . "</p>"
+              . "<p><strong>Message :</strong><br>" . nl2br(htmlspecialchars($message)) . "</p>";
 
         $sent = false;
-        if (function_exists('mail')) {
-            $sent = @mail($to, $subject, $body, $headers);
+        try {
+            $mailer = new MailerService();
+            $sent = $mailer->send($to, $toName, $subject, $html, $text);
+        } catch (Throwable $e) {
+            $sent = false;
         }
 
         echo "<h2>Message envoyé ✅</h2>";
@@ -94,7 +101,7 @@ class ContactController
         if (!$sent) {
             // "Preuve DEV” si le mail n’est pas configuré
             echo "<p><strong>⚠️ Environnement DEV :</strong> l’envoi email n’est pas configuré.</p>";
-            echo "<pre>" . htmlspecialchars("TO: $to\nSUBJECT: $subject\n\n$body") . "</pre>";
+            echo "<pre>" . htmlspecialchars("TO: $to\nSUBJECT: $subject\n\n$text") . "</pre>";
         }
 
         echo '<p><a href="index.php?page=home">Retour à l’accueil</a></p>';
