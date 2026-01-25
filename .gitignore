@@ -16,12 +16,8 @@
 *.log
 /tmp/
 /cache/
-/var/cache/
-/var/log/
+/var
 /storage/logs/
-
-# Uploads / fichiers utilisateurs
-/public/uploads/
 
 # Tests / coverage
 /coverage/

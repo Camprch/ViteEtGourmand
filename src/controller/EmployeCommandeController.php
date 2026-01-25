@@ -40,6 +40,27 @@ class EmployeCommandeController
         require __DIR__ . '/../../views/employe/commandes.php';
     }
 
+    // Affiche le détail d'une commande pour l'employé (avec historique)
+    public function detail(int $commandeId): void
+    {
+        $this->currentUser();
+
+        if ($commandeId <= 0) {
+            render_error(404, 'Commande introuvable', 'La commande demandée n’existe pas.');
+        }
+
+        $commandeModel = new CommandeModel($this->pdo);
+        $commande = $commandeModel->findByIdForEmploye($commandeId);
+
+        if (!$commande) {
+            render_error(404, 'Commande introuvable', 'La commande demandée n’existe pas.');
+        }
+
+        $historiqueStatuts = $commandeModel->getStatutHistorique($commandeId);
+
+        require __DIR__ . '/../../views/employe/commande_detail.php';
+    }
+
     // Met à jour le statut d'une commande (et ajoute à l'historique)
     public function updateStatut(): void
 {

@@ -53,25 +53,34 @@ INSERT INTO horaire (jour, heure_ouverture, heure_fermeture, ferme) VALUES
 -- =========================
 INSERT INTO menu (id, titre, description, theme, prix_par_personne, personnes_min, conditions_particulieres, regime, stock)
 VALUES
-(1, 'Menu Italien', 'Antipasti, plat principal et dessert aux saveurs italiennes.', 'Italie', 24.90, 2,
- 'Livraison incluse en zone urbaine. Prévenir en cas d’allergies.', 'Omnivore', 20),
-(2, 'Menu Vegan', 'Un menu 100% végétal, gourmand et équilibré.', 'Vegan', 22.50, 2,
- 'Convient aux régimes vegan. Options sans gluten sur demande.', 'Vegan', 15);
+(1, 'Salade végé', 'Salade croquante et colorée, légumes de saison et vinaigrette maison.', 'Végétarien', 19.50, 2,
+ 'Options sans gluten sur demande.', 'Végétarien', 25),
+(2, 'Boeuf bourguignon', 'Boeuf mijoté au vin rouge, carottes et champignons.', 'Terroir', 26.90, 2,
+ 'Cuisson lente, prévoir un temps de préparation plus long.', 'Omnivore', 18),
+(3, 'Choucroute', 'Choucroute garnie traditionnelle, charcuteries et pommes de terre.', 'Alsace', 25.90, 4,
+ 'Peut contenir de la moutarde.', 'Omnivore', 12),
+(4, 'Poulet rôti', 'Poulet rôti aux herbes, frites.', 'Classique', 23.90, 2,
+ 'Possibilité de demander une cuisson bien cuite.', 'Omnivore', 30);
 
 INSERT INTO menu_image (id_menu, chemin, alt_text, is_principale)
 VALUES
-(1, 'uploads/menus/menu-italien.jpg', 'Menu Italien', 1),
-(2, 'uploads/menus/menu-vegan.jpg',   'Menu Vegan', 1);
+(1, 'uploads/menus/Salade vege.png', 'Salade végé', 1),
+(2, 'uploads/menus/boeuf bourguignon.png', 'Boeuf bourguignon', 1),
+(3, 'uploads/menus/choucroute.png', 'Choucroute', 1),
+(4, 'uploads/menus/poulet roti.png', 'Poulet rôti', 1);
 
 -- =========================
 -- PLATS
 -- =========================
 INSERT INTO plat (id, nom, description, type) VALUES
-(1, 'Bruschetta tomate basilic', 'Pain grillé, tomates, basilic, huile d’olive.', 'ENTREE'),
-(2, 'Pâtes carbonara', 'Crème, lardons, parmesan (version traditionnelle).', 'PLAT'),
-(3, 'Tiramisu', 'Dessert italien au café et mascarpone.', 'DESSERT'),
-(4, 'Buddha bowl', 'Quinoa, pois chiches, légumes croquants, sauce tahini.', 'PLAT'),
-(5, 'Mousse chocolat aquafaba', 'Mousse vegan légère au chocolat.', 'DESSERT');
+(1, 'Salade de saison', 'Jeunes pousses, légumes croquants, vinaigrette maison.', 'ENTREE'),
+(2, 'Tarte légumes rôtis', 'Tarte salée aux légumes et herbes fraîches.', 'PLAT'),
+(3, 'Compote pommes-poires', 'Compote maison, légère et fruitée.', 'DESSERT'),
+(4, 'Boeuf bourguignon', 'Boeuf mijoté, carottes, champignons, vin rouge.', 'PLAT'),
+(5, 'Pommes de terre vapeur', 'Accompagnement simple et gourmand.', 'PLAT'),
+(6, 'Choucroute garnie', 'Chou fermenté, charcuteries, pommes de terre.', 'PLAT'),
+(7, 'Poulet rôti aux herbes', 'Poulet rôti, jus au thym.', 'PLAT'),
+(8, 'Gâteau moelleux', 'Gâteau du jour, texture fondante.', 'DESSERT');
 
 -- =========================
 -- ALLERGENES
@@ -83,16 +92,27 @@ INSERT INTO allergene (id, nom) VALUES
 -- =========================
 -- LIAISONS Menu <-> Plat
 -- =========================
--- Menu Italien : entrée + plat + dessert
+-- Salade végé : entrée + plat + dessert
 INSERT INTO menu_plat (id_menu, id_plat, ordre) VALUES
 (1, 1, 1),
 (1, 2, 2),
 (1, 3, 3);
 
--- Menu Vegan : plat + dessert 
+-- Boeuf bourguignon : plat + accompagnement + dessert
 INSERT INTO menu_plat (id_menu, id_plat, ordre) VALUES
 (2, 4, 1),
-(2, 5, 2);
+(2, 5, 2),
+(2, 8, 3);
+
+-- Choucroute : plat + dessert
+INSERT INTO menu_plat (id_menu, id_plat, ordre) VALUES
+(3, 6, 1),
+(3, 8, 2);
+
+-- Poulet rôti : plat + dessert
+INSERT INTO menu_plat (id_menu, id_plat, ordre) VALUES
+(4, 7, 1),
+(4, 8, 2);
 
 -- =========================
 -- LIAISONS Plat <-> Allergene

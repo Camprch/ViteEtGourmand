@@ -300,6 +300,12 @@ switch ($page) {
     $controller->annuler();
     break;
 
+    case 'employe_commande_detail':
+    require_once __DIR__ . '/../src/controller/EmployeCommandeController.php';
+    $controller = new EmployeCommandeController($pdo);
+    $controller->detail((int)($_GET['id'] ?? 0));
+    break;
+
     case 'employe_commandes':
     require_once __DIR__ . '/../src/controller/EmployeCommandeController.php';
     $controller = new EmployeCommandeController($pdo);

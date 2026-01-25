@@ -62,6 +62,7 @@ $current = $_GET['statut'] ?? '';
                 <th>Ville</th>
                 <th>Total</th>
                 <th>Statut</th>
+                <th>Historique</th>
             </tr>
         </thead>
         <tbody>
@@ -99,6 +100,9 @@ $current = $_GET['statut'] ?? '';
                         <input type="text" name="motif" placeholder="Motif annulation" required>
                         <button class="btn btn-ghost btn-sm" type="submit">Annuler</button>
                     </form>
+                </td>
+                <td>
+                    <a class="btn btn-ghost btn-sm" href="index.php?page=employe_commande_detail&id=<?= (int)$c['id'] ?>">Voir</a>
                 </td>
             </tr>
         <?php endforeach; ?>

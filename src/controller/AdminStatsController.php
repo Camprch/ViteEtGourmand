@@ -52,6 +52,11 @@ class AdminStatsController
 
         $dateFrom = $_GET['from'] ?? null; // YYYY-MM-DD
         $dateTo   = $_GET['to'] ?? null;   // YYYY-MM-DD
+        $period   = $_GET['period'] ?? 'day'; // day | week | month
+
+        $dateFrom = is_string($dateFrom) ? trim($dateFrom) : null;
+        $dateTo = is_string($dateTo) ? trim($dateTo) : null;
+        $userProvidedRange = ($dateFrom !== '' && $dateFrom !== null) || ($dateTo !== '' && $dateTo !== null);
 
         $mongoDsn = $this->env('MONGO_DSN');
         $mongoDb  = $this->env('MONGO_DB', 'vite_gourmand');
@@ -61,6 +66,7 @@ class AdminStatsController
         $stats = [];
         $caTotal = 0.0;
         $nbTotal = 0;
+        $volumeSeries = [];
 
         try {
             if (!$mongoDsn) {
@@ -73,6 +79,31 @@ class AdminStatsController
             $manager = new \MongoDB\Driver\Manager($mongoDsn);
 
             $match = [];
+
+            // Si aucune période fournie, on détecte automatiquement min/max pour afficher tout l'historique.
+            if (!$userProvidedRange) {
+                $pipelineRange = [[
+                    '$group' => [
+                        '_id' => null,
+                        'min_date' => ['$min' => '$accepted_at'],
+                        'max_date' => ['$max' => '$accepted_at'],
+                    ],
+                ]];
+
+                $cmdRange = new \MongoDB\Driver\Command([
+                    'aggregate' => $collection,
+                    'pipeline' => $pipelineRange,
+                    'cursor' => new stdClass(),
+                ]);
+
+                $resRange = $manager->executeCommand($mongoDb, $cmdRange)->toArray();
+                if ($resRange && !empty($resRange[0]->min_date) && !empty($resRange[0]->max_date)) {
+                    $minDt = $resRange[0]->min_date->toDateTime();
+                    $maxDt = $resRange[0]->max_date->toDateTime();
+                    $dateFrom = $minDt->format('Y-m-d');
+                    $dateTo = $maxDt->format('Y-m-d');
+                }
+            }
             if ($dateFrom || $dateTo) {
                 $range = [];
                 if ($dateFrom) {
@@ -129,6 +160,44 @@ class AdminStatsController
                     'menu_titre' => (string)$doc->_id->menu_titre,
                     'nb_commandes' => (int)$doc->nb,
                     'chiffre_affaires' => (float)$doc->ca,
+                ];
+            }
+
+            // 3) Volume par période (jour / semaine / mois)
+            $periodFormats = [
+                'day' => '%Y-%m-%d',
+                'week' => '%G-W%V',
+                'month' => '%Y-%m',
+            ];
+            if (!isset($periodFormats[$period])) {
+                $period = 'day';
+            }
+
+            $pipelineVolume = [];
+            if ($match) $pipelineVolume[] = ['$match' => $match];
+            $pipelineVolume[] = ['$group' => [
+                '_id' => [
+                    '$dateToString' => [
+                        'format' => $periodFormats[$period],
+                        'date' => '$accepted_at',
+                    ],
+                ],
+                'nb' => ['$sum' => 1],
+            ]];
+            $pipelineVolume[] = ['$sort' => ['_id' => 1]];
+
+            $cmdVolume = new \MongoDB\Driver\Command([
+                'aggregate' => $collection,
+                'pipeline' => $pipelineVolume,
+                'cursor' => new stdClass(),
+            ]);
+
+            $resVolume = $manager->executeCommand($mongoDb, $cmdVolume)->toArray();
+
+            foreach ($resVolume as $doc) {
+                $volumeSeries[] = [
+                    'periode' => (string)$doc->_id,
+                    'nb_commandes' => (int)$doc->nb,
                 ];
             }
 

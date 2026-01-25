@@ -24,6 +24,13 @@ class MenuController
         $menuModel = new MenuModel($this->pdo);
         $menus = $menuModel->findAll();
 
+        foreach ($menus as &$menu) {
+            $img = $menuModel->getMainImage((int)$menu['id']);
+            $menu['image_chemin'] = $img['chemin'] ?? null;
+            $menu['image_alt'] = $img['alt_text'] ?? null;
+        }
+        unset($menu);
+
         require __DIR__ . '/../../views/menu/index.php';
     }
 
@@ -73,6 +80,13 @@ class MenuController
 
         $menuModel = new MenuModel($this->pdo);
         $menus = $menuModel->findFiltered($filters);
+
+        foreach ($menus as &$menu) {
+            $img = $menuModel->getMainImage((int)$menu['id']);
+            $menu['image_chemin'] = $img['chemin'] ?? null;
+            $menu['image_alt'] = $img['alt_text'] ?? null;
+        }
+        unset($menu);
 
         // Vue partielle (HTML uniquement, pas de header/footer)
         require __DIR__ . '/../../views/menu/_list_partial.php';

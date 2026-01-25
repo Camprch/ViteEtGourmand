@@ -47,6 +47,25 @@ MongoDB est utilisé pour les statistiques :
 SQL = base transactionnelle  
 MongoDB = base analytique (statistiques)
 
+### Seed MongoDB (statistiques)
+
+Le graphique lit la collection MongoDB `orders_stats`.  
+Pour générer rapidement des données réalistes (volume sur 6 mois), utilise le script :
+
+```bash
+./scripts/seed-mongo.sh
+```
+
+Options (variables d'environnement) :
+```bash
+COUNT=400 DAYS=240 ./scripts/seed-mongo.sh
+```
+
+Le script utilise les variables `.env` suivantes :
+- `MONGO_INITDB_ROOT_USERNAME`
+- `MONGO_INITDB_ROOT_PASSWORD`
+- `MONGO_DB`
+
 ---
 
 ## 📧 Emails
@@ -55,7 +74,7 @@ Envoi d’emails réels via SMTP :
 - Réinitialisation du mot de passe
 - Notifications liées aux commandes
 
-Configuration via `.env` avec `MAIL_FROM_EMAIL` et `MAILER_DSN`
+Configuration via `.env` avec `MAIL_FROM_EMAIL`, `MAIL_FROM_NAME` et `MAILER_DSN` (ex. SMTP Brevo comme dans `.env.example`).
 
 ---
 
@@ -143,5 +162,5 @@ Email : employe@vitegourmand.local
 Mot de passe : Employe123!  
 
 - Compte Utilisateur :  
-Email : utilisateur@vitegourmand.local  
+Email : user@vitegourmand.local  
 Mot de passe : Utilisateur123!  

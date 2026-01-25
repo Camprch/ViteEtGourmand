@@ -21,11 +21,20 @@ require __DIR__ . '/../partials/header.php';
         <input type="hidden" name="page" value="admin_stats">
 
         <label>Du
-            <input type="date" name="from" value="<?= htmlspecialchars($_GET['from'] ?? '') ?>">
+            <input type="date" name="from" value="<?= htmlspecialchars($dateFrom ?? '') ?>">
         </label>
 
         <label>Au
-            <input type="date" name="to" value="<?= htmlspecialchars($_GET['to'] ?? '') ?>">
+            <input type="date" name="to" value="<?= htmlspecialchars($dateTo ?? '') ?>">
+        </label>
+
+        <label>Période
+            <select name="period">
+                <?php $currentPeriod = $_GET['period'] ?? 'day'; ?>
+                <option value="day" <?= $currentPeriod === 'day' ? 'selected' : '' ?>>Jour</option>
+                <option value="week" <?= $currentPeriod === 'week' ? 'selected' : '' ?>>Semaine</option>
+                <option value="month" <?= $currentPeriod === 'month' ? 'selected' : '' ?>>Mois</option>
+            </select>
         </label>
 
         <button type="submit">Mettre à jour</button>
@@ -90,29 +99,39 @@ require __DIR__ . '/../partials/header.php';
     </section>
 
     <section class="chart-card">
-        <h3>Graphique</h3>
+        <h3>Volume par période</h3>
         <canvas id="chart" width="900" height="380"></canvas>
     </section>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        const data = <?= json_encode(
-            $stats,
+        const series = <?= json_encode(
+            $volumeSeries ?? [],
             JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
         ) ?>;
 
-        const labels = data.map(x => x.menu_titre);
-        const nb = data.map(x => x.nb_commandes);
-        const ca = data.map(x => x.chiffre_affaires);
+        const labels = series.map(x => x.periode);
+        const nb = series.map(x => x.nb_commandes);
 
         new Chart(document.getElementById('chart'), {
-            type: 'bar',
+            type: 'line',
             data: {
                 labels,
                 datasets: [
-                    { label: 'Nb commandes', data: nb },
-                    { label: 'Chiffre d’affaires (€)', data: ca },
+                    {
+                        label: 'Nb commandes',
+                        data: nb,
+                        borderColor: '#b45a38',
+                        backgroundColor: 'rgba(180, 90, 56, 0.2)',
+                        tension: 0.2,
+                        fill: true,
+                    }
                 ]
+            },
+            options: {
+                scales: {
+                    y: { beginAtZero: true }
+                }
             }
         });
     </script>

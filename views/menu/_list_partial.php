@@ -16,6 +16,14 @@ declare(strict_types=1);
     <div class="cards-grid">
         <?php foreach ($menus as $menu): ?>
             <article class="card menu-card">
+                <div class="menu-card-media">
+                    <?php if (!empty($menu['image_chemin'])): ?>
+                        <img src="<?= htmlspecialchars((string)$menu['image_chemin']) ?>"
+                             alt="<?= htmlspecialchars((string)($menu['image_alt'] ?? $menu['titre'] ?? 'Menu')) ?>">
+                    <?php else: ?>
+                        <div class="placeholder">Aucune image</div>
+                    <?php endif; ?>
+                </div>
                 <h3><?= htmlspecialchars((string)$menu['titre']) ?></h3>
             
             <!-- Indication de rupture de stock -->

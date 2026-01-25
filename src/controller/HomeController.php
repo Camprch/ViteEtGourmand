@@ -23,6 +23,13 @@ class HomeController
         $menuModel = new MenuModel($this->pdo);
         $menus = $menuModel->findAll();
 
+        foreach ($menus as &$menu) {
+            $img = $menuModel->getMainImage((int)$menu['id']);
+            $menu['image_chemin'] = $img['chemin'] ?? null;
+            $menu['image_alt'] = $img['alt_text'] ?? null;
+        }
+        unset($menu);
+
         $avisModel = new AvisModel($this->pdo);
         $avis = $avisModel->getValidAvis();
 
