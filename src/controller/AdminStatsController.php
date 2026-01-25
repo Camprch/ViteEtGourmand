@@ -36,13 +36,33 @@ class AdminStatsController
         $envPath = __DIR__ . '/../../.env';
         if (!file_exists($envPath)) return $default;
 
-        $env = parse_ini_file($envPath);
-        $val = $env[$key] ?? $default;
+        $lines = file($envPath, FILE_IGNORE_NEW_LINES);
+        if ($lines === false) return $default;
 
-        if (is_string($val)) {
-            $val = trim($val, "\"'");
+        foreach ($lines as $line) {
+            $line = trim($line);
+            if ($line === '') continue;
+            $firstChar = $line[0] ?? '';
+            if ($firstChar === '#' || $firstChar === ';') continue;
+            if (!str_contains($line, '=')) continue;
+
+            [$k, $v] = explode('=', $line, 2);
+            $k = trim($k);
+            if ($k === $key) {
+                $v = trim($v);
+                $len = strlen($v);
+                if ($len >= 2) {
+                    $first = $v[0];
+                    $last = $v[$len - 1];
+                    if (($first === '"' && $last === '"') || ($first === "'" && $last === "'")) {
+                        $v = substr($v, 1, -1);
+                    }
+                }
+                return $v;
+            }
         }
-        return $val;
+
+        return $default;
     }
 
     // Affiche la page de statistiques (calcul, stockage, lecture)

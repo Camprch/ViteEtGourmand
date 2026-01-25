@@ -32,5 +32,7 @@
 /public/adminer.php
 adminer.php
 
-# User stories
-US.txt
+# Document de developpement
+us.txt
+deploy.txt
+

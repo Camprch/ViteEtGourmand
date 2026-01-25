@@ -87,7 +87,15 @@ Créer le fichier `.env` à partir de l’exemple :
 cp .env.example .env
 ```
 
-### 3. Démarrer les bases (MariaDB + MongoDB)
+### 3. (Optionnel) Reset complet des bases
+
+⚠️ Cette commande supprime toutes les données (MariaDB + MongoDB) et rejoue les seeds.
+```bash
+docker-compose down -v
+docker-compose up -d
+```
+
+### 4. Démarrer les bases (MariaDB + MongoDB)
 
 Cette commande démarre **les deux bases** et initialise MariaDB (schéma + données de démonstration).  
 MongoDB est démarrée vide (prête pour les stats).
@@ -96,7 +104,7 @@ MongoDB est démarrée vide (prête pour les stats).
 docker-compose up -d
 ```
 
-### 4. Générer des stats de démo (MongoDB)
+### 5. Générer des stats de démo (MongoDB)
 
 Ce script remplit MongoDB avec des données statistiques réalistes :
 
@@ -114,15 +122,7 @@ Le script utilise les variables `.env` suivantes :
 - `MONGO_INITDB_ROOT_PASSWORD`
 - `MONGO_DB`
 
-### 5. (Optionnel) Reset complet des bases
-
-⚠️ Cette commande supprime toutes les données (MariaDB + MongoDB) et rejoue les seeds.
-```bash
-docker-compose down -v
-docker-compose up -d
-```
-
-### 5. Lancer l'application
+### 6. Lancer l'application
 
 ```bash
 php -S localhost:8000 -t public
