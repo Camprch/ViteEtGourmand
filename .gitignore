@@ -4,7 +4,7 @@
 !.env.example
 
 # Dépendances
-/vendor/
+/vendor
 /node_modules/
 
 # IDE / éditeurs
