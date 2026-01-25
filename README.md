@@ -2,8 +2,10 @@
 
 Vite & Gourmand est une application web de gestion de commandes pour un service traiteur.
 
-![Accueil](public/uploads/screenshot/accueil.png)
-![Stats](public/uploads/screenshot/statistique.png)
+<div style="display:flex; gap:12px; align-items:flex-start;">
+  <img src="public/uploads/screenshot/accueil.png" alt="Accueil" width="320" />
+  <img src="public/uploads/screenshot/statistique.png" alt="Stats" width="320" />
+</div>
 
 ---
 
