@@ -1,6 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;700&family=Work+Sans:wght@400;600&display=swap");
 
-/* Bistro chaleureux: palette, typographie, layout de base */
 :root {
     --bg: #f7f2ea;
     --bg-alt: #efe4d4;
@@ -20,7 +19,10 @@
     --space-5: 36px;
     --space-6: 56px;
     --max: 1100px;
+    --font-serif: "Fraunces", "Iowan Old Style", "Palatino Linotype", "Book Antiqua", "Georgia", serif;
+    --font-sans: "Work Sans", "Gill Sans", "Trebuchet MS", sans-serif;
 }
+
 
 *,
 *::before,
@@ -35,7 +37,7 @@ body {
         radial-gradient(1000px 300px at 10% -10%, #fff3e4 0%, rgba(255, 243, 228, 0) 60%),
         radial-gradient(800px 240px at 90% 0%, #f3e1cf 0%, rgba(243, 225, 207, 0) 60%),
         linear-gradient(180deg, var(--bg) 0%, #f5efe7 45%, #f7f2ea 100%);
-    font-family: "Fraunces", "Iowan Old Style", "Palatino Linotype", "Book Antiqua", "Georgia", serif;
+    font-family: var(--font-serif);
     line-height: 1.6;
 }
 
@@ -70,7 +72,7 @@ a:hover {
     font-size: 0.75rem;
     color: var(--accent-dark);
     margin: 0 0 var(--space-2);
-    font-family: "Work Sans", "Gill Sans", "Trebuchet MS", sans-serif;
+    font-family: var(--font-sans);
 }
 
 .muted {
@@ -104,6 +106,10 @@ a:hover {
     flex-wrap: wrap;
     gap: var(--space-2);
     margin-top: var(--space-3);
+}
+
+.hero-cta .btn {
+    min-width: 220px;
 }
 
 .hero-card {
@@ -162,7 +168,7 @@ a:hover {
     margin: 0;
     font-size: 0.85rem;
     color: var(--ink-soft);
-    font-family: "Work Sans", "Gill Sans", "Trebuchet MS", sans-serif;
+    font-family: var(--font-sans);
 }
 
 .site-logo {
@@ -173,12 +179,18 @@ a:hover {
     color: inherit;
 }
 
+.site-logo-emoji {
+    font-size: 1.4em;
+    line-height: 1;
+    vertical-align: -0.08em;
+}
+
 .site-nav {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: var(--space-4);
-    font-family: "Work Sans", "Gill Sans", "Trebuchet MS", sans-serif;
+    font-family: var(--font-sans);
     font-size: 0.95rem;
     flex: 1;
 }
@@ -195,7 +207,8 @@ a:hover {
 .nav-menu summary {
     padding: 6px 10px;
     border-radius: 999px;
-    border: 1px solid transparent;
+    border: 1px solid var(--line);
+    background: var(--cream);
     transition: 150ms ease;
     list-style: none;
     cursor: pointer;
@@ -203,8 +216,8 @@ a:hover {
 
 .site-nav a:hover,
 .nav-menu summary:hover {
-    border-color: var(--line);
-    background: var(--cream);
+    border-color: var(--accent);
+    background: #fff;
 }
 
 .nav-menu summary::-webkit-details-marker {
@@ -225,14 +238,6 @@ a:hover {
     border-right: 4px solid transparent;
     border-top: 5px solid currentColor;
     transform: translateY(1px);
-}
-
-.user-chip {
-    padding: 6px 12px;
-    border-radius: 999px;
-    background: var(--bg-alt);
-    border: 1px solid var(--line);
-    color: var(--ink-soft);
 }
 
 .nav-menu {
@@ -286,11 +291,6 @@ h2 {
     font-size: 1.5rem;
 }
 
-h2 {
-    margin-top: 0;
-    font-size: 1.5rem;
-}
-
 .section-head {
     display: flex;
     align-items: center;
@@ -312,30 +312,6 @@ h2 {
     border-radius: var(--radius);
 }
 
-.footer-hours {
-    list-style: none;
-    padding: 0;
-    margin: var(--space-2) 0 0;
-    display: grid;
-    gap: 6px 16px;
-    grid-template-columns: auto 1fr;
-    font-family: "Work Sans", "Gill Sans", "Trebuchet MS", sans-serif;
-    font-size: 0.9rem;
-    color: var(--ink-soft);
-}
-
-.footer-hours li {
-    display: contents;
-}
-
-.footer-hours-day {
-    font-weight: 600;
-    color: var(--ink);
-}
-
-.footer-hours-time {
-    text-align: left;
-}
 
 .card-title {
     font-weight: 700;
@@ -356,7 +332,7 @@ h2 {
     background: var(--bg-alt);
     color: var(--ink);
     border: 1px solid var(--line);
-    font-family: "Work Sans", "Gill Sans", "Trebuchet MS", sans-serif;
+    font-family: var(--font-sans);
 }
 
 .badge-outline {
@@ -393,7 +369,7 @@ li {
     padding: 10px 18px;
     background: var(--accent);
     color: #fff;
-    font-family: "Work Sans", "Gill Sans", "Trebuchet MS", sans-serif;
+    font-family: var(--font-sans);
     font-weight: 600;
     border: 1px solid transparent;
     transition: 150ms ease;
@@ -430,7 +406,7 @@ input[type="button"] {
     padding: 10px 18px;
     background: var(--accent);
     color: #fff;
-    font-family: "Work Sans", "Gill Sans", "Trebuchet MS", sans-serif;
+    font-family: var(--font-sans);
     font-weight: 600;
     cursor: pointer;
     box-shadow: 0 8px 18px rgba(180, 90, 56, 0.25);
@@ -450,7 +426,7 @@ textarea {
     border-radius: 10px;
     border: 1px solid var(--line);
     background: #fff;
-    font-family: "Work Sans", "Gill Sans", "Trebuchet MS", sans-serif;
+    font-family: var(--font-sans);
 }
 
 label {
@@ -467,7 +443,6 @@ label {
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     align-items: end;
 }
-
 
 .filters-actions {
     display: flex;
@@ -486,8 +461,33 @@ label {
 }
 
 .menu-card {
-    display: grid;
+    display: flex;
+    flex-direction: column;
     gap: var(--space-2);
+    height: 100%;
+}
+
+.menu-card h3 {
+    margin: 0 0 var(--space-2);
+    line-height: 1.2;
+    min-height: calc(1.2em * 2);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.menu-card p {
+    margin: 0 0 var(--space-2);
+}
+
+.menu-card .muted {
+    margin-top: auto;
+}
+
+.menu-card .btn {
+    width: 100%;
+    margin-top: var(--space-2);
 }
 
 .menu-card-media {
@@ -496,6 +496,10 @@ label {
     border: 1px solid var(--line);
     background: var(--bg-alt);
     aspect-ratio: 4 / 3;
+}
+
+.menu-card h3 {
+    margin-top: var(--space-2);
 }
 
 .menu-card-media img {
@@ -510,7 +514,7 @@ label {
     display: grid;
     place-items: center;
     color: var(--ink-soft);
-    font-family: "Work Sans", "Gill Sans", "Trebuchet MS", sans-serif;
+    font-family: var(--font-sans);
     font-size: 0.9rem;
 }
 
@@ -617,16 +621,132 @@ label {
 }
 
 .site-footer {
-    background: var(--bg-alt);
+    background: transparent;
     border-top: 1px solid var(--line);
-    padding: var(--space-5) 0;
-    font-family: "Work Sans", "Gill Sans", "Trebuchet MS", sans-serif;
+    padding: var(--space-3) 0;
+    font-family: var(--font-sans);
     color: var(--ink-soft);
 }
 
 .footer-inner {
     display: grid;
     gap: var(--space-3);
+    justify-items: center;
+}
+
+.footer-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px 14px;
+}
+
+.footer-btn {
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--cream);
+    color: var(--ink);
+    font-size: 0.9rem;
+    transition: 150ms ease;
+}
+
+.footer-btn:hover {
+    background: var(--bg-alt);
+    border-color: var(--line);
+}
+
+.footer-hours-toggle {
+    position: relative;
+}
+
+.footer-hours-toggle summary {
+    list-style: none;
+    cursor: pointer;
+}
+
+.footer-hours-toggle summary::-webkit-details-marker {
+    display: none;
+}
+
+.footer-hours-toggle summary::after {
+    content: "";
+    display: inline-block;
+    margin-left: 6px;
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid currentColor;
+    transform: translateY(1px);
+}
+
+.footer-hours-toggle[open] summary::after {
+    transform: translateY(1px) rotate(180deg);
+}
+
+.footer-hours-panel {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 220px;
+    max-width: 280px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 12px 14px;
+    box-shadow: var(--shadow);
+    z-index: 30;
+}
+
+.footer-hours {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 6px;
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+}
+
+.footer-hours-time {
+    text-align: right;
+    font-weight: 600;
+    color: var(--ink);
+}
+
+.footer-hours li {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 10px;
+    align-items: center;
+    padding: 8px 6px;
+    border-bottom: 1px solid rgba(226, 211, 194, 0.6);
+}
+
+.footer-hours-day {
+    font-weight: 600;
+    color: var(--ink);
+}
+
+.footer-hours li:last-child {
+    border-bottom: 0;
+}
+
+.footer-meta {
+    display: grid;
+    gap: var(--space-2);
+    text-align: center;
+}
+
+.footer-brand {
+    margin: 0;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: 0.02em;
+    text-align: center;
 }
 
 .profile-grid,
@@ -689,7 +809,7 @@ label {
 .table {
     width: 100%;
     border-collapse: collapse;
-    font-family: "Work Sans", "Gill Sans", "Trebuchet MS", sans-serif;
+    font-family: var(--font-sans);
     font-size: 0.92rem;
 }
 
@@ -781,19 +901,23 @@ label {
 @media (max-width: 720px) {
     .header-inner {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: center;
+        gap: var(--space-2);
+        padding: var(--space-2) 0;
     }
 
     .site-nav {
         width: 100%;
-        flex-direction: column;
-        align-items: flex-start;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 6px 10px;
     }
 
     .nav-primary,
     .nav-secondary {
-        width: 100%;
-        justify-content: flex-start;
+        display: contents;
     }
 
     .nav-menu-panel {
@@ -803,8 +927,14 @@ label {
         margin-top: 6px;
     }
 
+    .site-brand {
+        align-items: center;
+        text-align: center;
+    }
+
     .site-title {
-        font-size: 1.4rem;
+        font-size: 1.6rem;
+        text-align: center;
     }
 
     main section {
@@ -840,5 +970,27 @@ label {
     .toolbar {
         flex-direction: column;
         align-items: flex-start;
+    }
+
+    .footer-inner {
+        width: 100%;
+    }
+
+    .footer-meta {
+        text-align: center;
+    }
+
+    .footer-actions {
+        justify-content: center;
+    }
+
+    .footer-hours-time {
+        text-align: left;
+    }
+
+    .footer-hours-panel {
+        left: 0;
+        transform: translateX(0);
+        min-width: 200px;
     }
 }

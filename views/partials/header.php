@@ -60,7 +60,7 @@ $canonicalUrl = $baseUrl . $requestUri;
         <div class="site-brand">
             <h1 class="site-title">
                 <a class="site-logo" href="index.php?page=home" aria-label="Retour à l'accueil">
-                    🍲 Vite & Gourmand
+                    <span class="site-logo-emoji" aria-hidden="true">🍲</span> Vite & Gourmand
                 </a>
             </h1>
             <?php if ($user): ?>
